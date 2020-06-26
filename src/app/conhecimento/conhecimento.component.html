@@ -1,0 +1,643 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteCarga()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="CTRC"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+
+<!-- <div class="row"  [hidden]="!(exibir == 1)" style="padding-top: 15px;">
+  <indicadores-filter
+    #indicador
+    class="col-md-12"
+    [objForm]="objFormFilter"
+    [indicadores]="indicadores"
+    (filtrar)="filtrarIndi($event)"
+    >
+  </indicadores-filter>
+</div> -->
+
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 15px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    idGrid="carga"
+    advancedOptions="advancedFilter"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <label>Delivery</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsIDG043'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <label>Cód. Evolog conhecimento</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsNrConhec'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='false'
+          >
+          </app-chips-input>
+        </div>
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <label>CTRC</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsIDG051'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label>Número da Nota</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsNrNota'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='false'
+          >
+          </app-chips-input>
+        </div>
+
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label for="G048_IDG046">Carga</label>
+          <app-chips-input
+          [typeInput]="'text'"
+          [chips]='arIdsIDG046'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='false'
+          >
+          </app-chips-input>
+        </div>
+
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <label>N° chave conhecimento</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsNrchadoc'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-4">
+            <label for="G043_CDDELIVE">Código Delivery</label>
+            <app-chips-input
+            [typeInput]="'text'"
+            [chips]='arIdsCDDELIVE'
+            [removable]='true'
+            [addOnBlur]='true'
+            [duplicate]='false'
+            [objStyle]="objStyle"
+            [inputSpace]='false'
+            >
+            </app-chips-input>
+          </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <label>Data do Conhecimento</label>
+            <app-datepicker-intervalo
+            [formDateIntervalo]="objFormFilter"
+            [formControlNameDateIntervalo]="'DTEMICTR'">
+            </app-datepicker-intervalo>
+        </div>
+      </div>
+                  <div *ngIf="advancedFilter">
+                  <!-- 1* Linha Oculta -->
+                  <div class="row">
+
+               <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                   <app-combobox-multi
+                       [url]="url+'filtro/transportadoras'"
+                       label="Transportadora Atual"
+                       [formMultiSelect] = "objFormFilter"
+                       [formControlNameMultiSelect] = "'G024AT_IDG024'">
+                   </app-combobox-multi>
+                 </div>
+                    
+                  <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                      <app-combobox-multi
+                          [url]="url+'filtro/transportadoras'"
+                          label="Transportadora emissora"
+                          [formMultiSelect] = "objFormFilter"
+                          [formControlNameMultiSelect] = "'G051_IDG024'">
+                      </app-combobox-multi>
+                    </div>
+
+                  <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                    <app-combobox-multi
+                        [url]="url+'filtro/clientes'"
+                        label="Remetente"
+                        [formMultiSelect] = "objFormFilter"
+                        [formControlNameMultiSelect] = "'G051_IDG005RE'">
+                    </app-combobox-multi>
+                  </div>
+
+                  <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                    <app-combobox-multi
+                        [url]="url+'filtro/clientes'"
+                        label="Destinatário"
+                        [formMultiSelect] = "objFormFilter"
+                        [formControlNameMultiSelect] = "'G051_IDG005DE'">
+                    </app-combobox-multi>
+                  </div>
+
+                  <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                    <app-combobox-multi
+                        [url]="url+'filtro/clientes'"
+                        label="Recebedor"
+                        [formMultiSelect] = "objFormFilter"
+                        [formControlNameMultiSelect] = "'G051_IDG005RC'">
+                    </app-combobox-multi>
+                  </div>
+
+                  <!-- 2* Linha Oculta -->
+                  <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                    <app-combobox-multi
+                        [url]="url+'filtro/clientes'"
+                        label="Expedidor"
+                        [formMultiSelect] = "objFormFilter"
+                        [formControlNameMultiSelect] = "'G051_IDG005EX'">
+                    </app-combobox-multi>
+                  </div>
+
+                  <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                    <app-combobox-multi
+                        [url]="url+'filtro/clientes'"
+                        label="Tomador"
+                        [formMultiSelect] = "objFormFilter"
+                        [formControlNameMultiSelect] = "'G051_IDG005CO'">
+                    </app-combobox-multi>
+                  </div>
+
+                  <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                      <app-single-sim-nao-todos
+                          strLabel="NF Liberadas?"
+                          [objForm]  = "objFormFilter"
+                          [formName] = "'SNLIB'">
+                      </app-single-sim-nao-todos>
+                    </div>
+
+                    <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                      <app-single-liberado-naoliberado
+                          [objForm]  = "objFormFilter"
+                          [formName] = "'SNLIBMONT'">
+                      </app-single-liberado-naoliberado>
+                    </div>
+
+                    <div class="form-group col-sm-3 col-md-3 col-lg-2">
+                      <app-single-ead-aad
+                        [objForm]  = "objFormFilter"
+                        [formName] = "'STINTCLI'">
+                      </app-single-ead-aad>
+                    </div>
+
+                    <div class="form-group col-sm-2 col-md-2 col-lg-2" [formGroup] = "objFormFilter" >
+                        <label class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" formControlName="dtEntrega"/>
+                          <span class="custom-control-indicator"></span>
+                          Contém data entrega
+                        </label>
+                    </div>
+                    <div class="form-group col-sm-3 col-md-3 col-lg-3" [formGroup] = "objFormFilter" >
+                      <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" formControlName="dtEntCon"/>
+                        <span class="custom-control-indicator"></span>
+                        Contém data de entrega contratual
+                      </label>
+                  </div>
+             </div>
+             </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'carga'"
+        [url]="urlCargaGrid"
+        [tela]="196"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 33, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'},
+                {'id' : 34, 'metodo' : 'atriMotorista', 'icone': 'fas fa-address-card'}]"
+        [nivel]="0"
+        [thisParent]="this"
+        [notOnLoad]="true">
+
+      <!-- <th data-id="IDG051" data-type-column="checkbox" data-object="true" >
+        <label class="custom-control custom-checkbox">
+        <input id="carga-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th> -->
+      <!-- <th data-id="IDG046" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th> -->
+      <th data-id="IDG051"     data-exec="viewConhecimento" data-object="true" data-align-right="true">Cód. Evo.</th>
+      <th data-id="STCTRC"     data-align-left="true" data-function="stCTRC">Status</th>
+      <th data-id="STINTCLI" data-align-left="true" data-function="tipoIntegracaoCliente" data-visible="false">Integração Cliente</th>
+      <th data-id="CDCTRC"     data-align-right="true">Cód. CTRC</th>
+      <th data-id="QTDCARGA"   data-align-right="true">Qtd. Carga</th>
+      <th data-id="CARGA4PL"   data-align-right="true" data-function="snVira" >Carga 4PL?</th>
+      
+      <th data-id="DTSLA"  data-align-left="true" data-function="dataDG">Dt. SLA</th>
+      <!-- <th data-id="IDG024" data-align-right="true">ID Transportadora</th> -->
+      <th data-id="NMTRANSP"   data-align-left="true">Transportadora emissora</th>
+      <th data-id="NMTRANSPAT" data-align-left="true" data-function="registroNullDG">Transportadora Atual</th>
+      <th data-id="NRLIB"      data-align-left="true" data-function="snVira">Nota liberada?</th>
+      <th data-id="SNMOUNT"    data-align-left="true" data-function="snLiberada">Montar Carga?</th>
+      <!-- SQL nao correta -->
+      <th data-id="SNLIBRAS"    data-align-left="true" data-function="snVira">Lib. Rastreio?</th>
+      <th data-id="SNLIBNPS"    data-align-left="true" data-function="snVira">Lib. Nps?</th>
+      <!-- fimm SQL nao correta -->
+      <th data-id="NRNOTA"     data-align-right="true">N. Notas</th>
+      <!-- <th data-id="NRCARG"   data-align-right="true">N. Cargas</th> -->
+      <th data-id="NMCLIENTRE" data-align-left="true">Remetente</th>
+      <th data-id="NMCLIENTDE" data-align-left="true">Destinatário</th>
+      <th data-id="NMCLIENTRC" data-align-left="true">Recebedor</th>
+      <th data-id="NMCLIENTEX" data-align-left="true">Expedidor</th>
+      <th data-id="NMCLIENTCO" data-align-left="true">Tomador</th>
+
+      <th data-id="NRCHADOC"   data-align-right="true" data-function="registroNullDG">Chave Documento</th>
+      <th data-id="DSMODENF"   data-align-right="true" data-function="registroNullDG">Modelo</th>
+      <th data-id="NRSERINF"   data-align-right="true" data-function="registroNullDG">Série</th>
+      <!-- VALORES -->
+      <th data-id="VRTOTFRE"   data-align-right="true" data-function="formataDinheiro">Val. Frete</th>
+      <th data-id="VRMERCAD"   data-align-right="true"data-function="formataDinheiro">Val. Mercadoria</th>
+      <th data-id="VRFRETEP"   data-align-right="true"data-function="formataDinheiro">Val. Frete Peso</th>
+
+<!--       <th data-id="VRFRETEV" data-function="formataDinheiro">Val. Frete Volume</th>
+      <th data-id="VRPEDAGI" data-function="formataDinheiro">Val. Pedágio</th>
+      <th data-id="VROUTROS" data-function="formataDinheiro">Val. Outros</th>
+      <th data-id="VRSECCAT" data-function="formataDinheiro">Val. SEC CAT</th>
+      <th data-id="VRTOTPRE" data-function="formataDinheiro">Val. Total Pretaão</th>
+      <th data-id="VROPERAC" data-function="formataDinheiro">Val. Operação</th>
+      <th data-id="VRBASECA" data-function="formataDinheiro">Val. Base Cálculo</th>
+      <th data-id="VRICMS"   data-function="formataDinheiro">Val. ICMS</th>
+      <th data-id="VRISSQN"  data-function="formataDinheiro">Val. ISSQN</th>
+      <th data-id="VRISSQST" data-function="formataDinheiro">Val. ISSQST</th>
+      <th data-id="VRDESCON" data-function="formataDinheiro">Val. Desconto</th> -->
+
+      <th data-id="DTEMICTR"  data-align-left="true" data-function="dataDG">Dt. Emissão</th>
+      <th data-id="SNPRIORI"  data-align-left="true" data-function="registroNullDG">Prioridade</th>
+
+      <!-- DATAS -->
+      <th data-id="DTLANCTO"  data-align-left="true" data-function="dataDG">Dt. Lançamento</th>
+      <th data-id="DTCOLETA"  data-align-left="true" data-function="dataDG">Dt. Coleta</th>
+      <th data-id="DTENTPLA"  data-align-left="true" data-function="dataDG">Dt. Planejada</th>
+      <th data-id="DTCALANT"  data-align-left="true" data-function="dataDG">Dt. Calculada Ant.</th>
+      <th data-id="DTCALDEP"  data-align-left="true" data-function="dataDG">Dt. Calculada Dep.</th>
+      <th data-id="DTAGENDA"  data-align-left="true" data-function="dataDG">Dt. Agendada</th>
+      <th data-id="DTCOMBIN"  data-align-left="true" data-function="dataDG">Dt. Combinada</th>
+      <th data-id="DTROTERI"  data-align-left="true" data-function="dataDG">Dt. Roterização</th>
+      <th data-id="DTENTREG"  data-align-left="true" data-function="dataTimeDG">Dt. Entrega</th>
+      <th data-id="DTENTMOB"  data-align-left="true" data-function="dataTimeDG">Dt. Entrega Mobile</th>
+      <th data-id="DTCANHOT"  data-align-left="true" data-function="dataDG">Dt. Entrega Canhoto</th>
+
+<!--       <th data-id="PCALIICM">PCALIICM</th>
+      <th data-id="BSISSQN">BSISSQN</th>
+      <th data-id="PCALIISS">PCALIISS</th>
+      <th data-id="DSINFCPL">DSINFCPL</th>
+      <th data-id="TPTRANSP">TPTRANSP</th>
+      <th data-id="IDG059">IDG059</th>
+      <th data-id="STLOGOS">STLOGOS</th>
+      <th data-id="SNLOTACA">SNLOTACA</th>
+      <th data-id="CDSATISF">CDSATISF</th> -->
+
+
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+
+<ngb-accordion #aacd="ngbAccordion" activeIds="1" [hidden]="!(exibir == 3)">
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormMotoritas">
+        <!-- <input type="text" id="IDG046" formControlName="IDG046" hidden> -->
+        <div class="row">
+
+
+          <div class="form-group col-sm-8 col-md-8 col-lg-8">
+            <app-single-transportadora
+              [objForm] = "objFormMotoritas"
+              [formName] = "'IDG024'">
+            </app-single-transportadora>
+          </div>
+          <div class="form-group col-sm-2 col-md-2 col-lg-2">
+            <label>Data Previsão de Saída</label>
+            <app-datapicker-popup
+              navegacao='select'
+              [mesesDisplay]='1'
+              [desabilitar]='false'
+              [formDatePop]="objFormMotoritas"
+              [formControlNameDatePop]="'DTPREV'">
+            </app-datapicker-popup>
+          </div>
+          <div class="form-group col-sm-2 col-md-2 col-lg-2">
+            <label style="color: #fff;">_</label>
+            <app-timepicker
+                [formTime]  = "objFormMotoritas"
+                [formControlNameTime] = "'HRPREV'">
+            </app-timepicker>
+          </div>
+
+          <div class="form-group col-sm-6 col-md-6 col-lg-6">
+            <div class="row">
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-veiculo
+                  placeholder="Veículo 1"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'VEICULO1'">
+                </app-single-veiculo>
+              </div>
+
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-veiculo
+                  placeholder="Veículo 2"
+                  [viewLabel] = "false"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'VEICULO2'">
+                </app-single-veiculo>
+              </div>
+
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-veiculo
+                  placeholder="Veículo 3"
+                  [viewLabel] = "false"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'VEICULO3'">
+                </app-single-veiculo>
+              </div>
+
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-veiculo
+                  placeholder="Veículo 4"
+                  [viewLabel] = "false"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'VEICULO4'">
+                </app-single-veiculo>
+              </div>
+            </div>
+
+          </div>
+          <div class="form-group col-sm-6 col-md-6 col-lg-6">
+            <div class="row">
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-motoristas-full
+                  placeholder="Motorista 1"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'MOTORISTA1'">
+                </app-single-motoristas-full>
+              </div>
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-motoristas-full
+                  placeholder="Motorista 2"
+                  [viewLabel] = "false"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'MOTORISTA2'">
+                </app-single-motoristas-full>
+              </div>
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-motoristas-full
+                  placeholder="Motorista 3"
+                  [viewLabel] = "false"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'MOTORISTA3'">
+                </app-single-motoristas-full>
+              </div>
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <app-single-motoristas-full
+                  placeholder="Motorista 4"
+                  [viewLabel] = "false"
+                  [objForm] = "objFormMotoritas"
+                  [formName] = "'MOTORISTA4'">
+                </app-single-motoristas-full>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+            <!-- Salvar -->
+            <app-botoes
+            *ngIf="checkViewCarga != 1"
+            class="success"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveMotorista();">
+            </app-botoes>
+
+            <!-- Cancelar -->
+            <app-botoes
+            class="danger"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="goHome(event);">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+<div style="margin-top: 15px;"></div>
+<ngb-accordion #acf="ngbAccordion" activeIds="1, 0" *ngIf="exibir == 4">
+  <ngb-panel id="0" title="Documentos">
+    <ng-template ngbPanelContent>
+      <app-datagrid
+        [id]="'gridCargas2'"
+        [url]="apiUrl + 'tp/conhecimento/listarNfe'"
+        [tela]="196"
+        [telaGlobal]="[]"
+        [telaAcoes]="[]"
+        [nivel]="0"
+        [thisParent]="this"
+        [notPagination]="true"
+        [additionalFields]="{'arIds': arIdsCarga}">
+
+        <th data-id="IDG043" data-type-column="checkbox">
+            <label class="custom-control custom-checkbox">
+            <input id="gridCargas2-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+            <span class="custom-control-indicator"></span>
+            </label>
+        </th>
+
+        <th data-id="IDG043" data-align-right="true">ID</th>
+        <th data-id="NRNOTA" data-align-right="true"> N. Nota</th>
+        <th data-id="PSBRUTO"  data-function="formataPeso" data-align-right="true">Peso</th>
+        <th data-id="DTLANCTO" data-function="dataDG" data-align-left="true">Dt. Lançamento</th>
+        <th data-id="DTDELIVE" data-function="dataDG" data-align-left="true">Dt. Delivery</th>
+        <th data-id="DSOCORRE" data-function="registroNullDG" data-align-left="true"> Motivo</th>
+        <th data-id="DTENTREG" data-function="dataDG" data-align-left="true"> Data Entrega</th>
+
+
+      </app-datagrid>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel id="1" title="Alterar data de Entrega">
+    <ng-template ngbPanelContent>
+      <form class="form-horizontal" [formGroup]="objFormDesmCarga"  >
+        <div class="row">
+          <div class="col-sm-9 col-md-9 col-lg-9">
+            <app-single-motivo-alteracao-data
+              [objForm] = "objFormDesmCarga"
+              [formName] = "'IDI015'">
+            </app-single-motivo-alteracao-data>
+          </div>
+          <div class="col-sm-3 col-md-3 col-lg-3">
+            <label >Data Entrega</label>
+            <app-datepicker-simple
+              [formDateSimple]="objFormDesmCarga"
+              [formControlNameDateSimple]="'DTENTREG'">
+            </app-datepicker-simple>
+          </div>
+
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-7"></div>
+          <div class="col-sm-5 col-md-5 col-lg-5 text-right">
+
+            <!-- CANCELAR -->
+            <app-botoes
+            class="danger"
+            icon="far fa-times-circle"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="breadcrumbs.goBack()">
+            </app-botoes>
+
+            <!-- SALVAR -->
+            <app-botoes
+            class="success"
+            icon="fas fa-check"
+            text="Salvar"
+            (click)="saveAlterarData();">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalAlteraPrev let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Alterar Previsão de Entrega</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" >
+     <div class="row">
+       <div class="col-sm-12 col-md-12 col-lg-12">
+         <app-single-motivo-alteracao-previsao
+           [objForm] = "objFormDesmCarga"
+           [formName] = "'IDI015'">
+         </app-single-motivo-alteracao-previsao>
+       </div>
+     </div>
+     <div class="row">
+       <div class="col-sm-4 col-md-4 col-lg-4">
+         <label >Data Entrega</label>
+         <app-datepicker-simple
+           [formDateSimple]="objFormDesmCarga"
+           [formControlNameDateSimple]="'DTENTPLA'">
+         </app-datepicker-simple>
+       </div>
+     </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+    <button type="button" class="btn btn-success" (click)="confirmaAlteraData()">Salvar</button>
+
+  </div>
+</ng-template>
+
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalConhecimento let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Conhecimento {{conhecimentoAtual}}</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body" >
+    <info-conhecimento
+    [IDG051]="idConhecimentoView"></info-conhecimento>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>
+

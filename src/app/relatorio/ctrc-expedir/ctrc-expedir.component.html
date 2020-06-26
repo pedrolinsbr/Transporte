@@ -1,0 +1,497 @@
+<app-breadcrumbs
+    #breadcrumbs
+    home="Filtros"
+    [arBreadcrumbs]="arBreadcrumbsLocal"
+    (goHome)="goHome($event)"
+    (clearNext)="clearNext($event)"
+    [context]="this"
+    size="sm"
+>
+</app-breadcrumbs>
+<div class="" style="padding-top: 15px;">
+
+<div class="row "  *ngIf="controlView == 2">
+</div>
+
+  <app-cards-filter
+    [hidden]="!controlViewTable"
+    titleDrop="Filtros"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [dropdown]="true"
+    [isCollapsed]="collapsedFilter"
+    [context]="this">
+    <div class="row">
+
+      <div class="col-sm-3"> <!-- transportadora -->
+        <app-combobox-multi
+            [url]="url+'filtro/transportadoras-bravo'"
+            [formMultiSelect] = "objFormFilter"
+            [disabledViewMultiSelect] = 'false'
+            [formControlNameMultiSelect] = "'IDG024'"
+            label = "CD Origem" 
+            (ativaSelect)="alteraTranspCarga($event)"
+            [dataFix]="true"
+        ></app-combobox-multi>
+      </div>
+
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-single-transportadora-bravo
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDG024_CARGA'" 
+            displayName = "Transportadora Carga"
+            [items]="objFormFilter.controls['IDG024'].value"
+            [dataFix]="true">
+        </app-single-transportadora-bravo>
+      </div>
+
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-cliente
+            [objForm]  = "objFormFilter"
+            [formName] = "'G051_IDG005C0AUX'"
+            displayName = "Tomador">
+        </app-multi-cliente>
+      </div>
+
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-cliente
+            [objForm]  = "objFormFilter"
+            [formName] = "'G051_IDG005REAUX'"
+            displayName = "Remetente"
+            [remetrans] = "remetrans">
+        </app-multi-cliente>
+      </div>
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+
+        <app-multi-cliente
+            [objForm]  = "objFormFilter"
+            [formName] = "'G051_IDG005DEAUX'"
+            displayName = "Destinatário">
+        </app-multi-cliente>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-tipo
+            [objForm]  = "objFormFilter"
+            [formName] = "'TPTRANSP'">
+        </app-multi-tipo>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3" style="pointer-events: none;">
+        <app-single-cluster
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDT005'"
+            displayName ="Padrão de roteirização"
+            >
+        </app-single-cluster>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-single-rota
+            [objForm]  = "objFormFilter"
+            [dataFix]  = "false"
+            [formName] = "'IDT001'"
+            [depName]  ="'IDT005,IDG024_CARGA'">
+        </app-single-rota>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-estado
+            [objForm]  = "objFormFilter"
+            [dataFix]  = "true"
+            [formName] = "'IDG002'"
+            displayName ="Estado destino" >
+        </app-multi-estado>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-cidade
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDG003'"
+            displayName = "Cidade destino">
+        </app-multi-cidade>
+      </div>
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <label for="G043_IDG005RE">CTRC</label>
+        <app-chips-input
+        [typeInput]="'numberText'"
+        [chips]='arIdsIDG051'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='true'
+        >
+        </app-chips-input>
+      </div>
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <label for="G043_NRNOTA">Nº nota</label>
+        <app-chips-input
+        [typeInput]="'numberText'"
+        [chips]='arIdsNRNOTA'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='false'
+        >
+        </app-chips-input>
+      </div>
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <label for="">Data Vencimento</label>
+        <app-datepicker-intervalo
+          [formDateIntervalo]="objFormFilter"
+          [formControlNameDateIntervalo]="'DTENTCON'">
+        </app-datepicker-intervalo>
+      </div>
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-2">
+        <app-single-sim-nao-todos
+            strLabel="NF Liberadas?"
+            [objForm]  = "objFormFilter"
+            [formName] = "'NOTLIBER'">
+        </app-single-sim-nao-todos>
+      </div>
+
+    </div>
+    <div class="row" style="padding-bottom: 20px;">
+      <div class="col-sm-12" style="background: #ebebeb; height: 45px;">
+        <div class="row text-center" >
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'rota'}" (click)="changeOptionView('rota')">
+            <h5 class="mt-0 mb-0 text-uppercase">
+              <i class="fa fa-map" style="font-size: 15px;"> </i>
+              <small class="fw-300" st>Visão Por Rota</small>
+            </h5>
+          </div>
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'cidade'}" (click)="changeOptionView('cidade')">
+            <h5 class="mt-0 mb-0 text-uppercase">
+              <i class="fas fa-map-marker-alt" style="font-size: 15px;"> </i>
+              <small class="fw-300">Visão por Cidade</small>
+            </h5>
+          </div>
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'recebedor'}" (click)="changeOptionView('recebedor')">
+            <h5 class="mt-0 mb-0 text-uppercase" >
+              <i class="fas fa-user" style="font-size: 15px;"> </i>
+              <small class="fw-300">Visão por Recebedor</small>
+            </h5>
+          </div>
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'CTRC'}" (click)="changeOptionView('CTRC')">
+            <h5 class="mt-0 mb-0 text-uppercase" >
+              <i class="fas fa-file-alt" style="font-size: 15px;"> </i>
+              <small class="fw-300">Visão por Documentos</small>
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </app-cards-filter>
+</div>
+
+
+
+
+
+
+<ngb-accordion #acc="ngbAccordion" activeIds="1" *ngIf="controlView < 6 && controlView > 0">
+<!-- <ngb-accordion #acc="ngbAccordion" activeIds="1" *ngIf="true"> -->
+  <ngb-panel  title="{{titleCard}}" id="1" >
+    <ng-template ngbPanelContent>
+
+      <app-datagrid
+        *ngIf="controlView == 1"
+        #visaoUm
+        [id]="'detalhesRota'"
+        [url]="url + 'tp/ctrcExpedir/listar'"
+        [tela]="999"
+        [telaAcoes]="[]"
+        [nivel]="0"
+        [thisParent]="this"
+        [additionalFields]="{'visao' :1}"
+        [notPagination]="false"
+        [stateSave]="false"
+        [drawCallback]="'totalizadorGrid'"
+        [excelServer]="true"
+        [telaGlobal]="[
+                {'id' : 32, 'metodo' : 'desmontarCarga', 'icone': 'fa fa-box'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]">
+        <th data-id="IDT001" data-type-column="checkbox"> 
+          <label class="custom-control custom-checkbox"></label>
+          <label class="custom-control custom-checkbox" style="display: none;">
+          <input id="detalhesRota-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>         
+        
+        <th data-id="PSBRUTO"data-align-right="true" data-function="formataPeso">Peso</th>
+        <th data-id="PSLOTACA"data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+        <th data-id="VRMERCAD" data-align-right="true" data-function="formataDinheiro">Vr. mercadoria</th>
+        <th data-id="IDT001" data-align-right="true" data-function="numberNullDG">Rota</th>
+        <th data-id="DSPRACA" data-align-left="true" data-function="registroNullDG">Praça</th>
+        <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" >Qtd. CTRC</th>
+        <th data-id="DTENTCON" data-align-left="true" data-function="dataDG">Dt. Venc.</th>
+        <th data-id="QTDIAVEN" data-align-right="true"  data-function="registroNullNumberDG">Dias p/ Vencto.</th>
+        <th data-id="DTVENROT" data-align-left="true" data-function="dataDG" >Dt. Ven. Rot.</th>
+        <th data-id="DSCTE" data-visible="true" data-function="numberNullDG">CTRC's</th>
+
+      </app-datagrid>
+
+      <app-datagrid
+      *ngIf="controlView == 2"
+      #visaoDois
+      [id]="'detalhesCidade'"
+      [url]="url + 'tp/ctrcExpedir/listar'"
+      [tela]="999"
+      [telaAcoes]="[]"
+      [nivel]="0"
+      [thisParent]="this"
+      [additionalFields]="{'visao' :2}"
+      [notPagination]="false"
+      [stateSave]="false"
+      [drawCallback]="'totalizadorGrid'"
+      [excelServer]="true"
+      [telaGlobal]="[
+                {'id' : 32, 'metodo' : 'desmontarCarga', 'icone': 'fa fa-box'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]">
+      <th data-id="IDT001" data-type-column="checkbox"> 
+        <label class="custom-control custom-checkbox"></label>
+        <label class="custom-control custom-checkbox" style="display: none;">
+        <input id="detalhesCidade-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th> 
+
+      <th data-id="PSBRUTO" data-align-right="true" data-function="formataPeso">Peso</th>
+      <th data-id="PSLOTACA"data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+      <th data-id="VRMERCAD" data-align-right="true" data-function="formataDinheiro">Vr. mercadoria</th>
+      <th data-id="NMCIDADE" data-align-right="true"  data-function="registroNullDG">Cidade</th>
+      <th data-id="CDESTADO" data-align-right="true"  data-function="registroNullDG">UF</th>
+      <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" >Qtd. CTRC</th>
+      <th data-id="DTENTCON" data-align-left="true" data-function="dataDG" >Dt. Venc.</th>
+      <th data-id="QTDIAVEN" data-align-right="true" data-function="registroNullNumberDG" >Dias p/ Vencto.</th>
+      <th data-id="DTVENROT" data-align-left="true" data-function="dataDG" >Dt. Ven. Rot.</th>
+      <th data-id="IDT001" data-align-right="true" data-function="numberNullDG">Rota</th>
+      <th data-id="DSPRACA" data-align-left="true"  data-function="registroNullDG">Praça</th>
+      <th data-id="DSCTE" data-visible="false" data-function="numberNullDG">CTRC's</th>
+      </app-datagrid>
+
+
+      <app-datagrid
+      *ngIf="controlView == 3"
+      #visaoTres
+      [id]="'detalhesRecebedor'"
+      [url]="url + 'tp/ctrcExpedir/listar'"
+      [tela]="999"
+      [telaAcoes]="[]"
+      [nivel]="0"
+      [thisParent]="this"
+      [additionalFields]="{'visao' :3}"
+      [notPagination]="false"
+      [stateSave]="false"
+      [drawCallback]="'totalizadorGrid'"
+      [excelServer]="true"
+      [telaGlobal]="[
+                {'id' : 32, 'metodo' : 'desmontarCarga', 'icone': 'fa fa-box'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]">
+      <th data-id="IDT001" data-type-column="checkbox"> 
+        <label class="custom-control custom-checkbox"></label>
+        <label class="custom-control custom-checkbox" style="display: none;">
+        <input id="detalhesRecebedor-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th>
+
+      <th data-id="PSBRUTO"  data-function="formataPeso" data-align-right="true">Peso</th>
+      <th data-id="PSLOTACA" data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+      <th data-id="VRMERCAD" data-function="formataDinheiro" data-align-right="true">Vr. mercadoria</th>
+      <th data-id="DSPRACA"  data-function="registroNullDG" data-align-left="true">Praça</th>
+      <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" >Qtd. CTRC</th>
+      <th data-id="NMCIDADE" data-function="registroNullDG" data-align-left="true">Cidade</th>
+      <th data-id="CDESTADO" data-function="registroNullDG" data-align-left="true">UF</th>
+      <th data-id="DTENTCON" data-align-left="true" data-function="dataDG" >Dt. Venc.</th>
+      <th data-id="QTDIAVEN" data-align-right="true" data-function="registroNullNumberDG" >Dias p/ Vencto.</th>
+      <th data-id="NMCLIEDE" data-align-left="true" data-function="numberNullDG">Destinatário</th>
+      <th data-id="IDT001"   data-align-right="true" data-function="numberNullDG">Rota</th>
+      <th data-id="DSCTE" data-visible="false" data-function="numberNullDG">CTRC's</th>
+
+      </app-datagrid>
+
+
+      <app-datagrid
+      *ngIf="controlView == 4"
+      #visaoQuatro
+      [id]="'detalhesCtrc'"
+      [url]="url + 'tp/ctrcExpedir/listar'"
+      [tela]="999"
+      [telaAcoes]="[]"
+      [nivel]="0"
+      [thisParent]="this"
+      [additionalFields]="{'visao' :4}"
+      [notPagination]="false"
+      [stateSave]="false"
+      [drawCallback]="'totalizadorGrid'"
+      [excelServer]="true"
+       [telaGlobal]="[
+                {'id' : 32, 'metodo' : 'desmontarCarga', 'icone': 'fa fa-box'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]">
+      <th data-id="IDT001" data-type-column="checkbox"> 
+        <label class="custom-control custom-checkbox"></label>
+        <label class="custom-control custom-checkbox" style="display: none;">
+        <input id="detalhesCtrc-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th>
+
+      <th data-id="PSBRUTO"  data-function="formataPeso" data-align-right="true">Peso</th>
+      <th data-id="VRMERCAD" data-function="formataDinheiro" data-align-right="true">Vr. mercadoria</th>
+      <th data-id="NMCIDADE" data-function="registroNullDG" data-align-left="true">Cidade</th>
+      <th data-id="CDESTADO" data-function="registroNullDG" data-align-left="true">UF</th>
+      <th data-id="DTENTCON" data-align-left="true" data-function="dataDG">Dt. Venc.</th>
+      <th data-id="NMCLIECO" data-align-left="true" data-function="numberNullDG">Tomador</th>
+      <th data-id="IDG005CO" data-align-right="true" data-function="numberNullDG">Cód. Tomador</th>
+      <th data-id="NMCLIEDE" data-align-left="true" data-function="numberNullDG">Destinatário</th>
+      <th data-id="CDCTRC"   data-function="numberNullDG"      data-align-right="true">CTRC's</th>
+      <th data-id="DSCTE" data-visible="false" data-function="numberNullDG">CTRC's</th>
+      <th data-id="DSPRACA"  data-function="registroNullDG" data-align-left="true">Praça</th>
+      <th data-id="IDT001"   data-align-right="true" data-function="numberNullDG">Rota</th>
+      <th data-id="NRNOTA"   data-function="numberNullDG"      data-align-right="true">Nota(s)</th>
+      <th data-id="EMITRANS" data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 0">Transportadora Emissora</th>
+      <th data-id="PSLOTACA" data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+      <th data-id="QTDIAVEN" data-align-right="true"  data-function="registroNullNumberDG">Dias p/ Vencto.</th>
+      <th data-id="DTVENROT" data-align-left="true" data-function="dataDG" >Dt. Ven. Rot.</th>
+
+      </app-datagrid>
+
+<br><br>
+  <div class="row  text-center">
+    <div class="col-sm-12 text-right" style="margin-top: 10px;">
+      <app-botoes
+      *ngIf="controlView < 4"
+      [ngClass]="{'classeSocial': true}"
+      class="info"
+      text="Detalhar"
+      icon="fas fa-search"
+      (click)="controlViewTable = false; this[nameFuncDetail](); "
+      outline>
+    </app-botoes>
+
+      <app-botoes
+      *ngIf="controlView >= 2  && !controlViewTable"
+      [ngClass]="{'classeSocial': true}"
+      class="danger"
+      text="&nbsp;&nbsp;Voltar"
+      icon="fas fa-arrow-left"
+      (click)="breadcrumbs.goBack();"
+      outline>
+      </app-botoes>
+    </div>
+  </div>
+
+    <div class="row boxButtons text-center">
+        <div class="col-sm-12" style="color: #474747;">
+          <table class="table table-striped" style="margin-bottom: 0px;">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col" >CTRC</th>
+
+                <th scope="col">PS. LOTAÇÃO</th>
+
+                <th scope="col">PESO</th>
+                <th scope="col">VALOR MERCADORIAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Geral</th>
+
+                <td>{{totalizador.qtctrc}}</td>
+                <td >{{totalizador.pslotaca ? (totalizador.pslotaca | number:'1.2-2'):('0') }} Kg</td>
+                <td>{{totalizador.psbruto ? (totalizador.psbruto | number:'1.2-2'):('0') }} Kg</td>
+                <td>{{totalizador.vrmercad | currency:'BRL'}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Marcados</th>
+                <td>{{totalSeleci.qtctrc}}</td>
+
+                <td>{{totalSeleci.pslotaca ? (totalSeleci.pslotaca | number:'1.2-2'):('0') }} Kg</td>
+
+                <td>{{totalSeleci.psbruto ? (totalSeleci.psbruto | number:'1.2-2'):('0') }} Kg</td>
+                <td>{{totalSeleci.vrmercad | currency:'BRL'}}</td>
+              </tr>
+            </tbody>
+            </table>
+
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+
+
+<div class="configuration hidden-lg-down" [ngClass]="{'active': showSettings}" *ngIf="controlView < 6 && controlView > 0">
+  <div class="configuration-cog" (click)="showSettings = !showSettings">
+    <!-- <i class="icon icon-basic-mixer2"></i> -->
+    <i class="fas fa-info-circle"></i>
+  </div>
+  <div class="card">
+<!--     <div class="card-header">
+      Informações
+    </div> -->
+    <div class="card-body" style="padding: 0 !important;">
+      <div class="row boxButtons text-center">
+          <div class="col-sm-12" style="color: #474747;">
+            <table class="table table-striped" style="margin-bottom: 0px; line-height: 7px; font-size: 13px !important;">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" *ngIf="isCTRC">CTRC</th>
+                  <th scope="col">PESO</th>
+                  <th scope="col">VALOR MERCADORIAS</th>
+                </tr>
+              </thead>              
+              <tbody>
+                <tr>
+                  <th scope="row">MARCADOS</th>
+                  <td *ngIf="isCTRC">{{totalSeleci.qtctrc}}</td>
+                  <td *ngIf="isDelivery">{{totalSeleci.qtnfe}}</td>
+                  <td>{{totalSeleci.psbruto ? (totalSeleci.psbruto | number:'1.2-2'):('0') }} Kg</td>
+                  <td>{{totalSeleci.vrmercad | currency:'BRL'}}</td>
+                </tr>
+              </tbody>
+              </table>
+              <div class="col-sm-12 text-right" style="margin-top: 10px;">
+                  <app-botoes
+                  *ngIf="controlView < 4"
+                  [ngClass]="{'classeSocial': true}"
+                  class="info"
+                  text="Detalhar"
+                  icon="fas fa-search"
+                  (click)="controlViewTable = false; this[nameFuncDetail](); "
+                  outline>
+                </app-botoes>
+                  <app-botoes
+                  [ngClass]="{'classeSocial': true}"
+                  class="success"
+                  text="&nbsp;&nbsp;Carga"
+                  icon="fas fa-archive"
+                  (click)="openCarga();"
+                  outline>
+                  </app-botoes>
+              </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>

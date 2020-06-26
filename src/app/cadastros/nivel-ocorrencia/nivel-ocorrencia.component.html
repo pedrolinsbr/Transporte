@@ -1,0 +1,198 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteNivelOcorrencia()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="{{ 'global.form.idg066.ot' | translate }}"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <!-- <app-combobox
+              [url]="apiUrl + 'filtro/usuarios'"
+              [selectedPeople] = "objFormFilter.controls['IDS001OC'].value"
+              [formSelect] = "objFormFilter"
+              [formControlNameSelect] = "'IDS001OC'"
+              [disabledViewSelect]="enableCombo"
+              strPlaceholder = "Nome Usuário"
+              label="Usuário">
+          </app-combobox> -->
+          <app-single-grupo-ocorrencia
+            displayName="Grupo Ocorrência"
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG070'">
+          </app-single-grupo-ocorrencia>
+
+        </div>
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-transportadora
+            displayName="Transportadora"
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG024'">
+          </app-single-transportadora>
+        </div>
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-ocorrencia-carga
+            [objForm]="objFormFilter"
+            [formName]="'IDG067'"
+          ></app-single-ocorrencia-carga>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'nivelOcorrencia'"
+        [url]="urlNivelOcorrenciaGrid"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteNivelOcorrencia',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addNivelOcorrencia', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewNivelOcorrencia',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateNivelOcorrencia',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this"
+        [notOnLoad]="true">
+
+        <th data-id="IDG066" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="nivelOccorrencia-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+
+
+        <th data-id="IDG066" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG066"  >{{ 'global.form.idg066.ot' | translate }}</th>
+        <th data-id="G067_DSOCORRE" data-align-left="true">Descrição Ocorrência</th>
+        <th data-id="G024_NMTRANSP" data-align-left="true">Transportadora</th>
+        <th data-id="G070_DSGRUPO" data-align-left="true" >Grupo</th>
+        <th data-id="STCADAST"  data-function="stCadastDG"data-align-left="true" >{{ 'global.form.stcadast.pd' | translate }}</th>
+        <th data-id="DTCADAST"  data-function="dataDG" data-align-left="true">{{ 'global.form.dtcadast.pd' | translate }}</th>
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+<ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormNivelOcorrencia" >
+        <input type="text" id="IDG066" formControlName="IDG066" hidden>
+        <div class="row">
+
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <!-- <app-single-historico-ocorrencia
+              [objForm]="objFormNivelOcorrencia"
+              [formName]="'IDG067'"
+            ></app-single-historico-ocorrencia> -->
+
+            <app-single-ocorrencia-carga
+              [objForm]="objFormNivelOcorrencia"
+              [formName]="'IDG067'"
+            ></app-single-ocorrencia-carga>
+
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-transportadora
+              displayName="Transportadora"
+              [objForm] = "objFormNivelOcorrencia"
+              [formName] = "'IDG024'">
+            </app-single-transportadora>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <!-- <app-single-usuario
+              displayName="Usuário"
+              [objForm] = "objFormNivelOcorrencia"
+              [formName] = "'IDS001OC'">
+            </app-single-usuario> -->
+
+            <!-- <app-combobox
+                [url]="apiUrl + 'filtro/usuarios'"
+                [selectedPeople] = "objFormNivelOcorrencia.controls['IDS001OC'].value"
+                [formSelect] = "objFormNivelOcorrencia"
+                [formControlNameSelect] = "'IDS001OC'"
+                [disabledViewSelect]="enableCombo"
+                strPlaceholder = "Nome Usuário"
+                label="Usuário">
+            </app-combobox> -->
+
+            <app-single-grupo-ocorrencia
+              displayName="Grupo Ocorrência"
+              [objForm] = "objFormNivelOcorrencia"
+              [formName] = "'IDG070'">
+            </app-single-grupo-ocorrencia>
+
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              model="{{objFormNivelOcorrencia.controls['STCADAST'].value}}"
+              [formOF]="objFormNivelOcorrencia"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+            <!-- Salvar -->
+            <app-botoes
+            *ngIf="checkViewNivelOcorrencia != 1"
+            class="success"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveNivelOcorrencia();">
+            </app-botoes>
+
+            <!-- Cancelar -->
+            <app-botoes
+            class="danger"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="goHome(event);">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

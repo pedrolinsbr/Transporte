@@ -1,0 +1,205 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteLancamentoCampanha()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+<br>
+<app-breadcrumbs
+  #breadcrumbs
+  home="Lançamento campanha"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-campanha
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG090'">
+          </app-single-campanha>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'lancamentoCampanha'"
+        [url]="urlLancamentoCampanhaGrid"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteLancamentoCampanha',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addLancamentoCampanha', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewLancamentoCampanha',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateLancamentoCampanha',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDG093" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="lancamentoCampanha-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+
+        <th data-id="IDG093" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG093" data-align-right="true">Código lançamento</th>
+        <th data-id="DSCAMPAN" data-align-left="true">Campanha</th>
+        <th data-id="TPAPONTA" data-align-left="true">Tipo apontamento</th>
+        <th data-id="NMMOTORI" data-align-left="true" >Motorista</th>
+        <th data-id="NMTRANSP" data-align-left="true" >Transportadora</th>
+        <th data-id="VRPONTUA" data-align-left="true" data-function="registroNullDG">Valor pontuação</th>
+        <th data-id="DSOBSERV" data-align-left="true" >Observação</th>
+        <th data-id="DTAPONTA" data-align-left="true"  data-function="dataDG" data-align-left="true">Dt. apontamento</th>
+        <th data-id="DTCADAST" data-function="dataDG" data-align-left="true">{{ 'global.form.dtcadast.pd' | translate }}</th>   
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormConfiguracao" (ngSubmit)="save()" >
+            <input type="text" id="IDG093" formControlName="IDG093" hidden>
+            <div class="row">
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+
+                <app-single-campanha 
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG090'"
+                  (ativaSelect) = "setTransportadorasParticipantes($event)"
+                  >
+                </app-single-campanha>
+
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-single-tipo-apontamento 
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG092'"
+                  (ativaSelect) = "setTipoVeiculo($event)">
+                </app-single-tipo-apontamento>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-single-motorista 
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG031'">
+                </app-single-motorista>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-multi-transportadora 
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG091'"
+                  [enableCombo] = "disabledViewMultiSelect"
+                  [displayName] = "'Transportadoras participantes'">
+                </app-multi-transportadora>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-single-transportadora-bravo 
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG024'"
+                  [depName]="'IDG091'"
+                  [snMulti]="'S'">
+                </app-single-transportadora-bravo>
+              </div>
+
+              <!-- 
+              [disabled] = "objFormVeiculo.controls['IDG024'].value == null || objFormVeiculo.controls['IDG030'].value == null || objFormVeiculo.controls['IDG030'].value.nrcarret == 0 || objFormVeiculo.controls['IDG030'].value.nrcarret == null || objFormVeiculo.controls['TPCOMPOS'].value == null || objFormVeiculo.controls['TPCOMPOS'].value.id == 'R'" 
+              -->
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="VRPONTUA"
+                  name="VRPONTUA"
+                  [isRequired] ='true'
+                  placeholder="Valor"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'VRPONTUA'"
+                  [label]="'Valor'"
+                  [disabled]="objFormConfiguracao.controls['IDG092'].value != null && objFormConfiguracao.controls['IDG092'].value.vrpontua != null"
+                >
+                </app-input>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="DSOBSERV"
+                  name="DSOBSERV"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'DSOBSERV'"
+                  [label]="'Descrição'"
+                >
+                </app-input>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <label for="DTAPONTA">Data pontuação</label>
+                <app-datepicker-simple
+                [formDateSimple]="objFormConfiguracao"
+                [formControlNameDateSimple]="'DTAPONTA'"
+                [dateRequired]="true">
+              </app-datepicker-simple>
+              </div>
+
+
+            </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-8"></div>
+              <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                <!-- Salvar -->
+                <app-botoes 
+                *ngIf="checkViewLancamentoCampanha != 1"
+                class="success" 
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="saveLancamentoCampanha();">
+                </app-botoes>
+                
+                <!-- Cancelar -->
+                <app-botoes 
+                class="danger" 
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="goHome(event);">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>

@@ -1,0 +1,150 @@
+<ng-template #modalDelete>
+    <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+        <button type="button" class="btn btn-danger" (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+        <button type="button" class="btn btn-success" (click)="confirmaDeleteDocumento()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+    </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs #breadcrumbs home="Documentos" [arBreadcrumbs]="arBreadcrumbsLocal" (goHome)="goHome($event)" (clearNext)="clearNext($event)" [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+    <app-cards-filter titleDrop="{{ 'global.form.filtros.pd' | translate }}" nameSubmitFunction="filtrar" nameClearFunction="limpar" [isCollapsed]="true" [dropdown]="true" [context]="this">
+
+        <form class="form-horizontal" [formGroup]="objFormFilter">
+            <div class="row">
+
+                <div class="form-group col-sm-2 col-md-2 col-lg-2" [formGroup]="objFormFilter">
+                    <label>Tipo Autor</label>
+                    <ng-select [items]="tipoAutor" [clearable]="false" 
+                    bindLabel="name" bindValue="id" placeholder="Selecione" 
+                    [(ngModel)]="selectedTpAutor" formControlName="CDAUTOR">
+                    </ng-select>
+                </div>
+                <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                    <app-single-autor-doc-viagem [objForm]="objFormFilter" [formName]="'IDAUTOR'" placeholder="Digite para pesquisar" [depName]="'CDAUTOR'">
+                    </app-single-autor-doc-viagem>
+                </div>
+                <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                    <label>Baixado</label>
+                    <ng-select [items]="optSnBaixado" bindLabel="name" bindValue="id" placeholder="Selecione" [(ngModel)]="selectedSnBaixado" formControlName="SNDOWN">
+                    </ng-select>
+                </div>
+
+            </div>
+            <!-- <div class="row" *ngIf="snAdmin">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-success btBottom" (click)="getDocumentoByAutor()">
+                  Verificar documento autor
+          </button>
+                </div>
+            </div> -->
+            <br />
+            <div class="row">
+                <div class="col-sm-8"></div>
+                <div class="col-sm-4 text-right"></div>
+            </div>
+        </form>
+
+    </app-cards-filter>
+
+    <app-cards titleDrop="{{ 'global.form.registros.pd' | translate }}" [isCollapsed]="collappsed" [dropdown]="true">
+        <app-datagrid [id]="'idDataGridFiles'" [url]="urlGrid" [tela]="354" [telaGlobal]="[
+                {'id' : 4, 'metodo' : 'showNewFile',  'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]" [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'downloadDocumento',   'icone': 'fa fa-eye'},
+
+                {'id' : 3, 'metodo' : 'openDeleteDoc', 'icone': 'fas fa-trash-alt'}]" [nivel]="0" [thisParent]="this" [notOnLoad]="true" [excelServer]="true">
+
+            <th data-id="IDA004" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+            <th data-id="IDT014" data-align-right="true"> Cód. Evo.</th>
+            <th data-id="IDA004" data-align-right="true" data-function="numberNullDG">Cód. Doc.</th>
+            <th data-id="TPAUTOR" data-align-left="true" data-function="numberNullDG">Tipo Autor</th>
+            <th data-id="DSEMPRES" data-align-left="true" data-function="numberNullDG">Filial</th>      
+            <th data-id="DSAUTOR" data-align-left="true" data-function="numberNullDG">Nome</th>      
+            <th data-id="NMANEXO" data-align-left="true" data-function-full="true" data-function="linhaCompletaDocumentoViagem">Nome arquivo</th>
+            <th data-id="DSOBSERV" data-align-left="true" data-function="numberNullDG">Descrição</th>
+            <th data-id="TPEXTENS" data-align-left="true" data-function="numberNullDG">Tipo</th>
+            <th data-id="DTCADAST" data-align-left="true" data-function="formataHora">Data criação</th>
+            <th data-id="ISDOWN" data-align-left="true">Baixado</th>
+            <th data-id="IDUSUDOW" data-align-left="true" data-function="numberNullDG">Baixado por</th>
+            <th data-id="DTDOWNLO" data-align-left="true" data-function="formataHora">Data Download</th>
+
+
+        </app-datagrid>
+    </app-cards>
+</div>
+<!-- FORM NOVO DOCUMENTO-->
+<ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+    <ngb-panel id="1" title="Adicionar documentos de viagem">
+        <ng-template ngbPanelContent>
+
+            <form class="form-horizontal" [formGroup]="objFormNewDoc" (ngSubmit)="saveAndUpload()">
+                <div class="row">
+                    <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                        <label>Tipo Autor</label>
+                        <ng-select [items]="tipoAutor" [clearable]="false" bindLabel="name" bindValue="id" placeholder="Selecione" [(ngModel)]="selectedTpAutor" formControlName="CDAUTOR">
+                        </ng-select>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-6 col-lg-6">
+                        <app-single-autor-doc-viagem [objForm]="objFormNewDoc" [formName]="'IDAUTOR'" placeholder="Digite para pesquisar" [depName]="'CDAUTOR'">
+                        </app-single-autor-doc-viagem>
+                    </div>
+                    <!--  <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                        <label for="DTVALID">Data de Validade</label>
+                        <app-datapicker-popup navegacao="none" [mesesDisplay]='1' [desabilitar]='false' [formDatePop]="objFormNewDoc" [formControlNameDatePop]="'DTVALID'">
+                        </app-datapicker-popup>
+                    </div> -->
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-8 col-md-8 col-lg-8">
+                        <label for="DSOBSERV">Descrição do documento</label>
+                        <app-input id="DSOBSERV" name="DSOBSERV" [disabled]="false" model="{{objFormNewDoc.controls['DSOBSERV'].value}}" [formInput]="objFormNewDoc" [formControlNameInput]="'DSOBSERV'">
+                        </app-input>
+                    </div>
+
+                </div>
+                <p>Anexos </p>
+                <div class="row">
+                    <div class="form-group col-sm-8 col-md-8 col-lg-8">
+                        <div class="custom-file">
+                            <input type="file" ng2FileSelect [uploader]="uploader" (change)="fileChange()" class="custom-file-input" name="file" id="file" multiple>
+                            <label class="custom-file-label" id="custom-file-label" for="file-5">Escolha o arquivo</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                        <a href="javascript:resetFileInput()"  (click)="resetFileInput();" class="btn btn-info btn-custom">
+                            <i class="fas fa-eraser "></i>
+                            
+                            </a>
+                            <!-- 
+                        <app-botoes class="dafault" text="Limpar" (click)="resetFileInput();">
+                        </app-botoes> -->
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="row">
+                <div class="col-sm-8"></div>
+                <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                    <!-- Salvar -->
+                    <app-botoes *ngIf="checkViewDocumento != 1" class="success" text="{{ 'hc.form.botoes.sa' | translate }}" (click)="saveAndUpload();">
+                    </app-botoes>
+
+                    <!-- Cancelar -->
+                    <app-botoes class="danger" text="{{ 'hc.form.botoes.ca' | translate }}" (click)="goHome($event);">
+                    </app-botoes>
+
+                </div>
+            </div>
+
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>
+<!-- FIM FORM NOVO DOCUMENTO -->

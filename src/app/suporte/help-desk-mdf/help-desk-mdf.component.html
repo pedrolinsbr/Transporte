@@ -1,0 +1,105 @@
+<div>
+
+    <div style="display: flex; overflow-x: auto;">
+        <div *ngFor="let propIndicador of propIndicadores"  style="display: flex; overflow-x: auto; color: whitesmoke; width: 16% ; margin-left: 0.5%" >
+          <div  class="card card-body card-widget card-inverse" [ngStyle]="{'background-color':propIndicador.COR}" >
+            <div class="mr-auto">
+              <h3 class="fw-300 mb-0" >{{propIndicador.QTDMDF}}</h3>
+              <small>{{ propIndicador.NMTRANSP }}</small>
+
+            </div>
+            <div class="d-block">
+                             
+                <i class="{{ propIndicador.ICON }}" style='font-size:24px'></i>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+  <app-cards-filter titleDrop="Filtros" nameSubmitFunction="getInfoMdf" nameClearFunction="limpar" [isCollapsed]="true"
+    [dropdown]="true" [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter">
+      <div class="row">
+        <div class="form-group col-sm-12 col-md-12 col-lg-12" style="text-align: right;">
+          <a href="https://dfe-portal.svrs.rs.gov.br/Mdfe/Consulta" target="_blank" class="btn btn-link">Consulta Pública</a>
+          &nbsp;
+          <a href="https://dfe-portal.svrs.rs.gov.br/MdfeSSL/DownloadXmlDfe" target="_blank" class="btn btn-link">Download XML</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-transportadora-bravo
+              [objForm]  = "objFormFilter"
+              [formName] = "'IDG024'"
+              displayName = "Transportadora">
+          </app-single-transportadora-bravo>
+      </div>
+      <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label>MDF-e</label>
+          <app-input model="{{objFormFilter.controls['MDF'].value}}" [formInput]="objFormFilter"
+            [formControlNameInput]="'MDF'">
+          </app-input>
+        </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-2" [formGroup]="objFormFilter">
+          <label>Carga Evolog</label>
+          <app-input model="{{objFormFilter.controls['CARGA'].value}}" [formInput]="objFormFilter"
+            [formControlNameInput]="'CARGA'">
+          </app-input>
+        </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-2" [formGroup]="objFormFilter">
+          <label>Carga Logos</label>
+          <app-input model="{{objFormFilter.controls['IDCARLOG'].value}}" [formInput]="objFormFilter"
+            [formControlNameInput]="'IDCARLOG'">
+          </app-input>
+        </div>
+        
+      </div>
+      
+
+      <br />
+    </form>
+
+  </app-cards-filter>
+</div>
+<ngb-accordion #acc="ngbAccordion" activeIds="1">
+
+
+  <ngb-panel id="1" title="Relatório">
+    <ng-template ngbPanelContent>
+      <br />
+      <div class="row">
+        <div class="form-group col-sm-2 col-md-2 col-lg-2" >
+            Status da Carga: {{ utilServices.statusCargaTpTextDG(STCARGA).toUpperCase()}}
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3" >
+            Status do MDF-e: {{ utilServices.stMdfe(STMDF)}}
+          </div>
+      </div>
+      <div class="form-group">
+        <ul>
+          <li><i class="fa fa-check-circle" id="isCancel" name="isCancel" ></i> Carga não cancelada</li>
+          <li><i class="fa fa-check-circle" id="hasVeiculo" ></i>A carga possui veiculo</li>
+          <li><i class="fa fa-check-circle" id="hasMotorista"></i>A carga possui motorista</li>
+          <li><i class="fa fa-check-circle" id='isInterMunicipal'></i>A carga é intermunicipal</li>
+          <li><i class="fa fa-check-circle" id="hasMotorValid"></i>A carga possui motorista válido</li>
+          <li><i class="fa fa-check-circle" id="hasCteCancel"></i>Todos os CTE's da carga precisam estar ativos</li>
+          <li><i class="fa fa-check-circle" id="isDeliAtiva"></i>Não existe(m) deliverie(s) cancelada(s) nesta carga.</li>
+          <li><i class="fa fa-check-circle" id="hasManifesto"></i>Existe MDF-e ativo para esta placa, Nr. do MDF-e. {{txtMdfAtivo}}</li>          
+        </ul>
+      </div>
+      <div class="form-group">
+        <ul>
+          <li><i class="fa fa-check-circle" id="validaChave"></i> N° do MDF-e condiz com o XML.</li>
+          <li><i class="fa fa-check-circle" id="isAllow"></i> Para cancelar o MDF-e, o mesmo deve estar autorizado</li>
+          <li><i class="fa fa-check-circle" id="timeAutMdf"></i> O MDF precisa estar no mínimo < 24 de horas
+              autorizado para ser cancelado (a ação correta seria encerrar)</li> 
+          <li><i class="fa fa-check-circle" id="situacaoMin"></i> Para encerrar, o MDF-e deve que estar no mínimo autorizado.
+          <li><i class="fa fa-check-circle" id="isErro"></i>Para editar o MDF-e, seu status deve ser de erro (E)</li>
+        </ul> 
+      </div> 
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

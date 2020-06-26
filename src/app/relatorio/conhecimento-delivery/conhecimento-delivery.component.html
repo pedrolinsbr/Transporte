@@ -1,0 +1,248 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteCarga()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Conhecimento Delivery"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+
+<!-- <div class="row"  [hidden]="!(exibir == 1)" style="padding-top: 15px;">
+  <indicadores-filter
+    #indicador
+    class="col-md-12"
+    [objForm]="objFormFilter"
+    [indicadores]="indicadores"
+    (filtrar)="filtrarIndi($event)"
+    >
+  </indicadores-filter>
+</div> -->
+
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 15px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+
+
+        <div class="form-group col-sm-6 col-md-4 col-lg-4">
+          <label>CTRC</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsCDCTRC'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+
+
+        <div class="form-group col-sm-6 col-md-4 col-lg-4">
+          <label>N° Nota</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsNRNOTA'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+
+
+        <div class="form-group col-sm-6 col-md-4 col-lg-4">
+          <label>CD Delivery</label>
+          <app-chips-input
+          [typeInput]="'text'"
+          [chips]='arIdsCDDELIVE'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='false'
+          >
+          </app-chips-input>
+        </div>
+
+        <div class="form-group col-sm-6 col-md-4 col-lg-4">
+            <app-multi-empresa-logos
+                strLabel ="Empresa"
+                [objForm]  = "objFormFilter"
+                [formName] = "'CDEMPRES'">
+            </app-multi-empresa-logos>
+        </div> 
+
+        <div class="form-group col-sm-6 col-md-4 col-lg-4">
+            <app-single-status
+              [objForm]  = "objFormFilter"
+              [formName] = "'STINTCLI'"
+              >
+            </app-single-status>
+        </div>
+
+        <div class="form-group col-sm-6 col-md-4 col-lg-4">
+            <app-single-status-processo
+              [objForm]  = "objFormFilter"
+              [formName] = "'STPROCES'"
+              >
+            </app-single-status-processo>
+        </div>
+
+
+    
+      </div>
+      <br />
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'carga'"
+        [url]="urlCargaGrid"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[{'id' : 2, 'metodo' : 'updateStatus',   'icone': 'fas fa-pencil-alt'}]"
+        [nivel]="0"
+        [thisParent]="this"
+        [notOnLoad]="true"
+        [notPagination]="true">
+
+      <!-- <th data-id="IDG051" data-type-column="checkbox" data-object="true">
+        <label class="custom-control custom-checkbox">
+        <input id="carga-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th> -->
+      <th data-id="key" data-type-column="actions" data-object="true">{{ 'global.form.acoes.pd' | translate }}</th>
+      <th data-id="nmempres" data-align-left="true">Empresa</th>
+      <th data-id="dtemissa" data-function="dataDG" data-align-left="true">Dt. Emissão</th>
+      <th data-id="cdctrc"   data-function="numberNullDG" data-align-right="true">CTRC</th>
+      <th data-id="nrnota"   data-function="numberNullDG" data-align-right="true">N° Nota</th>
+      <th data-id="cddelive" data-function="numberNullDG" data-align-right="true">CD Delivery</th>
+      <th data-id="dtenvio"  data-function="dataTimeDG" data-align-left="true">Dt. Tentativa</th>
+      <th data-id="stintcli" data-function="statusConhecimentoStatus" data-align-left="true">Status</th>
+      <th data-id="dsresult" data-align-left="true">Resultado Integração</th>
+      <th data-id="tptransp" data-function="tipoTransporte" data-align-left="true">Tipo de Transportadora</th>
+      <th data-id="nrchvcte" data-function="numberNullDG" data-align-right="true">N° chave CTE</th>
+      <th data-id="dsmodenf" data-align-left="true">Modelo</th>
+      <th data-id="nrserinf" data-function="numberNullDG" data-align-right="true">N° serie Inf</th>
+      
+      <th data-id="vrmercad" data-function="formataDinheiro" data-align-right="true">Valor Mercad.</th>
+      <th data-id="nrpeso"   data-function="formataPeso" data-align-right="true">N° Peso</th>
+      <th data-id="dsinfcpl" data-align-left="true">Descrição</th>
+      <th data-id="nrchanfe" data-function="numberNullDG" data-align-right="true">N° chave</th>
+      <th data-id="nrserie"  data-function="numberNullDG" data-align-right="true">N° Serie</th>
+      <th data-id="dteminot" data-function="dataDG" data-align-left="true">Dt. Emissão Nota</th>
+<!--       <th data-id="idg043"   data-function="numberNullDG" data-align-right="true">ID Nota</th> -->
+      <th data-id="cdg46eta" data-function="numberNullDG" data-align-right="true">Codigo Carga/Etapa </th>
+      <th data-id="cjremete" data-function="validCnpjCpf" data-align-right="true">CNPJ Remetente</th>
+      <th data-id="ieremete" data-align-right="true">IE Remetente</th>
+      <th data-id="cjrecebe" data-function="validCnpjCpf" data-align-right="true">CNPJ Recebedor</th>
+      <th data-id="ierecebe" data-align-right="true">IE Recebedor</th>
+      <th data-id="cjdestin" data-function="validCnpjCpf" data-align-right="true">CNPJ Destinatario</th>
+      <th data-id="iedestin" data-align-right="true">IE Destinatario</th>
+      <th data-id="cjexpedi" data-function="validCnpjCpf" data-align-right="true">CNPJ Expedidor</th>
+      <th data-id="ieexpedi" data-align-right="true">IE Expedidor</th>
+      <th data-id="cjtomado" data-function="validCnpjCpf" data-align-right="true">CNPJ Tomador</th>
+      <th data-id="ietomado" data-align-right="true">IE Tomador</th>
+      <th data-id="cjtransp" data-function="validCnpjCpf" data-align-right="true">CNPJ Transp</th>
+      <th data-id="ietransp" data-align-right="true">IE Transp</th>
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+<ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+        <div class="form-group col-sm-6 col-md-4 col-lg-4">
+            <app-single-status
+              [objForm]  = "objFormConfiguracao"
+              [formName] = "'STINTCLI'" 
+              comboFix="statusConhecimentoDelivery2"
+              >
+            </app-single-status>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8"></div>
+            <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+              <!-- Salvar -->
+              <app-botoes 
+              *ngIf="checkViewDePara != 1"
+              class="success" 
+              text="{{ 'hc.form.botoes.sa' | translate }}"
+              (click)="saveStatus();">
+              </app-botoes>
+              
+              <!-- Cancelar -->
+              <app-botoes 
+              class="danger" 
+              text="{{ 'hc.form.botoes.ca' | translate }}"
+              (click)="goHome(event);">
+              </app-botoes>
+
+            </div>
+          </div>
+
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+
+
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalLibera let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Liberar Conhecimento</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" >
+     <div class="row">
+       <div class="col-sm-12 col-md-12 col-lg-12">
+         <app-single-transportadora-bravo
+             [objForm]  = "objFormLiberar"
+             [formName] = "'IDG024'">
+         </app-single-transportadora-bravo>
+       </div>
+     </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+    <button type="button" class="btn btn-success" (click)="confirmaLiberar()">Salvar</button>
+
+  </div>
+</ng-template>

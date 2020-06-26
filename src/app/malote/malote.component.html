@@ -1,0 +1,170 @@
+<app-cards>
+  <ngb-accordion #acc="ngbAccordion" activeIds="1">
+    <ngb-panel id="1" title="Validação de Documentos">
+      <ng-template ngbPanelContent>
+        <form class="form-horizontal" [formGroup]="objForm">
+          <div class="row">
+            <div class="form-group col-sm-12 col-md-5 col-lg-5">
+              <label class="title">{{ titleInput }}</label>
+              <input type="text" #focus class="form-control" id="NRCHADOC" name="NRCHADOC" formControlName="NRCHADOC"
+                (keydown)="handleSearch($event)">
+            </div>
+          </div>
+        </form>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <div class="modal-footer">
+    <button *ngIf="!isValid" type="button" class="btn btn-success" (click)="handleSearchBtn()">Buscar</button>
+    <button *ngIf="finished" type="button" class="btn btn-success" (click)="salvarValidacao()">Finalizar Novamente</button>
+    <button type="button" class="btn btn-danger" (click)="clean()">Cancelar</button>
+  </div>
+</app-cards>
+
+<!-- Cards do documentos validos e invalidos -->
+<div class="row" *ngIf="isValid">
+  <div class="form-group col-sm-12 col-md-6 col-lg-6">
+    <app-cards titleDrop="{{ title }}">
+      <ngb-accordion #acc="ngbAccordion" activeIds="1">
+        <ngb-panel id="1" title="Documentos para validação">
+          <ng-template ngbPanelContent>
+            <div class="container-header" *ngIf="carga != ''">
+              <div class="container-carga">
+                <h6 class="title" style="color: #613d7c; font-size: 19px;">Carga Evolog - </h6>
+                <h6 class="title" style="color: #613d7c; font-size: 19px;">{{ carga }}</h6>
+              </div>
+              <div class="container-carga">
+                <h6 style="color: #613d7c; font-size: 14px;">Motorista - </h6>
+                <h6 style="color: #613d7c; font-size: 14px;">{{ motorista }} </h6>
+                <h6 style="color: #613d7c; font-size: 14px;"> ({{ idMotorista }})</h6>
+              </div>
+            </div>
+            <div>
+              <div class="container-array">
+                <span class="title" style="font-weight: 600;">MDF-e: {{ countChecked(mdfs) }}</span>
+                <div class="container-item">
+                  <div *ngFor="let item of mdfs">
+                    <div class="content-item">
+                      <span>{{ item.NRMDF }}</span>
+                      <i *ngIf="item.STCHADOC == 0" class="fas fa-check-circle"
+                        style="color: green; font-size: 18px; text-align: center; padding-left: 5px;"></i>
+                      <i *ngIf="item.STCHADOC == 1" class="fas fa-exclamation-circle"
+                        style="color: orange; font-size: 18px; text-align: center; padding-left: 5px;"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="container-array">
+                <span class="title" style="font-weight: 600;">CTE's: {{ countChecked(ctes) }}</span>
+                  <div class="container-item">
+                    <ng-container *ngFor="let item of ctes">
+                      <div class="content-cte">
+                        <div class="content-item-cte">
+                          <span style="color: white; font-size: 12px;">CTE - {{ item.CDCTRC }}</span>
+                          <i *ngIf="item.STCHADOC == 0" class="fas fa-check-circle"
+                            style="color: green; font-size: 18px; text-align: center; padding-left: 5px;"></i>
+                          <i *ngIf="item.STCHADOC == 1" class="fas fa-exclamation-circle"
+                            style="color: orange; font-size: 18px; text-align: center; padding-left: 5px;"></i>
+                        </div>
+                        <div *ngFor="let nf of item.nfs">
+                          <div class="content-item-nf">
+                            <span>Nota - {{ nf.NRNOTA }}</span>
+                            <i *ngIf="nf.STCHADOC == 0" class="fas fa-check-circle"
+                              style="color: green; font-size: 18px; text-align: center; padding-left: 5px;"></i>
+                            <i *ngIf="nf.STCHADOC == 1" class="fas fa-exclamation-circle"
+                              style="color: orange; font-size: 18px; text-align: center; padding-left: 5px;"></i>
+                          </div>                                                
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+    </app-cards>
+  </div>
+  <div class="form-group col-sm-12 col-md-6 col-lg-6">
+    <app-cards titleDrop="{{ title }}">
+      <ngb-accordion #acc="ngbAccordion" activeIds="1">
+        <ngb-panel id="1" title="Documentos Inválidos">
+          <ng-template ngbPanelContent *ngIf="invalid.length > 0">
+            <div class="container-carga" *ngIf="carga != ''">
+              <h6 class="title" style="color: red; font-size: 14px;">Obs: Para finalizar a validação é necessário
+                remover as chaves inválidas.</h6>
+            </div>
+            <div class="container-array">
+              <span class="title">Chaves</span>
+              <div class="container-item">
+                <div *ngFor="let item of invalid">
+                  <div class="content-item">
+                    <span>{{ item.NRCHADOC }}</span>
+                    <i class="far fa-times-circle"
+                      style="color: red; font-size: 18px; text-align: center; cursor: pointer; padding-left: 5px;"
+                      (click)="removeChadocInvalid($event, item.NRCHADOC)"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+    </app-cards>
+  </div>
+</div>
+
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalSuccess let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Validação Concluida</h6>
+  </div>
+  <div class="modal-body">
+    <div class="alert alert-success" role="alert">
+      <div class="row vertical-align" style="display: flex; justify-content: center; align-items: center;">
+        <div class="col-xs-2">
+          <i class="fa fa-smile fa-5x"></i>
+        </div>
+        <div class="col-xs-10">
+          &nbsp;<strong>Obrigado!</strong> Todos os documentos passaram na validação!
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-md-12 text-right">
+      <app-botoes class="info" text="Ok" (click)="d('Cross click')" outline>
+      </app-botoes>
+    </div>
+  </div>
+</ng-template>
+
+<!-- MODAL DE CARGA JÁ VALIDADA -->
+<div *ngIf="isCargaValid" class="container-valid-carga">
+    <app-cards titleDrop="Situação da Carga">
+        <div class="modal-header">
+            <h6 class="modal-title text-uppercase">Situação do Malote</h6>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-info" role="alert">
+              <div class="row vertical-align" style="display: flex; justify-content: center; align-items: center;">
+                <div class="col-xs-2">
+                  <i class="fa fa-smile fa-5x"></i>
+                </div>
+                <div class="col-xs-10">
+                  &nbsp;<strong>Olá!</strong> Esse malote já foi realizado a validação, deseja realmente validar novamente ?
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="col-md-12 text-right">
+              <app-botoes class="danger" text="Cancelar" (click)="clean()" outline>
+              </app-botoes>
+              <app-botoes class="success" text="Validar Novamente" (click)="validarNovamente()" outline>
+              </app-botoes>
+            </div>
+          </div>
+    </app-cards>
+</div>

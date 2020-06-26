@@ -1,0 +1,199 @@
+<app-breadcrumbs
+  #breadcrumbs
+  home="Liberação ocorrências"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px; overflow: auto">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-transportadora-bravo
+            [objForm] = "objFormFilter"
+            [formName] = "'G024_IDG024'">
+          </app-single-transportadora-bravo>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-sim-nao-todos
+              strLabel ="Situação"
+              [objForm]  = "objFormFilter"
+              [formName] = "'STSITUAC'"
+              [comboFix] = "'statusLiberacao'">
+          </app-single-sim-nao-todos>
+        </div>
+
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-usuario
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDS001'"
+          >
+          </app-single-usuario>
+        </div>
+
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'liberacao'"
+        [url]="urlLiberacaoGrid"
+        [tela]="175"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 36, 'metodo' : 'openModalConfirmaAprovacao', 'icone': 'far fa-check-circle'},
+                {'id' : 37, 'metodo' : 'openModalConfirmaReprovacao', 'icone': 'far fa-times-circle'}]"
+        [nivel]="0"
+        [thisParent]="this"
+        [allList]="true">
+
+<!--
+        <th data-id="IDT004" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="liberacao-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th> -->
+
+
+        <th data-id="IDT004"   data-type-column="actions" data-object="true">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="STSITUAC" data-function="situacaoOcorrencia">Situação</th>
+        <th data-id="IDT004"  data-align-right="true">Ocorrência</th>
+        <th data-id="DSOCORRE"  data-align-left="true">Descrição</th>
+        <th data-id="IDG046"   data-exec="viewCarga" data-align-right="true">Carga</th>
+        <th data-id="DSCARGA"  data-align-left="true">Descrição carga</th>
+        <th data-id="PSCARGA"  data-function="formataPeso" data-align-right="true">Peso</th>
+        <th data-id="VRCARGA"  data-function="formataDinheiro" data-align-right="true">Valor</th>
+        <th data-id="DSTIPVEI" data-function="numberNullDG"  data-align-left="true">Tipo veículo</th>
+        <th data-id="TXVALIDA" data-function="numberNullDG"  data-align-left="true">Texto</th>
+
+        <th data-id="DSHISTOR" data-function="numberNullDG"  data-align-left="true">Histórico</th>
+        <th data-id="NMUSUARI" data-function="numberNullDG"  data-align-left="true">Usuário</th>
+        <th data-id="DTVALIDA" data-function="dataDG"  data-align-left="true">Data Validação</th>
+        <th data-id="DTCADAST" data-function="dataDG" data-align-left="true">{{ 'global.form.dtcadast.pd' | translate }}</th>
+
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+
+<!-- MODAL COMFIRMAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalConfirma let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6>Confirmação {{action}}</h6>
+  </div>
+  <div class="modal-body">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+            <div class="row">
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                  <app-single-ocorrencia-carga
+                    [objForm]  = "objFormConfiguracao"
+                    [formName] = "'IDG067'"
+                    [disabled] ="true">
+                  </app-single-ocorrencia-carga>
+              </div>
+
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                  <app-single-historico-ocorrencia
+                    [objForm] = "objFormConfiguracao"
+                    [formName] = "'IDG012'">
+                  </app-single-historico-ocorrencia>
+              </div>
+            </div>
+            <div class="row">
+              <label style="font-weight: bold; padding-left: 10px; color:black;"
+              [ngClass]="{'cmpRequiredLabel': objFormConfiguracao.controls['TXVALIDA'].value == null ||
+                                  objFormConfiguracao.controls['TXVALIDA'].value == ''}" >Observação</label>
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <!-- formControlName="TXVALIDA" -->
+                <form class="form-horizontal" [formGroup]="objFormConfiguracao" >
+                  <textarea class="form-control"
+                    rows="6"
+                    aria-label="Descrição"
+                    formControlName="TXVALIDA" style="min-height: 200px"
+                    [ngClass]="{'cmpRequired': objFormConfiguracao.controls['TXVALIDA'].value == null ||
+                                  objFormConfiguracao.controls['TXVALIDA'].value == ''}"
+                    ></textarea>
+                </form>
+
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Cancelar</button>
+    <button type="button" class="btn btn-success" (click)="confirmar(action)">Confirmar</button>
+  </div>
+</ng-template>
+<!-- FIM MODAL -->
+
+
+
+
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalCarga let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Informações</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" >
+     <!-- <info-carga-completa
+      [IDG046]="idCargaView"
+      [showParadas]="true"
+      [showCTE]="true"
+      [showNFE]="true"
+      [showAtendimentos]="true"
+    >
+    </info-carga-completa> -->
+
+    <info-new-carga-completa
+     [IDG046]="idCargaView"
+     [showCarga]="true"
+     [showParadas]="true"
+     [showCTE]="true"
+     [showNFE]="true"
+     [showNFE_AUX]="true"
+     [showAtendimentos]="true"
+   >
+   </info-new-carga-completa>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>

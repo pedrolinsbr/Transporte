@@ -1,0 +1,65 @@
+<indicadores-filter
+    #indicador
+    class="col-md-12"
+    [objForm]="objFormVoid"
+    [indicadores]="indicadores">
+  </indicadores-filter>
+
+<!-- <app-breadcrumbs
+  #breadcrumbs
+  home="Liberação ocorrências"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs> -->
+
+<div [hidden]="!(exibir == 1)" >
+
+  
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="false"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'cockpit'"
+        [url]="urlCockpitGrid"
+        [tela]="175"
+        [telaGlobal]="[]"
+        [telaAcoes]="[]"
+        [nivel]="0"
+        [thisParent]="this"
+        [additionalFields]="{TPINTERF: '14'}">
+
+
+        <th data-id="IDS033" data-type-column="details" data-exec="detailCockiptTransp" data-object="true">Detalhes</th>
+        <th data-id="IDS033" data-align-right="true">Código</th>
+        <th data-id="URL" data-align-left="true">URL</th>
+        <th data-id="DSFUNCAO" data-align-left="true">Função</th>
+        <th data-id="STATREQ" data-align-right="left" data-function="registroNullDG" >Status</th>
+        <!-- <th data-id="CDRETORN" data-align-right="true" data-function="registroNullDG" >Resposta</th> -->
+        <!-- <th data-id="QTIDS34" data-align-right="true">Qtd.</th> -->
+        <th data-id="DTGERLOG" data-function="dataTimeDG" data-align-right="true">Data interação</th>
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+
+<!-- MODAL MOTORISTA -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalReturn let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Dados</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" style="text-align: justify !important;">
+     {{txtReturn}}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>

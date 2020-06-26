@@ -1,0 +1,52 @@
+<div class="d-flex align-items-stretch min-height-100 h-100">
+  <div class="bg-cover bg-1 hidden-sm-down col-md-6 col-lg-8"></div>
+  <div class="card card-block mb-0 rounded-0 p-5 col-sm-12 col-md-6 col-lg-4">
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" style="height: 100%;">
+<!--       <div class="mb-3" style="text-align: center; padding-top: 50%;">
+        <img style="width: 90%;" src="assets/images/hora_certa.png" style="width:65%" class="avatar-xs mb-1" alt="">
+      </div> -->
+      <div class="mb-3">
+        <img src="assets/images/logo_evo.png" class="avatar-xs mb-1" alt="">
+        <p class="ff-headers text-uppercase">ETMS</p>
+      </div>
+      <div class="mb-3">
+        <fieldset class="form-group" [ngClass]="{'has-danger': form.controls['uname'].hasError('required') && form.controls['uname'].touched}">
+          <label for="username" class="form-control-label">
+            E-Mail
+          </label>
+          <input type="text" class="form-control" placeholder="Nome de Usuário" [formControl]="form.controls['uname']" [ngClass]="{'form-control-danger': form.controls['uname'].hasError('required') && form.controls['uname'].touched}"/>
+          <div class="form-control-feedback" *ngIf="form.controls['uname'].hasError('required') && form.controls['uname'].touched">Nome de Usuário Obrigatório</div>
+        </fieldset>
+        <fieldset class="form-group" [ngClass]="{'has-danger': form.controls['password'].hasError('required') && form.controls['password'].touched}">
+          <label for="password" class="form-control-label">
+            Senha
+          </label>
+          <input type="password" class="form-control" placeholder="********" [formControl]="form.controls['password']" [ngClass]="{'form-control-danger': form.controls['password'].hasError('required') && form.controls['password'].touched}"/>
+          <div class="form-control-feedback" *ngIf="form.controls['password'].hasError('required') && form.controls['password'].touched">Senha Obrigatória</div>
+          <!-- <a [routerLink]="['/recovery']" class="form-text">
+            <small>Recuperar senha</small>
+          </a> -->
+        </fieldset>
+        <div class="block"></div>
+        <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Entrar</button>
+
+      </div>
+
+    </form>
+
+    <br>
+    <footer class="footer-auths">
+      <nav class="navbar-light main-footer small">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:;">
+              <span>Copyright &copy; 2017</span> <span class="ff-headers text-uppercase">Bravo Serviços Logisticos.</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </footer>
+
+  </div>
+</div>

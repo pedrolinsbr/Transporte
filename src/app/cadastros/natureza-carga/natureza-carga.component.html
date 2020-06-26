@@ -1,0 +1,82 @@
+  <ng-template #modalConfirma>
+    <app-modal [thisParent]="this" title="Confirmação de alteração" dsconteu="Tem certeza que deseja realizar a alteração?">
+      <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+      <button type="button" class="btn btn-success" (click)="confirmaAlteraValida()">Confirmar alteração</button>
+    </app-modal>
+  </ng-template>
+
+
+  <app-breadcrumbs
+    #breadcrumbs
+    home="Natureza Carga"
+    [arBreadcrumbs]="arBreadcrumbsLocal"
+    (goHome)="goHome($event)"
+    (clearNext)="clearNext($event)"
+    [context]="this">
+  </app-breadcrumbs>
+
+  <div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+    <app-cards-filter
+      titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+      nameSubmitFunction="filtrar"
+      [isCollapsed]="true"
+      [dropdown]="true"                                                                                                                                                                                                                                           
+      [context]="this">
+
+      <form class="form-horizontal" [formGroup]="objFormFilter" >
+        <div class="row">
+
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-natureza-tipo
+                strLabel="Tipo de produto"
+                [objForm]="objFormFilter"
+                [formName]="'TPPRODUT'">
+            </app-single-natureza-tipo>
+          </div>   
+
+          
+        </div>
+
+        <br />
+
+        <div class="row">
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4 text-right"></div>
+        </div>
+      </form>
+
+    </app-cards-filter>
+
+    <app-cards
+      titleDrop="{{ 'global.form.registros.pd' | translate }}"
+      [isCollapsed]="collappsed"
+      [dropdown]="true">
+      
+      <app-datagrid
+          [id]="idDataGrid"
+          [url]="urlNaturezaGrid"
+          [tela]="149"
+          [telaGlobal]="[
+                  {'id' : 'excel'},
+                  {'id' : 'colvis'} ]"
+          [telaAcoes]="[
+                  {'id' : 36, 'metodo' : 'openModalConfirmaAprovacao', 'icone': 'far fa-check-circle'},
+                  {'id' : 37, 'metodo' : 'openModalConfirmaReprovacao', 'icone': 'far fa-times-circle'}]"
+          [nivel]="0"
+          [thisParent]="this"
+          [notOnLoad]="true">
+
+          <th data-id="IDT019"     data-type-column="actions">Ações</th>
+          <th data-id="IDT019"     data-align-rigth="true">Cód. Evo.</th>
+          <th data-id="TPPRODUT"   data-function="tipoProduto" data-align-left="true">Tipo de produto</th>
+          <th data-id="DSCHAVE"    data-align-left="true">Chave</th>
+          <th data-id="DSCHAVE"    data-function="datasMotoristasVeiculos"  data-align-left="true">Descrição da data</th>
+          <th data-id="SNVALIDA"   data-function="snVira2">Necessita validação?</th>
+          <th data-id="TPVALIDA"   data-function="tipoValidacao" data-align-left="true">Tipo de validação</th>
+
+            
+      </app-datagrid>
+    </app-cards>
+  </div>
+

@@ -1,0 +1,261 @@
+
+
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalCarga let-c="close" let-d="dismiss">
+  <div class="modal-body">
+    <info-new-carga-completa [IDG046]="idCargaView" [showCarga]="true" [showParadas]="true" [showCTE]="true"
+      [showNFE]="true" [showNFE_AUX]="true" [showAtendimentos]="true" reload=!reload>
+    </info-new-carga-completa>
+  </div>
+  
+  <div class="modal-footer">    
+
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>
+
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalConhecimento let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Conhecimento {{conhecimentoAtual}}</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body" >
+    <info-conhecimento
+    [IDG051]="idConhecimentoView"></info-conhecimento>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Documentos pendentes da carga"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <!-- Row 1 -->
+      <div class="row">
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <label for="">Data da Carga</label>
+          <app-datepicker-intervalo
+            [formDateIntervalo]="objFormFilter"
+            [formControlNameDateIntervalo]="'G046_DTCARGA'">
+          </app-datepicker-intervalo>
+        </div>
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-3">
+          <label>Carga Evolog</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdIDG046'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-3">
+          <label>Carga Logos</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdIDCARLOG'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-3">
+          <app-single-transportadora
+            [objForm] = "objFormFilter"
+            [formName] = "'G046_IDG024'">
+          </app-single-transportadora>
+        </div> 
+          
+          
+      </div>
+      <!-- Row 2 -->
+      <div class="row">
+      <div class="form-group col-sm-3">
+          <form [formGroup]="objFormFilter">
+            <label>Status de envio logos</label>
+            <select class="form-control" id="G046_STENVLOG" name="G046_STENVLOG" formControlName="G046_STENVLOG" >
+              <option value="" [selected]="true">Todas</option>
+              <option value="S" > Sucesso  </option>
+              <option value="E" > Erro </option>
+              <!-- <option value="" > Não enviado </option> -->
+            </select>
+          </form>
+        </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-3">
+            <label>Cód. Evo. CTRC</label>
+            <app-chips-input
+            [typeInput]="'numberText'"
+            [chips]='arIdIDG051'
+            [removable]='true'
+            [addOnBlur]='true'
+            [duplicate]='false'
+            [objStyle]="objStyle"
+            [inputSpace]='true'
+            >
+            </app-chips-input>
+          </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-3">
+          <label>CTRC</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdCDCTRC'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-3">
+          <app-multi-status
+            strLabel ="Status da carga"
+            [objForm]  = "objFormFilter"
+            [formName] = "'G046_STCARGA'">
+          </app-multi-status>
+        </div>
+        
+
+        
+
+
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6 col-md-6 col-lg-6" >
+          <label>Delivery</label>
+          <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsIDG043'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+          >
+          </app-chips-input>
+        </div>
+
+        <div class="form-group col-sm-6 col-md-6 col-lg-6" >
+          <label>Código da Delivery</label>
+          <app-chips-input
+            [typeInput]="'text'"
+            [chips]='arIdsCDDELIVE'
+            [removable]='true'
+            [addOnBlur]='true'
+            [duplicate]='false'
+            [objStyle]="objStyle"
+            [inputSpace]='false'
+            >
+          </app-chips-input>
+        </div>
+      </div>
+
+
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'DocumentoPendenteCarga'"
+        [url]="urlDocumentoPendenteCargaGrid"
+        [tela]="149"
+        [allList]="true"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [nivel]="0"
+        [thisParent]="this"
+        [excelCustom]="true"
+        [notOnLoad]="true"
+        >
+        <!-- [notOnLoad]="true" -->
+
+        <!-- [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewDePara',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateDePara',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]" 
+          <th data-id="IDG058" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="dePara-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th> -->
+
+
+        <!-- <th data-id="IDG046" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th> -->
+         
+        <th data-id="IDG046"    data-object="true" data-align-right="true" data-exec="viewCarga">Carga</th>
+        <th data-id="DSCARGA"   data-function="validaNullMonitoria" data-align-left="true">Descrição</th>
+        <th data-id="NMTRANSP"  data-function="validaNullMonitoria" data-align-left="true">Transportadora</th>
+        <th data-id="DTCARGA"   data-function="dataTimeDG" data-align-right="true">Dt. carga</th>  
+        <th data-id="STCARGA"   data-function="statusCargaTpDG">Situação</th>
+
+        <th data-id="IDCARLOG"  data-function="validaNullMonitoria" data-align-right="true">Carga Logos</th>
+        <th data-id="STENVLOG"  data-function="statusLogos" data-align-left="true">Status Logos</th>
+        
+        <th data-id="IDG051"    data-function="validaNullMonitoria" data-align-right="true" data-exec="viewConhecimento">Cód. Evo. CTRC</th>
+        <th data-id="CDCTRC"    data-function="validaNullMonitoria" data-object="true" data-align-right="true">CTRC</th>
+        <th data-id="NMTRANSPCT"  data-function="validaNullMonitoria" data-align-left="true">Emissor CTRC</th>
+        <th data-id="QTDC"      data-function="validaNullMonitoria" data-align-right="true">Qtde. CTE</th>
+        <th data-id="DTLANCTO"   data-function="dataDG" data-align-right="true">Dt. lançamento CTE</th>
+        
+        
+        <th data-id="IDG043"    data-function="validaNullMonitoria" data-align-right="true">Delivery</th>
+        <th data-id="CDDELIVE"    data-function="validaNullMonitoria" data-align-right="true">Cod. Delivery</th>
+        <th data-id="QTDD"      data-function="validaNullMonitoria" data-align-right="true">Qtde. Delivery</th>
+        
+        
+
+        <!-- <th data-id="PSCARGA"   data-function="formataPeso" data-align-right="true" >Peso da carga</th>
+        <th data-id="VRCARGA"   data-align-right="true" data-function="formataDinheiro">Valor</th> -->
+        <!-- <th data-id="IDS001CA"  data-function="validaNullMonitoria" data-align-left="true">Usuario de cancelamento</th> -->
+        <!-- <th data-id="DTCANCEL"  data-function="dataDG" data-align-right="true">Data de cancelamento</th> -->
+        <!-- <th data-id="NMARMAZE"  data-align-left="true" data-function="validaNullMonitoria">Armazém</th> -->
+        
+
+    </app-datagrid>
+  </app-cards>
+</div>

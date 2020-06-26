@@ -1,0 +1,310 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteGrupoOcorrencia()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+<ng-template #modalDeleteUsuario>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteUsuarioGrupoOcorrencia()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Grupo Ocorrência"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div *ngIf="exibir == 1" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-transportadora
+            displayName="Transportadora"
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG024'">
+          </app-single-transportadora>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'grupoOcorrencia'"
+        [url]="urlGrupoOcorrenciaGrid"
+        [tela]="201"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteGrupoOcorrencia',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addGrupoOcorrencia', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewGrupoOcorrencia',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateGrupoOcorrencia',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'},
+                {'id' : 44, 'metodo' : 'openAtribuirUsuario', 'icone': 'fas fa-user'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDG070" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="grupoOccorrencia-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+
+
+        <th data-id="IDG070" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG070" data-align-right="true">Cód. grupo</th>
+        <th data-id="DSGRUPO" data-align-left="true">Descrição</th>
+        <th data-id="G024_NMTRANSP" data-align-left="true">Transportadora</th>
+        <th data-id="QTDUSER" data-align-right="true">Qtd. Usuários</th>
+        <th data-id="STCADAST" data-align-left="true" data-function="stCadastDG">{{ 'global.form.stcadast.pd' | translate }}</th>
+        <th data-id="DTCADAST" data-align-left="true" data-function="dataDG">{{ 'global.form.dtcadast.pd' | translate }}</th>
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+<ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormGrupoOcorrencia" >
+        <input type="text" id="IDG070" formControlName="IDG070" hidden>
+        <div class="row">
+
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-input
+              id="DSGRUPO"
+              name="DSGRUPO"
+              [isRequired] ='true'
+              placeholder="Descrição Grupo"
+              [formInput] = "objFormGrupoOcorrencia"
+              [formControlNameInput] = "'DSGRUPO'"
+              [label]="'Descrição Grupo'"
+            >
+            </app-input>
+          </div>
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-single-transportadora-bravo
+              displayName="Transportadora"
+              [objForm] = "objFormGrupoOcorrencia"
+              [formName] = "'IDG024'">
+            </app-single-transportadora-bravo>
+          </div>
+
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              model="{{objFormGrupoOcorrencia.controls['STCADAST'].value}}"
+              [formOF]="objFormGrupoOcorrencia"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+            <!-- Salvar -->
+            <app-botoes
+            *ngIf="checkViewGrupoOcorrencia != 1"
+            class="success"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveGrupoOcorrencia();">
+            </app-botoes>
+
+            <!-- Cancelar -->
+            <app-botoes
+            class="danger"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="goHome(event);">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+<div *ngIf="exibir == 3" style="padding-top: 20px;">
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'usuarioGrupo'"
+        [url]="urlUsuarioGrupo"
+        [tela]="201"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteGrupoOcorrencia',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addUsuarioGrupoOcorrencia', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewUsuarioGrupoOcorrencia',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateUsuarioGrupoOcorrencia',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDeleteUsuario', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDG071" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="usuarioGrupo-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+
+        <!-- <th data-id="IDG070" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG070"  >ID</th>
+        <th data-id="DSGRUPO">Descrição</th>
+        <th data-id="G024_NMTRANSP">Transportadora</th>
+        <th data-id="STCADAST"  data-function="stCadastDG">{{ 'global.form.stcadast.pd' | translate }}</th>
+        <th data-id="DTCADAST"  data-function="dataDG">{{ 'global.form.dtcadast.pd' | translate }}</th> -->
+
+        <th data-id="IDG071" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+<!--         <th data-id="IDG071"  >ID</th> -->
+        <th data-id="S001OC_NMUSUARI">Usuário</th>
+        <th data-id="PCPARAM">% Parâmetro</th>
+        <th data-id="G067_DSOCORRE"> Ocorrência</th>
+        <th data-id="STCADAST"  data-function="stCadastDG">{{ 'global.form.stcadast.pd' | translate }}</th>
+        <th data-id="DTCADAST"  data-function="dataDG">{{ 'global.form.dtcadast.pd' | translate }}</th>
+        <th data-id="TPMODCAR"  data-function="tipoModeloCarga">Modelo de carga</th>
+    </app-datagrid>
+  </app-cards>
+</div>
+
+
+<ngb-accordion #dcc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 4)">
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormUsuarioGrupo" >
+        <input type="text" id="IDG070" formControlName="IDG070" hidden>
+        <input type="text" id="IDG071" formControlName="IDG071" hidden>
+
+        <div class="row">
+
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-usuario
+              [objForm]  = "objFormUsuarioGrupo"
+              [formName] = "'IDS001OC'"
+            >
+            </app-single-usuario>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+
+            <label>
+              <!-- INFO CÁLCULO -->
+              <ng-template #tipContent >
+                <div class="row" style="margin-top: 15px; font-size: 11px">
+                  <div class="col-md-12 text-center">
+                    PARÂMETROS
+                  </div>
+                  <hr>
+                  <div class="col-md-12">
+                    Porcentagem que será utilizada para o envio de restrições por usuário.
+                  </div>
+                </div>
+              </ng-template>
+              <i class="far fa-question-circle iconStyle" [ngbTooltip]="tipContent" placement="bottom" container="body"></i>
+              <!-- END INFO CÁLCULO -->
+              % Parâmetro
+            </label>
+
+            <app-input
+              id="PCPARAM"
+              name="PCPARAM"
+              [isRequired] ='true'
+              placeholder="% Parâmetro"
+              [formInput] = "objFormUsuarioGrupo"
+              [formControlNameInput] = "'PCPARAM'"
+            >
+            </app-input>
+
+          </div>
+
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-tipo-modelo-carga
+                [objForm]  = "objFormUsuarioGrupo"
+                [formName] = "'TPMODCAR'"
+                [comboFix]="'tipoModeloCargaGrupoOcorrencia'">
+            </app-single-tipo-modelo-carga>
+          </div>
+          
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-ocorrencia-carga
+              [objForm]="objFormUsuarioGrupo"
+              [formName]="'IDG067'"
+            ></app-single-ocorrencia-carga>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              model="{{objFormUsuarioGrupo.controls['STCADAST'].value}}"
+              [formOF]="objFormUsuarioGrupo"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+            <!-- Salvar -->
+            <app-botoes
+            *ngIf="checkViewGrupoOcorrencia != 1"
+            class="success"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveUsuarioGrupoOcorrencia();">
+            </app-botoes>
+
+            <!-- Cancelar -->
+            <app-botoes
+            class="danger"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="breadcrumbs.goBack();">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

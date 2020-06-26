@@ -1,0 +1,51 @@
+@import "../../../assets/styles/scss/components/timeline";
+
+@media screen {
+  .modal-adaptive .modal-xl {
+    width: 90% !important;
+    max-width: calc(90%);
+  }
+}
+
+
+.optionsView{
+  color: #43295b;
+  height: 45px;
+  padding-top: 12px;
+  cursor: pointer;
+}
+
+.optionsView:hover{
+  border: 1px solid  #43295b;
+  //color: #fff;
+  height: 45px;
+  padding-top: 12px;
+}
+
+.optionsView-activate{
+  background-color: #43295b;
+  color: rgb(255, 255, 255);
+  height: 45px;
+  padding-top: 12px;
+}
+
+.pointerArrow{
+  cursor: pointer;
+  font-size: 17px;
+  color: #43295b;
+}
+
+.fundo{
+  background-color: #DCDCDC;
+  position: relative;
+  padding-top: 15px;
+  height: 100%;
+  padding-bottom: 15px
+
+}
+
+.card-body collapse show{
+  position: relative;
+}
+
+

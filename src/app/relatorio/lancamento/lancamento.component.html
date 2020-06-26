@@ -1,0 +1,98 @@
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Lançamento"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-mes-ano-campanha
+            strLabel   = "Mês"
+            [objForm]  = "objFormFilter"
+            [formName] = "'CDMES'">
+          </app-single-mes-ano-campanha>
+        </div>
+        
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-campanha 
+            [objForm]="objFormFilter" 
+            [formName]="'IDG090'">
+          </app-single-campanha>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-multi-motorista-campanha
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDG031'">
+          </app-multi-motorista-campanha>
+        </div>
+
+      </div>
+
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'Lancamento'"
+        [url]="urlLancamentoGrid"
+        [tela]="149"
+        [allList]="true"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [nivel]="0"
+        [thisParent]="this"
+        [excelServer]="true"
+        [excelCustom]="true"
+        [notOnLoad]="true"
+        >
+
+         
+        <th data-id="DSCAMPAN"   data-align-left="true">Campanha</th>
+        <th data-id="NMMOTORI"   data-align-left="true">Motorista</th>
+        <th data-id="NMTRANSP"   data-align-left="true">Filial</th>
+        <th data-id="VRPT17"     data-align-right="true"  *ngIf="(this.utilServices.in_array(17, arListaApontaUser))">KM rodado - 17</th>
+        <th data-id="VRKM17"     data-align-right="true"  *ngIf="(this.utilServices.in_array(17, arListaApontaUser))">Valor KM rodado - 17</th>
+        <th data-id="VRID19"     data-align-left="true"   *ngIf="(this.utilServices.in_array(19, arListaApontaUser))">Média esperada por modelo km/litro (3%) - 19</th>
+
+        <th data-id="VRID4"    data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(4, arListaApontaUser))">Multa Média - 4</th>
+        <th data-id="VRID5"    data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(5, arListaApontaUser))">Multa Leve - 5</th>
+        <th data-id="VRID6"    data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(6, arListaApontaUser))">Multa Grave - 6</th>
+        <th data-id="VRID7"    data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(7, arListaApontaUser))">Multa Gravíssima - 7</th>
+        <th data-id="VRID9"    data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(9, arListaApontaUser))">Velocidade acima 80km/h medida em tacógrafo (por evento) - 9</th>
+        <th data-id="VRID10"   data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(10, arListaApontaUser))">Acidentes - 10</th>
+        <th data-id="VRID11"   data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(11, arListaApontaUser))">Avarias/danos no veículo - 11</th>
+        <th data-id="VRID13"   data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(13, arListaApontaUser))">Preenchimento Diário de Bordo - 13</th>
+        <th data-id="VRID14"   data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(14, arListaApontaUser))">Preenchimento check list durante a viagem e olho vivo - 14</th>
+        <th data-id="VRID15"   data-function="numberNullDG" data-align-right="true" *ngIf="(this.utilServices.in_array(15, arListaApontaUser))">Sugestão de Segurança - 15</th>
+
+
+    </app-datagrid>
+  </app-cards>
+</div>

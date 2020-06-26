@@ -1,0 +1,355 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="this[nmFunctionDelete]()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Apólice"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div *ngIf="exibir == 1" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter">
+      <div class="row">
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-operacao
+            [objForm]="objFormFilter"
+            [formName]="'IDG014'">
+          </app-single-operacao>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">  
+            <app-single-seguradora
+              [objForm]  = "objFormFilter"
+              [formName] = "'IDG041'">
+            </app-single-seguradora>
+        </div>
+
+      </div>
+    </form>
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'apolices'"
+        [url]="urlRotaGridApolices"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteCidade',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addApolice', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewApolice',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateApolice',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDeleteApolice', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+
+        <th data-id="IDG047" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG047" data-align-right="true">Cód. Apólice</th>
+        <th data-id="NRAPOSEG" data-align-right="true">{{ 'global.form.nraposeg.ds' | translate }}</th>
+        <th data-id="VRMAXCAR" data-function="formataDinheiro" data-align-right="true">{{ 'global.form.vrmaxcar.ds' | translate }}</th>
+        <th data-id="VRMAXESC" data-function="formataDinheiro" data-align-right="true">{{ 'global.form.vrmaxesc.ds' | translate }}</th>
+        <th data-id="SNSEGPRO" data-function="funcSN" data-align-left="true">{{ 'global.form.snsegpro.ds' | translate }}</th>
+        <th data-id="G041_RSSEGURA" data-align-left="true"> Seguradora</th>
+        <th data-id="DTVENAPO" data-function="dataDG" data-align-left="true">{{ 'global.form.dtvenapo.ds' | translate }}</th>
+        <th data-id="G014_DSOPERAC"data-align-left="true" >{{ 'global.form.dsoperac.ds' | translate }}</th>
+    </app-datagrid>
+  </app-cards>
+</div>
+<br>
+
+<!--  4 - APOLICE NOVO/EDITAR -->
+<ngb-accordion #acf="ngbAccordion" activeIds="1" *ngIf="exibir == 4" >
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormApolice"  >
+        <input type="text" id="IDG047" formControlName="IDG047" hidden> <!-- CHAVE PRIMÁRIA    -->
+        <input type="text" id="IDG041" formControlName="IDG041" hidden> <!-- CHAVE ESTRANGEIRA -->
+
+        <div class="row">
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-input
+              id="NRAPOSEG"
+              name="NRAPOSEG"
+              [isRequired] ='true'
+              type="text"
+              placeholder="{{ 'global.form.nraposeg.ds' | translate }}"
+              [formInput] = "objFormApolice"
+              [formControlNameInput] = "'NRAPOSEG'"
+              label="{{ 'global.form.nraposeg.ds' | translate }}"
+            >
+            </app-input>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-input
+              id="VRMAXCAR"
+              name="VRMAXCAR"
+              [isRequired] ='true'
+              type="number"
+              placeholder="{{ 'global.form.nraposeg.ds' | translate }}"
+              [formInput] = "objFormApolice"
+              [formControlNameInput] = "'VRMAXCAR'"
+              label="{{ 'global.form.vrmaxcar.ds' | translate }}"
+            >
+            </app-input>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-input
+              id="VRMAXESC"
+              name="VRMAXESC"
+              [isRequired] ='true'
+              type="number"
+              placeholder="{{ 'global.form.nraposeg.ds' | translate }}"
+              [formInput] = "objFormApolice"
+              [formControlNameInput] = "'VRMAXESC'"
+              label="{{ 'global.form.vrmaxesc.ds' | translate }}"
+            >
+            </app-input>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-operacao
+                [objForm]="objFormApolice"
+                [formName]="'IDG014'">
+            </app-single-operacao>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <div class="row">
+              <div class="col-md-11">
+                <app-single-seguradora
+                    [objForm]  = "objFormApolice"
+                    [formName] = "'IDG041'">
+                </app-single-seguradora>
+              </div>
+              <div class="col-md-1 bloco-icon">
+                <i (click)="openModalSeguradora()" class="fas fa-pen-square editar" style="margin-top: 30px;"></i>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-sim-nao-todos
+                comboFix="simNao"
+                strLabel="{{ 'global.form.snsegpro.ds' | translate }}"
+                [objForm]="objFormApolice"
+                [formName]="'SNSEGPRO'">
+            </app-single-sim-nao-todos>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <label>{{ 'global.form.dtvenapo.ds' | translate }}</label>
+            <app-datapicker-popup
+              navegacao="none"
+              [outsideDays]='visible'
+              [mesesDisplay]='1'
+              [desabilitar]='false'
+              [formDatePop] = "objFormApolice"
+              [formControlNameDatePop] = "'DTVENAPO'"
+            >
+            </app-datapicker-popup>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              model="{{objFormApolice.controls['STCADAST'].value}}"
+              [formOF]="objFormApolice"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-7"></div>
+          <div class="col-sm-5 col-md-5 col-lg-5 text-right">
+
+            <!-- CANCELAR -->
+            <app-botoes
+            class="danger"
+            icon="far fa-times-circle"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="breadcrumbs.goBack()">
+            </app-botoes>
+
+            <!-- SALVAR -->
+            <app-botoes
+            *ngIf="checkSaveApolice"
+            class="success"
+            icon="far fa-save"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveApolice();">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+
+
+<!-- MODAL SEGURADORA -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalSeguradora let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Seguradoras</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <ngb-accordion #acd="ngbAccordion" activeIds="1" *ngIf="exibirModal == 1" >
+      <ngb-panel id="1" title="Seguradoras">
+        <ng-template ngbPanelContent>
+
+          <app-datagrid
+              [id]="'seguradoras'"
+              [url]="urlRotaGridSegura"
+              [tela]="149"
+              [telaGlobal]="[
+                      {'id' : 3, 'metodo' : 'deleteDePara',  'icone':'fa fa-minus'},
+                      {'id' : 4, 'metodo' : 'addSeguradora', 'icone':'fa fa-plus'},
+                      {'id' : 'excel'},
+                      {'id' : 'colvis'} ]"
+              [telaAcoes]="[
+                      {'id' : 1, 'metodo' : 'viewSeguradora',   'icone': 'fa fa-eye'},
+                      {'id' : 2, 'metodo' : 'updateSeguradoras',   'icone': 'fas fa-pencil-alt'},
+                      {'id' : 3, 'metodo' : 'openDeleteSeguradora', 'icone': 'fas fa-trash-alt'}]"
+              [nivel]="0"
+              [thisParent]="this">
+
+              <th data-id="IDG041" data-type-column="checkbox">
+                <label class="custom-control custom-checkbox">
+                <input id="seguradoras-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+                <span class="custom-control-indicator"></span>
+                </label>
+              </th>
+
+              <th data-id="IDG041"   data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+              <th data-id="IDG041"   data-align-right="true">Cód. Seguradora</th>
+              <th data-id="RSSEGURA" data-align-left="true">{{ 'global.form.rssegura.pd' | translate }}</th>
+              <th data-id="CJSEGURA" data-function="validCnpjCpf" data-align-right="true">{{ 'global.form.cjsegura.pd' | translate }}</th>
+              <th data-id="IESEGURA" data-function="validCnpjCpf" data-align-right="true">{{ 'global.form.ietransp.pd' | translate }}</th>
+              <th data-id="STCADAST" data-function="stCadastDG"   data-align-left="true">{{ 'global.form.stcadast.pd' | translate }}</th>
+              <th data-id="DTCADAST" data-function="dataDG"       data-align-left="true">{{ 'global.form.dtcadast.pd' | translate }}</th>   
+          </app-datagrid>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" *ngIf="exibirModal == 2" >
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormSegura" (ngSubmit)="saveSeguradora()" >
+            <input type="text" id="IDG041" formControlName="IDG041" hidden>
+            <div class="row">
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="RSSEGURA"
+                  name="RSSEGURA"
+                  [isRequired] ='true'
+                  placeholder="{{ 'global.form.rssegura.pd' | translate }}"
+                  [formInput] = "objFormSegura"
+                  [formControlNameInput] = "'RSSEGURA'"
+                  label="{{ 'global.form.rssegura.pd' | translate }}"
+                >
+                </app-input>
+              </div>
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="CJSEGURA"
+                  name="CJSEGURA"
+                  [isRequired] ='true'
+                  typeMask="cnpj"
+                  placeholder="{{ 'global.form.cjsegura.pd' | translate }}"
+                  [formInput] = "objFormSegura"
+                  [formControlNameInput] = "'CJSEGURA'"
+                  label="{{ 'global.form.cjsegura.pd' | translate }}"
+                >
+                </app-input>
+              </div>
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="IESEGURA"
+                  name="IESEGURA"
+                  [isRequired] ='true'
+                  placeholder="{{ 'global.form.ietransp.pd' | translate }}"
+                  [formInput] = "objFormSegura"
+                  [formControlNameInput] = "'IESEGURA'"
+                  label="{{ 'global.form.ietransp.pd' | translate }}"
+                >
+                </app-input>
+              </div>
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-single-situacao-cadastro
+                  name="STCADAST"
+                  class="default"
+                  model="{{objFormSegura.controls['STCADAST'].value}}"
+                  [formOF]="objFormSegura"
+                  [formControlNameOF]="'STCADAST'"
+                ></app-single-situacao-cadastro>
+              </div>
+            </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-5"></div>
+              <div class="col-sm-7 col-md-7 col-lg-7 text-right">
+
+                <!-- CANCELAR -->
+                <app-botoes
+                class="danger"
+                icon="far fa-times-circle"
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="voltarModal();">
+                </app-botoes>
+
+                <!-- SALVAR -->
+                <app-botoes
+                *ngIf="checkViewDePara != 1"
+                class="success"
+                icon="far fa-save"
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="saveSeguradora();">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Voltar</button>
+    <!-- <button *ngIf="arTransportadoras.length != 0" type="button" class="btn btn-success" (click)="updateTransportadora()">{{ 'global.form.botoes.sa' | translate }}</button> -->
+  </div>
+</ng-template>

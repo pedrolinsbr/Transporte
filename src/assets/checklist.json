@@ -1,0 +1,13 @@
+{
+    "data": [
+{ "LINHA": "1", "ID": "1010", "ID_CARGA": "00001", "TIPO_VEICULO": "Carreta", "DATA": "02/03/2018", "PLACA_VEICULO": "HMB-7128", "PLACA_REB1": "HMB-7777", "PLACA_REB2": "HMB-7777" },
+{ "LINHA": "2", "ID": "2020", "ID_CARGA": "00002", "TIPO_VEICULO": "Truck",   "DATA": "02/03/2018", "PLACA_VEICULO": "HMB-7128", "PLACA_REB1": "HMB-7777", "PLACA_REB2": "HMB-7777" },
+{ "LINHA": "3", "ID": "3030", "ID_CARGA": "00003", "TIPO_VEICULO": "Bitrem",  "DATA": "02/03/2018", "PLACA_VEICULO": "HMB-7128", "PLACA_REB1": "HMB-7777", "PLACA_REB2": "HMB-7777" },
+{ "LINHA": "4", "ID": "4040", "ID_CARGA": "00004", "TIPO_VEICULO": "Truck",   "DATA": "02/03/2018", "PLACA_VEICULO": "HMB-7128", "PLACA_REB1": "HMB-7777", "PLACA_REB2": "HMB-7777" },
+{ "LINHA": "5", "ID": "5005", "ID_CARGA": "00005", "TIPO_VEICULO": "Bitrem",  "DATA": "02/03/2018", "PLACA_VEICULO": "HMB-7128", "PLACA_REB1": "HMB-7777", "PLACA_REB2": "HMB-7777" }
+
+],
+"recordsTotal": 5,
+"recordsFiltered": 5,
+"draw": "null"
+}

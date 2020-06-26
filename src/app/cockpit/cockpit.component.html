@@ -1,0 +1,211 @@
+<!-- <app-breadcrumbs
+  #breadcrumbs
+  home="Liberação ocorrências"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs> -->
+
+<div [hidden]="!(exibir == 1)" >
+
+  <!-- <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-multi-transportadora
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG024'">
+          </app-multi-transportadora>
+        </div>
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <app-single-situacao-cadastro
+            name="STCADAST"
+            class="default"
+            model="{{objFormFilter.controls['STCADAST'].value}}"
+            [formOF]="objFormFilter"
+            [formControlNameOF]="'STCADAST'"
+          ></app-single-situacao-cadastro>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter> -->
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.ai' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+
+    <div class="row">
+      
+<!--       <div class="col-sm-2">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="&nbsp;&nbsp;Motorista"
+          icon="fas fa-address-card"
+          (click)="atualizaMotorista()"
+          outline>
+        </app-botoes>
+      </div> -->
+
+<!--       <div class="col-sm-2">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="&nbsp;&nbsp;Veículo"
+          icon="fas fa-car"
+          (click)="atualizaVeiculo()"
+          outline>
+        </app-botoes>
+      </div> -->
+
+<!--       <div class="col-sm-2">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="&nbsp;&nbsp;Tipo de Veículo"
+          icon="fas fa-list-ul"
+          (click)="atualizaTipoVeiculo()"
+          outline>
+        </app-botoes>
+      </div> -->
+
+<!--       <div class="col-sm-2">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="&nbsp;&nbsp;Carga"
+          icon="fas fa-boxes"
+          (click)="atualizaCarga()"
+          outline>
+        </app-botoes>
+      </div> -->
+
+<!--       <div class="col-sm-2">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="&nbsp;&nbsp;Desmontar Carga"
+          icon="fas fa-puzzle-piece"
+          (click)="atualizaDesmontarCarga()"
+          outline>
+        </app-botoes>
+      </div> -->
+
+<!--       <div class="col-sm-2">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="&nbsp;&nbsp;Cancelar Carga"
+          icon="fas fa-ban"
+          (click)="atualizaCancelarCarga()"
+          outline>
+        </app-botoes>
+      </div> -->
+
+    </div>
+<!-- 
+    <br>
+    <br> -->
+
+    <div class="row">
+
+      <div class="col-sm-3">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="Sincronizar"
+          icon="fas fa-upload"
+          (click)="atualizaSubirConhecimento()"
+          outline>
+        </app-botoes>
+      </div>
+
+
+
+      <div class="col-sm-3">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="Envio Cargas"
+          icon="fas fa-boxes"
+          (click)="atualizaCarga3PL()"
+          outline>
+        </app-botoes>
+      </div>
+
+
+<!--       <div class="col-sm-3">
+        <app-botoes
+          class="success"
+          size="max-width"
+          text="Verificar CT-e 4PL"
+          icon="fas fa-boxes"
+          (click)="verificaCte4pl()"
+          outline>
+        </app-botoes>
+      </div>
+ -->
+
+    </div>   
+
+  </app-cards>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'cockpit'"
+        [url]="urlCockpitGrid"
+        [tela]="175"
+        [telaGlobal]="[]"
+        [telaAcoes]="[]"
+        [nivel]="0"
+        [thisParent]="this">
+
+
+        <th data-id="IDS033" data-type-column="details" data-exec="detailCockiptTransp" data-object="true">Detalhes</th>
+        <th data-id="IDS033" data-align-right="true">Código</th>
+        <th data-id="URL" data-align-left="true">URL</th>
+        <th data-id="DSFUNCAO" data-align-left="true">Função</th>
+        <th data-id="STATREQ" data-align-right="left" data-function="registroNullDG" >Status</th>
+        <th data-id="CDRETORN" data-align-right="true" data-function="registroNullDG" >Retorno</th>
+        <th data-id="QTIDS34" data-align-right="true">Quantidade</th>
+        <th data-id="DTGERLOG" data-function="dataTimeDG" data-align-right="true">Data</th>
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+
+<!-- MODAL MOTORISTA -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalReturn let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Dados</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" style="text-align: justify !important;">
+     {{txtReturn}}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>

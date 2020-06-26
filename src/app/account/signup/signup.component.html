@@ -1,0 +1,53 @@
+<div class="d-flex align-items-stretch flex-nowrap min-height-100 h-100">
+  <div class="bg-cover bg-2 hidden-sm-down col-md-6 col-lg-8"></div>
+  <div class="card card-block mb-0 rounded-0 p-5 col-sm-12 col-md-6 col-lg-4">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <img src="assets/images/logo.png" class="avatar-xs mb-1" alt="">
+        <p class="ff-headers text-uppercase">Crie sua Conta</p>
+      </div>
+      <fieldset class="form-group" [ngClass]="{'has-danger': form.controls['uname'].hasError('required') && form.controls['uname'].touched}">
+        <label for="username">
+          Nome de Usuário
+        </label>
+        <input type="text" class="form-control" placeholder="Nome de Usuário" [formControl]="form.controls['uname']" [ngClass]="{'form-control-danger': form.controls['uname'].hasError('required') && form.controls['uname'].touched}"/>
+        <div class="form-control-feedback" *ngIf="form.controls['uname'].hasError('required') && form.controls['uname'].touched">O Nome de Usuário é obrigatório</div>
+      </fieldset>
+      <fieldset class="form-group" [ngClass]="{'has-danger': form.controls['password'].hasError('required') && form.controls['password'].touched}">
+        <label for="password">
+          Senha
+        </label>
+        <input type="password" class="form-control" placeholder="********" [formControl]="form.controls['password']" [ngClass]="{'form-control-danger': form.controls['password'].hasError('required') && form.controls['password'].touched}"/>
+        <div class="form-control-feedback" *ngIf="form.controls['password'].hasError('required') && form.controls['password'].touched">A Senha é obrigatória</div>
+      </fieldset>
+      <fieldset class="form-group" [ngClass]="{'has-danger': form.controls['confirmPassword'].hasError('required') && form.controls['confirmPassword'].touched}">
+        <label for="password">
+          Confirme sua senha
+        </label>
+        <input type="password" class="form-control" placeholder="********" [formControl]="form.controls['confirmPassword']" [ngClass]="{'form-control-danger': form.controls['confirmPassword'].hasError('required') && form.controls['confirmPassword'].touched}"/>
+        <div class="form-control-feedback" *ngIf="form.controls['confirmPassword'].hasError('required') && form.controls['confirmPassword'].touched">Confirme sua senha</div>
+      </fieldset>
+      <label class="custom-control custom-checkbox mb-1">
+        <input type="checkbox" class="custom-control-input">
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Eu aceito os termos de uso.</span>
+      </label>
+      <div class="block mb-3"></div>
+      <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Criar</button>
+      <a class="btn btn-outline-primary btn-link" [routerLink]="['/login']">Login</a>
+    </form>
+
+    <footer class="footer-auths">
+      <nav class="navbar-light main-footer small">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:;">
+              <span>Copyright &copy; 2017</span> <span class="ff-headers text-uppercase">Bravo Serviços Logisticos.</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </footer>
+    
+  </div>
+</div>

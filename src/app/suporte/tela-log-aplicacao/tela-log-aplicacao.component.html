@@ -1,0 +1,55 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger" (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate
+      }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteCarga()">{{
+      'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+<app-breadcrumbs #breadcrumbs home="Logs Aplicação" [arBreadcrumbs]="arBreadcrumbsLocal" (goHome)="goHome($event)" (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div  style="padding-top: 15px;">
+
+  <app-cards-filter titleDrop="{{ 'global.form.filtros.pd' | translate }}" nameSubmitFunction="filtrar"
+    nameClearFunction="limpar" [isCollapsed]="true" [dropdown]="true" [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter">
+      <div class="row">
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+              <app-input id="IDG017" name="IDG017" [isRequired]='true' [formInput]="objFormFilter"
+                [formControlNameInput]="'IDG017'" [label]="'Numero do Logger'">
+              </app-input>
+            </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards titleDrop="{{ 'global.form.registros.pd' | translate }}" [isCollapsed]="collappsed" [dropdown]="true"
+  >
+    <app-datagrid [id]="'logAplicacao'" 
+                  [url]="urlLogAplicacaoGrid" 
+                  [tela]="374" 
+                  [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+      [telaAcoes]="[]" [nivel]="0" [thisParent]="this" [notOnLoad]="true">
+      <th data-id="IDG017"   data-align-right="true">Nr. Logger</th>
+      <th data-id="NMUSUARI"   data-align-left="true">Nome Usuário</th>
+      <th data-id="DTREGIST" data-align-left="true">Data Registro</th>
+      <th data-id="TXMENSAG" data-align-left="true" data-object="true">Mensagem</th>
+      <th data-id="TXTRACE"  data-align-left="true" data-object="true">Texto Race</th>
+      <th data-id="TXSQL"    data-align-left="true" data-object="true">SQL</th>
+      <th data-id="DSPARAME" data-align-left="true">Descrição Parâmetro</th>
+      <th data-id="DSMODULO" data-align-left="true">Descrição Modulo</th>
+      <th data-id="DSURL"    data-align-left="true">URL</th>
+      <th data-id="IDUSUDB"  data-align-left="true">ID Usuário Banco</th>
+    </app-datagrid>
+  </app-cards>
+</div>

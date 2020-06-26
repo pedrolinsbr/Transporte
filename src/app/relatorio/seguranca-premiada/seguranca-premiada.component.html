@@ -1,0 +1,272 @@
+<app-breadcrumbs
+    #breadcrumbs
+    home="Filtros"
+    [arBreadcrumbs]="arBreadcrumbsLocal"
+    (goHome)="goHome($event)"
+    (clearNext)="clearNext($event)"
+    [context]="this"
+    size="sm"
+>
+</app-breadcrumbs>
+
+<div style="padding-top: 15px; padding-bottom: 15px;">
+
+    <!-- INÍCIO FILTROS -->
+    <app-cards-filter
+        titleDrop="Filtros"
+        nameSubmitFunction="filtrar"
+        nameClearFunction="limpar"
+        [dropdown]="true"
+        [isCollapsed]="true"
+        [context]="this">
+
+        <div class="row">
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <app-single-campanha
+                    [objForm]  = "objFormFilter"
+                    [formName] = "'IDG090'">
+                </app-single-campanha>
+            </div>
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-single-mes-ano-campanha
+                    strLabel   = "Mês inicial"
+                    [objForm]  = "objFormFilter"
+                    [formName] = "'MESINI'">
+                </app-single-mes-ano-campanha>
+            </div>
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <app-single-mes-ano-campanha
+                    strLabel   ="Mês final"
+                    [objForm]  = "objFormFilter"
+                    [formName] = "'MESFIM'">
+                </app-single-mes-ano-campanha>
+            </div>
+            
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <app-single-motorista-campanha
+                    [objForm]  = "objFormFilter"
+                    [formName] = "'IDG099'"
+                    [depName]  = "'IDG090'">
+                </app-single-motorista-campanha>
+            </div>
+
+        </div>
+
+    </app-cards-filter>
+    <!-- FIM FILTROS -->
+
+    <!-- INÍCIO GRID -->
+    <app-cards
+        titleDrop="Registros"
+        *ngIf="controlViewTable == 1"
+        [dropdown]="true">
+
+        <app-datagrid
+            [id]="'lancGrid'"
+            [url]="urlGrid"
+            [tela]="382"
+            [allList]="'true'"
+            [telaGlobal]="telaGlobal"
+            [telaAcoes]="[{'id' : 1,  'metodo' : 'visualizar', 'icone': 'fa fa-eye'}]"
+            [nivel]="0"
+            [thisParent]="this"
+            [notOnLoad] = "true"
+            [order]="[1, 'asc']"
+            [excelServer]="false"> 
+          
+          <th data-id="IDG099"     data-type-column="actions" data-object="true">Ações</th>
+          <th data-id="NRCLASSI"   data-align-right="true">Classificação</th>
+          <th data-id="NMMOTORI"   data-align-left ="true">Motorista</th>
+          <th data-id="NMTRANSP"   data-align-left ="true">Transportadora</th>
+          <th data-id="VLTOTAL"    data-align-right="true">Pont. Total</th>
+          <th data-id="QTDMESTOT"  data-align-right="true">Qtd. Meses</th>
+          <th data-id="VLMDTOTA"   data-align-right="true">Média Pont. Total</th>
+
+        </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID-->
+
+    <!-- MODAL -->
+    <ng-template ngbModalContainer></ng-template>
+    <ng-template #modalLancamento let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h6 class="modal-title text-uppercase">Informações</h6>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        <div class="modal-body" style="font-size: 14px;">
+
+            <div class="row" style="text-transform: capitalize;">
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <b>Campanha: </b>{{arGridLancamentos[0].DSCAMPAN}}
+                </div>
+                <!-- <div class="col-sm-4 col-md-4 col-lg-4">
+                    <b>Período: </b>{{utilServices.dataTimeDG(arGridLancamentos[0].DTINICIO)}} até {{utilServices.dataTimeDG(arGridLancamentos[0].DTFIM)}} 
+                </div> -->
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <b>Pont. Mensal da Campanha: </b>{{arGridLancamentos[0].PTMENSAL}} pts
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <b>Prêmio: </b>{{arGridLancamentos[0].DSPREMIA}} 
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:10px;margin-bottom:20px;text-transform: capitalize;">
+                
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <b>Motorista: </b>{{arGridLancamentos[0].NMMOTORI}}
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <b>Transportadora: </b>{{arGridLancamentos[0].NMTRANSP}}
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <b>Pont. Total: </b>{{arGridLancamentos[0].VLTOTAL}} pts
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom:20px;text-transform: capitalize;">
+                
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <b>Dt. Admissão: </b>{{utilServices.dataTimeDG(arGridLancamentos[0].DTADMMOT)}}
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <b>Dt. Demissão: </b>{{utilServices.dataTimeDG(arGridLancamentos[0].DTDEMMOT)}}
+                    </div>
+
+            </div>
+               
+            <ngb-accordion #acc="ngbAccordion" activeIds="1">
+
+                <ngb-panel id="1" title="{{this.titleModal}}"> 
+
+                    <ng-template ngbPanelContent>
+
+    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-body my-bg">
+                    
+                                <table class="table table-sm table-bordered table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Apontamento</th>
+                                            <th>Tipo</th>
+                                            <th>Pontuação</th>
+                                            <th>Qtd. Lançamento</th>
+                                            <th>Dt. Lançamento</th>
+                                            <th>Sit. Lançamento</th>
+                                            <th>Computado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngFor="let info of arGridLancamentos; let i = index;" >
+                                    <tr>
+                                        <td style="width: 5%;vertical-align:middle;">00{{i+1}}</td>
+                                        <td class="{{arGridLancamentos[i].STLANCAM == 3 ? 'inativo' : null}}" style="width: 20%">{{arGridLancamentos[i].DSAPONTA}}</td>
+                                        <td class="{{arGridLancamentos[i].STLANCAM == 3 ? 'inativo' : null}}" style="width: 20%">{{utilServices.tipoApontamento(arGridLancamentos[i].TPAPONTA)}}</td>
+                                        <td class="{{arGridLancamentos[i].STLANCAM == 3 ? 'inativo' : null}}" style="width: 10%">{{arGridLancamentos[i].VRPONTUA}} pts</td>
+                                        <td class="{{arGridLancamentos[i].STLANCAM == 3 ? 'inativo' : null}}" style="width: 10%">{{arGridLancamentos[i].QTDAPONT}}</td>
+                                        <td class="{{arGridLancamentos[i].STLANCAM == 3 ? 'inativo' : null}}" style="width: 20%">{{utilServices.dataTimeDG(arGridLancamentos[i].DTAPONTA)}}</td>
+                                        <td class="{{arGridLancamentos[i].STLANCAM == 3 ? 'inativo' : null}}" style="width: 15%">{{utilServices.sitLancamento(arGridLancamentos[i].STLANCAM,arGridLancamentos[i].SNCOMPUT)}}</td>
+                                        <td class="{{arGridLancamentos[i].STLANCAM == 3 ? 'inativo' : null}}" style="width: 15%">{{utilServices.sitComputado(arGridLancamentos[i].SNCOMPUT)}}</td>
+                                        
+                                    </tr>
+                                    </tbody>
+                                    <tbody *ngIf="arGridLancamentos.length == 0" >
+                                        <tr>
+                                            <td colspan="6" style="text-align: center;">Nenhum lançamento encontrado para este motorista.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+    
+                    </ng-template>
+                 </ngb-panel> 
+    
+            </ngb-accordion>
+                      
+        </div>
+            
+        <div class="modal-footer">
+            <button type="button"  class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+        </div>
+    </ng-template>
+    <!-- FIM-->
+
+    <ng-template #modalVisualizarFechamento>
+        <div class="modal-header">
+            <h6 class="modal-title text-uppercase">Fechamento</h6>
+                <button type="button" class="close" aria-label="Close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" style="color: #464444">
+            <ngb-accordion #acc="ngbAccordion" activeIds="1">
+    
+                <ngb-panel id="1" title="Detalhes">  
+    
+                <ng-template ngbPanelContent>
+    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-body my-bg">
+                    
+                                <table class="table table-sm table-bordered table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Usuário</th>
+                                            <th>Filial</th>
+                                            <th>Tipo Fechamento</th>
+                                            <th>Dt. Fechamento</th>
+                                            <th style="text-align: center;">Aprovar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngFor="let info of arListaFechamento; let i = index;" >
+                                    <tr>
+                                        <td style="width: 5%;vertical-align:middle; padding: 15px;">00{{i+1}}</td>
+                                        <td style="width: 30%;vertical-align:middle;">{{arListaFechamento[i].NMUSUARI}}</td>
+                                        <td style="width: 30%;vertical-align:middle;">{{arListaFechamento[i].NMTRANSP}}</td>
+                                        <td style="width: 10%;vertical-align:middle;">{{arListaFechamento[i].DSVALUE}}</td>
+                                        <td style="width: 10%;vertical-align:middle;">{{arListaFechamento[i].DTFECHAM}}</td>
+                                        <td style="width: 15%; text-align: center;vertical-align:middle;">
+                                            
+                                            <i *ngIf="arListaFechamento[i].STFECHAM" style="color: green;" class="fas fa-check-circle"></i>
+    
+                                            <i *ngIf="arListaFechamento[i].STFECHAM == 0" style="color:#DAA520;" class="fas fa-exclamation-circle"></i>                                           
+                                        
+                                        </td>
+                                        
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+    
+                </ng-template>
+    
+                </ngb-panel>  
+        
+            </ngb-accordion>
+    
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" (click)="gerarArquivoM2()">Continuar</button>
+        </div>
+    </ng-template>
+
+</div>

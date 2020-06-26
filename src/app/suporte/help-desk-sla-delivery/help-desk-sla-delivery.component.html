@@ -1,0 +1,290 @@
+<div>
+
+  <div *ngIf="false" style="display: flex; overflow-x: auto;">
+    <div *ngFor="let propIndicador of propIndicadores"
+      style="display: flex; overflow-x: auto; color: whitesmoke; width: 16% ; margin-left: 0.5%">
+      <div class="card card-body card-widget card-inverse" [ngStyle]="{'background-color':propIndicador.COR}">
+        <div class="mr-auto">
+          <h3 class="fw-300 mb-0">{{propIndicador.QTDMDF}}</h3>
+          <small>{{ propIndicador.NMTRANSP }}</small>
+
+        </div>
+        <div class="d-block">
+
+          <i class="{{ propIndicador.ICON }}" style='font-size:24px'></i>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <app-cards-filter titleDrop="Filtros" nameSubmitFunction="filtroSLA" nameClearFunction="limpar" [isCollapsed]="true"
+    [dropdown]="true" [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter">
+      <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        <label>Delivery</label>
+        <app-chips-input
+          [typeInput]="'numberText'"
+          [chips]='arIdsIDG043'
+          [removable]='true'
+          [addOnBlur]='true'
+          [duplicate]='false'
+          [objStyle]="objStyle"
+          [inputSpace]='true'
+        >
+        </app-chips-input>
+      </div>
+
+      <br />
+    </form>
+
+  </app-cards-filter>
+</div>
+<ngb-accordion #acc="ngbAccordion" activeIds="1">
+
+
+  <ngb-panel id="1" title="Relatório">
+    <ng-template ngbPanelContent>
+      <br />
+      <!-- <div class="row" *ngFor="let dlv of objDelivery.delivery" style="margin-bottom: 5%;"> -->
+        <table class="table table-striped table-bordered table-sm table-responsive" style="white-space: nowrap;">
+          <tr>
+            <th>IDG043</th>
+            <th>DELIVERY</th>
+            <th>TIPO</th>
+            <th>CIDADE ORIGEM</th>
+            <th>CIDADE DESTINO</th>
+            <th>TIPO DOCUMENTO</th>
+            <th>PRODUTO DESTAQUE</th>
+            <th>OPERAÇÃO</th>
+
+
+            <th>DT. CRIAÇÃO</th>
+            <th>DT. LANÇAMENTO</th>
+            <th>DT. INICIAL</th>
+            <th>HORÁRIO DE CORTE</th>
+            <th>DATA PÓS CORTE</th>
+            <th>DIA</th>
+            <th>DIA ROTA</th>
+            <th>DT. VEN. ROTA</th>
+            <th>DT. COM COLETA</th>
+            <th>DT. SLA COM DIAS ÚTEIS</th>
+
+
+            <th>ROTAS</th>
+            <th>PRAZO</th>
+
+          </tr>
+          <tr *ngFor="let dlv of objDelivery.delivery">
+            <td>{{dlv.IDG043}}</td> 
+            <td>{{dlv.CDDELIVE}}</td>
+            <td>{{utilServices.tipoNegocio(dlv.TPDELIVE)}}</td>
+            <td>{{dlv.IDG003RE}} - {{dlv.NMCIDARE}}</td>
+            <td>{{dlv.IDG003DE}} - {{dlv.NMCIDADE}}</td>
+            <td>{{utilServices.tipoTransporte(dlv.TPTRANSP)}}</td>
+            <td>{{utilServices.simNao(dlv.TPLG)}}</td>
+            <td>{{dlv.IDG014}}</td>
+
+
+            <td>{{utilServices.dataTimeDG(dlv.DTDELIVE)}}</td>
+            <td>{{utilServices.dataTimeDG(dlv.DTCHEGAD)}}</td>
+            <td>{{utilServices.dataTimeDG(dlv.DTLANCTO)}}</td>
+            <td>{{utilServices.dataTimeDG(dlv.CORTE)}}</td>
+            <td>{{utilServices.dataDG(dlv.DATAATUAL)}}</td>  
+            <td>{{utilServices.diaTimeLine(dlv.DIAATUAL)}}</td>
+            <td>{{utilServices.diaTimeLine(dlv.DIASELECIONADOROTA)}}</td>
+            <td>{{utilServices.dataDG(dlv.DATAVENCIMENTOROTA)}}</td>
+            <td>{{utilServices.dataDG(dlv.DATACOLETA)}}</td>     
+            <td>{{utilServices.dataDG(dlv.DATASLAUTIL)}}</td>
+
+
+            <td>
+              <table *ngFor="let rota of dlv.ROTAS">
+                <tr>
+                  <th>Cód. Evo.</th>
+                  <th>Cidade</th>
+                  <th>Transportadora</th>
+                  <th>Delivery</th>
+                  <th>Dom.</th>
+                  <th>Seg.</th>
+                  <th>Ter.</th>
+                  <th>Qua.</th>
+                  <th>Qui.</th>
+                  <th>Sex.</th>
+                  <th>Sab.</th>
+                </tr>
+                <tr>
+                  <td>{{rota.IDT001}}</td>
+                  <td>{{rota.IDG003}}</td>
+                  <td>{{rota.IDG024}}</td>
+                  <td>{{rota.IDG043}}</td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA0 >= 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA0 >= 1, 'border-danger': rota.SNDIA0 === 0 }">{{rota.SNDIA0 >= 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA1 >= 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA1 >= 1, 'border-danger': rota.SNDIA1 === 0 }">{{rota.SNDIA1 >= 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA2 >= 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA2 >= 1, 'border-danger': rota.SNDIA2 === 0 }">{{rota.SNDIA2 >= 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA3 >= 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA3 >= 1, 'border-danger': rota.SNDIA3 === 0 }">{{rota.SNDIA3 >= 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA4 >= 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA4 >= 1, 'border-danger': rota.SNDIA4 === 0 }">{{rota.SNDIA4 >= 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA5 >= 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA5 >= 1, 'border-danger': rota.SNDIA5 === 0 }">{{rota.SNDIA5 >= 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA6 >= 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA6 >= 1, 'border-danger': rota.SNDIA6 === 0 }">{{rota.SNDIA6 >= 1 ? 'Sim' : 'Não'}}</span></td>
+                </tr>
+              </table>
+
+            </td>
+            <td>
+              <!-- {{dlv.CIDADETARIFA}} -->
+
+              <table *ngFor="let dlv2 of dlv.CIDADETARIFA">
+                <tr>
+                  <th>Cód. Evo.</th>
+                  <th>LTL</th>
+                  <!-- <th>QTDIACOL</th> -->
+                  <th>FTL</th>
+                  <th>ITL</th>
+                  <!-- <th>HOFINOTI</th> -->
+                </tr>
+                <tr>
+                  <td>{{utilServices.numberNullDG(dlv2.IDG053)}}</td> 
+                  <td>{{dlv2.QTDIAENT}}</td>
+                  <!-- <td>{{dlv2.QTDIACOL}}</td> -->
+                  <td>{{dlv2.QTDIENLO}}</td>
+                  <td>{{dlv2.QTDIENIT}}</td>
+                  <!-- <td>{{dlv2.HOFINOTI}}</td> -->
+                </tr>
+              </table>
+
+            </td>
+            
+          </tr>
+
+<!-- 
+          <th style="font-size: 120%;">
+            Delivery: {{dlv.IDG043}}
+          </th>
+
+
+          <tr>
+            <strong>Código Delivery: </strong>
+          </tr>
+          <tr>
+            {{dlv.CDDELIVE != null ? dlv.CDDELIVE : 'Não possui código de Delivery'}}
+          </tr>
+
+          <tr>
+            <strong>Data atual: </strong>
+          </tr>
+          <tr>
+            {{dlv.DATAATUAL != null ? utilServices.dataTimeDG(dlv.DATAATUAL) : 'Não possui data atual'}}
+          </tr>
+
+          <tr>
+            <strong>Data coleta: </strong>
+          </tr>
+          <tr>
+            {{dlv.DATACOLETA != null ? utilServices.dataTimeDG(dlv.DATACOLETA) : 'Não possui data de coleta'}}
+          </tr>
+
+          <tr>
+            <strong>Data SLA: </strong>
+          </tr>
+          <tr>
+            {{dlv.DATASLA != null ? utilServices.dataTimeDG(dlv.DATASLA) : 'Não possui data de SLA'}}
+          </tr>
+
+          <tr>
+            <strong>Data SLA útil: </strong>
+          </tr>
+          <tr>
+            {{dlv.DATASLAUTIL != null ? utilServices.dataTimeDG(dlv.DATASLAUTIL) : 'Não possui data de SLA útil'}}
+          </tr>
+
+          <tr>
+            <strong>Data de Vencimento da Rota: </strong>
+          </tr>
+          <tr>
+            {{dlv.DATAVENCIMENTOROTA != null ? utilServices.dataTimeDG(dlv.DATAVENCIMENTOROTA) : 'Não possui data de vencimento da rota'}}
+          </tr>
+
+          <tr>
+            <strong>Dia Atual: </strong>
+          </tr>
+          <tr>
+            {{dlv.DIAATUAL != null ? utilServices.diaTimeLineRota(dlv.DIAATUAL) : 'Não possui'}}
+          </tr>
+
+          <tr>
+            <strong>Data da delivery: </strong>
+          </tr>
+          <tr>
+            {{dlv.DTDELIVE != null ? utilServices.dataTimeDG(dlv.DTDELIVE) : 'Não possui data da delivery'}}
+          </tr>
+
+          <tr>
+            <strong>Data de lançamento: </strong>
+          </tr>
+          <tr>
+            {{dlv.DTLANCTO != null ? utilServices.dataTimeDG(dlv.DTLANCTO) : 'Não possui data de lançamento'}}
+          </tr>
+
+          <tr>
+            <strong>Cidade tarifa: </strong>
+          </tr>
+          <tr>
+            {{dlv.IDG003 != null ? dlv.IDG003 : 'Não possui cidade tarifa'}}
+          </tr>
+
+          <tr>
+            <strong>Tipo de Delivery: </strong>
+          </tr>
+          <tr>
+            {{dlv.TPDELIVE != null ? dlv.TPDELIVE : 'Não possui'}}
+          </tr>
+
+
+
+          <tr>
+            <strong>Rotas: </strong>
+          </tr>
+          <div class="table-responsive">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th>Cidade Tarifa</th>
+                  <th>Transportadora</th>
+                  <th>Delivery</th>
+                  <th>Domingo</th>
+                  <th>Segunda</th>
+                  <th>Terça</th>
+                  <th>Quarta</th>
+                  <th>Quinta</th>
+                  <th>Sexta</th>
+                  <th>Sabado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let rota of dlv.ROTAS">
+                  <td>{{rota.IDG003}}</td>
+                  <td>{{rota.IDG024}}</td>
+                  <td>{{rota.IDG043}}</td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA0 === 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA0 === 1, 'border-danger': rota.SNDIA0 === 0 }">{{rota.SNDIA0 === 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA1 === 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA1 === 1, 'border-danger': rota.SNDIA1 === 0 }">{{rota.SNDIA1 === 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA2 === 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA2 === 1, 'border-danger': rota.SNDIA2 === 0 }">{{rota.SNDIA2 === 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA3 === 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA3 === 1, 'border-danger': rota.SNDIA3 === 0 }">{{rota.SNDIA3 === 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA4 === 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA4 === 1, 'border-danger': rota.SNDIA4 === 0 }">{{rota.SNDIA4 === 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA5 === 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA5 === 1, 'border-danger': rota.SNDIA5 === 0 }">{{rota.SNDIA5 === 1 ? 'Sim' : 'Não'}}</span></td>
+                  <td><span [ngStyle]="{'color': rota.SNDIA6 === 1 ? '#86c729' : '#d87675'}" class="badge badge-pill border " [ngClass]="{'border-success': rota.SNDIA6 === 1, 'border-danger': rota.SNDIA6 === 0 }">{{rota.SNDIA6 === 1 ? 'Sim' : 'Não'}}</span></td>
+                  
+                </tr>
+                
+              </tbody>
+            </table>
+          </div> -->
+
+          
+
+        </table>
+      <!-- </div> -->
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

@@ -1,0 +1,304 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteQrcode()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalAltera let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Alterar motorista</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" >
+     <div class="row">
+       <div class="col-sm-12 col-md-12 col-lg-12">
+         <app-single-motoristas-full
+             [objForm]  = "objFormAlterar"
+             [formName] = "'IDG031'">
+         </app-single-motoristas-full>
+       </div>
+     </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+    <button type="button" class="btn btn-success" (click)="confirmaAlterar()">Salvar</button>
+  </div>
+</ng-template>
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Qr-code"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+<!--         <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-historico-ocorrencia
+            [objForm] = "objFormFilter"
+            [formName] = "'IDM001'">
+          </app-single-historico-ocorrencia>
+
+        </div> -->
+
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <app-single-motoristas-full
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG031'">
+          </app-single-motoristas-full>
+        </div>
+
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <app-single-status-qrcode
+            strLabel="Status"
+            [objForm] = "objFormFilter"
+            [formName] = "'STQRCODE'">
+          </app-single-status-qrcode>
+        </div>
+
+        
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'qrcode'"
+        [url]="urlQrcodeGrid"
+        [tela]="356"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteQrcode',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addQrcode', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewQrcode',   'icone': 'fa fa-eye'},
+                {'id' : 53, 'metodo' : 'gerarQrcode',   'icone': 'fas fa-angle-double-right'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'},
+                {'id' : 2, 'metodo' : 'openAlterar', 'icone': 'fas fa-pencil-alt'}
+                ]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDM001" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="qrcode-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+        <th data-id="IDM001" data-type-column="actions" data-object="true">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="DSMOBILE" data-align-left="true">Código mobile</th>
+        <th data-id="NRFONE" data-align-left="true" data-function="numberNullDG">Número telefone</th>
+        <th data-id="DSMACADD" data-align-left="true">Mac Address</th>
+        <!-- <th data-id="DSHASHQR" data-align-left="true" data-function="numberNullDG" >Hash code</th> -->
+        <th data-id="STQRCODE" data-align-left="true" data-function="getStatusQrCode">Situação</th>
+        <th data-id="NMMOTORI" data-align-left="true">Motorista</th>
+        <th data-id="DTATUALI" data-align-left="true" data-function="dataDG">Data Atualização</th>
+        <th data-id="NRVERSAO" data-align-right="true" data-function="registroNullDG">Versão</th>
+        <th data-id="DTENTSYN"  data-function="dataTimeDG" data-align-left="true">Ult. Sync</th>
+    </app-datagrid>
+  </app-cards>
+</div>
+
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormConfiguracao" (ngSubmit)="save()" >
+            <input type="text" id="IDM001" formControlName="IDM001" hidden>
+            <div class="row">
+
+              <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                <app-input
+                  id="DSMOBILE"
+                  name="DSMOBILE"
+                  [isRequired] ='true'
+                  placeholder="Código mobile"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'DSMOBILE'"
+                  [label]="'Código mobile'"
+                >
+                </app-input>
+
+              </div>
+
+              <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                <app-input
+                  id="NRFONE"
+                  name="NRFONE"
+                  [isRequired] ='true'
+                  placeholder="Número telefone"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'NRFONE'"
+                  [label]="'Número telefone'"
+                >
+                </app-input>
+              </div>
+
+              <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                <app-input
+                  id="DSMACADD"
+                  name="DSMACADD"
+                  [isRequired] ='true'
+                  placeholder="Mac Address"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'DSMACADD'"
+                  [label]="'Mac Address'"
+                >
+                </app-input>
+
+              </div>
+
+              <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                <app-input
+                  id="DSHASHQR"
+                  name="DSHASHQR"
+                  [isRequired] ='false'
+                  placeholder="Hash code"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'DSHASHQR'"
+                  [label]="'Hash code'"
+                  [disabled]="true"
+                >
+                </app-input>
+
+              </div>
+
+
+              <div class="form-group col-sm-2 col-md-2 col-lg-2">
+                <app-single-motoristas-full
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG031'">
+                </app-single-motoristas-full>
+
+              </div>
+
+            </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-8"></div>
+              <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                <!-- Salvar -->
+                <app-botoes
+                *ngIf="checkViewQrcode != 1"
+                class="success"
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="saveQrcode();">
+                </app-botoes>
+
+                <!-- Cancelar -->
+                <app-botoes
+                class="danger"
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="goHome(event);">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+
+
+
+<!-- QR Code -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalSimularRota let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">QR Code</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+<table style="width: 100%">
+  <tr>
+    <td>
+
+<table style="font-size: 15px;">
+  <tr>
+    <td><span style="    color: #55636B;
+    font-size: 25px;
+    line-height: normal;
+    font-weight: 300;">Para desfrutar dos recursos mobile, siga as instruções:</span>
+    <br></td>
+  </tr>
+
+  <tr>
+    <td><br></td>
+  </tr>
+
+  <tr>
+    <td>1 - Abra o App em seu telefone</td>
+  </tr>
+  <tr>
+    <td>2 - Aponte seu telefone para esta tela para capturar o código</td>
+  </tr>
+  <tr>
+    <td>3 - Aguarde o processo de sincronização</td>
+  </tr>
+  <tr>
+    <td>4 - Você está autenticado ;)</td>
+  </tr>
+
+</table>
+    
+    </td>
+
+    <td>
+
+<qrcode qrdata="{{time}}" [size]="'250'" [level]="'M'" class="qrcode"></qrcode>
+    
+    </td>
+
+  </tr>
+
+  <tr>
+    <td >
+
+    </td>
+  </tr>
+</table>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Voltar</button>
+    <!-- <button *ngIf="arTransportadoras.length != 0" type="button" class="btn btn-success" (click)="updateTransportadora()">{{ 'global.form.botoes.sa' | translate }}</button> -->
+  </div>
+</ng-template>

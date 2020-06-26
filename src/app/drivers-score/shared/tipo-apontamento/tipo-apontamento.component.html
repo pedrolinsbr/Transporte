@@ -1,0 +1,153 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteTipoApontamento()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+<br>
+<app-breadcrumbs
+  #breadcrumbs
+  home="Tipo Apontamento"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-tipo-apontamento
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG092'">
+          </app-single-tipo-apontamento>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'tipoApontamento'"
+        [url]="urlTipoApontamentoGrid"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteTipoApontamento',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addTipoApontamento', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewTipoApontamento',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateTipoApontamento',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDG092" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="tipoApontamento-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+
+
+        <th data-id="IDG092"   data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG092"   data-align-right="true">Código apontamento</th>
+        <th data-id="DSAPONTA" data-align-left="true" >Descrição apontamento</th>
+        <th data-id="TPAPONTA" data-align-left="true" data-function="tipoPontuacao">Tipo apontamento</th>
+        <th data-id="VRPONTUA" data-align-left="true" data-function="registroNullDG">Valor</th>
+        <th data-id="DTCADAST" data-function="dataDG" data-align-left="true">{{ 'global.form.dtcadast.pd' | translate }}</th>   
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormConfiguracao" (ngSubmit)="save()" >
+            <input type="text" id="IDG092" formControlName="IDG092" hidden>
+            <div class="row">
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+
+                <app-input
+                  id="DSAPONTA"
+                  name="DSAPONTA"
+                  [isRequired] ='true'
+                  placeholder="Descrição apontamento"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'DSAPONTA'"
+                  [label]="'Descrição apontamento'"
+                >
+                </app-input>
+
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-single-tipo-pontuacao 
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'TPAPONTA'">
+                </app-single-tipo-pontuacao>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="VRPONTUA"
+                  name="VRPONTUA"
+                  [isRequired] ='false'
+                  placeholder="Valor"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'VRPONTUA'"
+                  [label]="'Valor'"
+                >
+                </app-input>
+      
+              </div>
+            </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-8"></div>
+              <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                <!-- Salvar -->
+                <app-botoes 
+                *ngIf="checkViewTipoApontamento != 1"
+                class="success" 
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="saveTipoApontamento();">
+                </app-botoes>
+                
+                <!-- Cancelar -->
+                <app-botoes 
+                class="danger" 
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="goHome(event);">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>

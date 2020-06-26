@@ -1,0 +1,650 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}"
+    dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"
+      (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success"
+      (click)="confirmaDeleteLancamentoCampanha()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+  <ng-template #modalConfirmaExclusao>
+    <div class="modal-header">
+        <h3 class="mt-0 mb-0 text-uppercase" style="margin-left: 23px !important;"><small class="fw-300">Confirmação remoção</small></h3>
+      <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" style="color: #464444">
+      <div class="row">
+        <div class="col-md-12">
+            Tem certeza que deseja excluir o arquivo?
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" (click)="removeAnexoLancamento()">Sim</button>
+      <button type="button" class="btn btn-danger" (click)="close()">Não</button>
+    </div>
+  </ng-template>
+
+  <ng-template #modalConfirmaFechamento>
+    <div class="modal-header">
+        <h3 class="mt-0 mb-0 text-uppercase" style="margin-left: 23px !important;"><small class="fw-300">Confirmação de fechamento</small></h3>
+      <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" style="color: #464444">
+      <div class="row">
+        <div class="col-md-12">
+            Tem certeza que deseja fechar os lançamentos, referente ao mês de {{this.objFormFilter.value['CDMES'].text}}?
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" (click)="fecharLancamentos()">Sim</button>
+      <button type="button" class="btn btn-danger" (click)="close()">Não</button>
+    </div>
+  </ng-template>
+
+  <ng-template #modalVisualizarFechamento>
+    <div class="modal-header">
+      <h6 class="modal-title text-uppercase">Fechamento</h6>
+    </div>
+    <div class="modal-body" style="color: #464444">
+      <ngb-accordion #acc="ngbAccordion" activeIds="1">
+
+         <ngb-panel id="1" title="Detalhes">  
+
+            <ng-template ngbPanelContent>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-body my-bg">
+                
+                            <table class="table table-sm table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Usuário</th>
+                                        <th>Filial</th>
+                                        <th>Tipo Fechamento</th>
+                                        <th>Dt. Fechamento</th>
+                                        <th style="text-align: center;">Aprovar</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let info of arListaFechamento; let i = index;" >
+                                <tr>
+                                    <td style="width: 5%;vertical-align:middle; padding: 15px;">00{{i+1}}</td>
+                                    <td style="width: 30%;vertical-align:middle;">{{arListaFechamento[i].NMUSUARI}}</td>
+                                    <td style="width: 30%;vertical-align:middle;">{{arListaFechamento[i].NMTRANSP}}</td>
+                                    <td style="width: 10%;vertical-align:middle;">{{arListaFechamento[i].DSVALUE}}</td>
+                                    <td style="width: 10%;vertical-align:middle;">{{arListaFechamento[i].DTFECHAM}}</td>
+                                    <td style="width: 15%; text-align: center;vertical-align:middle;">
+                                      
+                                      <i *ngIf="arListaFechamento[i].STFECHAM" style="color: green;" class="fas fa-check-circle"></i>
+
+                                      <i *ngIf="arListaFechamento[i].STFECHAM == 0 && arListaFechamento[i].IDS001 != this.UserId" style="color:#DAA520;" class="fas fa-exclamation-circle"></i>
+
+                                      <button type="button"  
+                                              [hidden]="!(arListaFechamento[i].STFECHAM == 0 && arListaFechamento[i].IDS001 == this.UserId)"
+                                              class="btn btn-success" 
+                                              (click)="fecharLancamentos(i)">
+                                              Aprovar
+                                      </button>  
+                                      
+                                    
+                                    </td>
+                                    
+                                </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </ng-template>
+
+         </ngb-panel>  
+    
+      </ngb-accordion>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="close()">Cancelar</button>
+    </div>
+  </ng-template>
+
+
+<br>
+<app-breadcrumbs #breadcrumbs home="Lançamento campanha em massa" [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)" (clearNext)="clearNext($event)" [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter titleDrop="{{ 'global.form.filtros.pd' | translate }}" nameSubmitFunction="filtrar"
+    [isCollapsed]="true" [dropdown]="true" [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter">
+      <div class="row">
+        
+       <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-mes-ano-campanha
+            strLabel   = "Mês"
+            [objForm]  = "objFormFilter"
+            [formName] = "'CDMES'">
+          </app-single-mes-ano-campanha>
+        </div>
+        
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-campanha 
+            [objForm]="objFormFilter" 
+            [formName]="'IDG090'">
+          </app-single-campanha>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-multi-motorista-campanha
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDG031'">
+          </app-multi-motorista-campanha>
+        </div>
+          
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+
+      <div class="row">
+          <div class="col-sm-8">Lançamentos:</div>
+          <div class="col-sm-4 text-right"></div>
+        </div>
+        <hr />
+      <div class="row">
+          <div class="col-sm-3 col-md-3 col-lg-3" *ngFor="let info of arListaApontamentos; let i = index;" >
+            <span style="font-size: 10px;
+            color: #d0d0d0;"
+            [ngClass]="{'lacamentoViewActivate': (this.utilServices.in_array(info.IDG092, arListaApontaUser))}"
+            > {{info.DSAPONTA}} - {{info.IDG092}} </span>
+          </div>
+
+          <div class="col-sm-3 col-md-3 col-lg-3" >
+              <span style="font-size: 10px;
+              color: #d0d0d0;"
+              [ngClass]="{'lacamentoViewActivate': (this.utilServices.in_array(17, arListaApontaUser))}"
+              > KM rodado - 17 </span>
+          </div>
+
+          <div class="col-sm-3 col-md-3 col-lg-3" >
+              <span style="font-size: 10px;
+              color: #d0d0d0;"
+              [ngClass]="{'lacamentoViewActivate': (this.utilServices.in_array(19, arListaApontaUser))}"
+              > Média esperada por modelo km/litro (3%) - 19</span>
+          </div>
+          <br />
+          <br />
+
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards titleDrop="{{ 'global.form.registros.pd' | translate }}" [isCollapsed]="collappsed" [dropdown]="true" *ngIf="arListaMotorista.length > 0">
+
+    <ngb-alert *ngIf="this.stLancam" [type]="'danger'" [dismissible]="false">Lançamentos fechados, você está no modo RETIFICAÇÃO.</ngb-alert>
+
+    <app-botoes
+      *ngIf="btFechar == 1"
+      class="info"
+      text="Fechamento"
+      (click)="openModalVisualizarFechamento();">
+    </app-botoes>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-body my-bg">
+          <div class="table-responsive" style="overflow: auto; height: 400px">
+           
+            
+          
+            <table class="table table-sm table-bordered table-striped mb-0"
+              style="margin-bottom:35px!important;text-align: center; width: 100%; white-space: nowrap; margin-top:10px;">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th style="text-align: left;">Campanha</th>
+                  <th style="text-align: left;">Motorista</th>
+                  <!-- <th style="text-align: right;">Data</th> -->
+                  <th style="text-align: left;">Filial</th>
+                  <th *ngFor="let info of arListaApontamentos; let i = index;" [hidden]="!(this.utilServices.in_array(info.IDG092, arListaApontaUser))">
+                    {{info.DSAPONTA}} - {{info.IDG092}}
+                  </th>
+ 
+                  <th  [hidden]="!(this.utilServices.in_array(17, arListaApontaUser))" style="width: 180px;">KM rodado - 17</th>
+                  <th  [hidden]="!(this.utilServices.in_array(19, arListaApontaUser))">Média esperada por modelo km/litro (3%) - 19</th>
+                </tr>
+              </thead>
+              <tbody>
+
+
+                <tr class="trClique" tabindex="0" *ngFor="let info of arListaMotorista; let i = index;" >
+                  <td>{{i+1}}</td>
+                  <td style="text-align: left;">{{info.DSCAMPAN}}</td>
+                  <td style="text-align: left;"><span [ngClass]="{'motoristaMenosDias': (info.SNDIAJOB == 'N' && this.stLancam == true)}" >{{info.NMMOTORI}}</span></td>
+                  <!-- <td style="text-align: right;">{{utilServices.dataTimeDG(info.DTAPONTA)}}</td> -->
+                  <td style="text-align: left;">{{info.NMTRANSP}}</td>
+
+
+                  <td *ngFor="let info2 of arListaApontamentos; let j = index;" [hidden]="!(this.utilServices.in_array(info2.IDG092, arListaApontaUser))">
+
+                    <table class="table" style="margin-bottom:0px !important; background-color: transparent !important" [hidden]="!( !(info.SNDIAJOB == 'N' && this.stLancam == true) && (arListaApontaUserAcl[info2.IDG092] == undefined || this.utilServices.in_array(info.IDG024, ( arListaApontaUserAcl[info2.IDG092] != undefined ? arListaApontaUserAcl[info2.IDG092].split(',') : []))))">
+                      <tr style="background-color: transparent !important">
+                        <td rowspan="2" style="vertical-align: inherit; padding: 0px 0px 0px 0px !important;     border: none;">
+                          <input id="vr_aponta_{{info.IDG099}}_{{info2.IDG092}}"
+                                 value="{{  info.ARAPONTA[info2.IDG092] ? info.ARAPONTA[info2.IDG092] : 0 }}" 
+                                 type="text"
+                                 style="width: 20px;
+                                        border: none; 
+                                        background-color: transparent;  
+                                        text-align: center;" 
+                                 disabled="true" />
+                        </td>
+                        <td style="padding: 0px 0px 0px 0px !important;     border: none;">
+
+                          <span
+                            style="font-size: 12px; 
+                                   color: #1e6f33;  
+                                   border-color:#1e6f33 !important; 
+                                   
+                                   width: 30px !important; 
+                                   background-color: transparent !important; 
+                                   border-radius: 1px !important; 
+                                   cursor: pointer;"
+                            class="badge badge-pill border" (click)="atualizarLancamento(1,info.IDG099,info2.IDG092,info.IDG090,info.IDG024,stLancam)"
+                            *ngIf="(this.utilServices.in_array(info2.IDG092, arListaApontaUser))"><i
+                              class="fas fa-angle-up"></i></span>
+
+                        </td>
+                        <td rowspan="2" 
+                            style="padding: 0px 0px 0px 0px !important; 
+                                   vertical-align: inherit;" 
+                            [ngStyle]="{'border': (this.utilServices.in_array(info2.IDG092, arListaApontaUser)) ? '1px solid royalblue': 'none'}">
+                          <!-- <div style="border: 1px solid royalblue; width: 100%; height: 100%"> -->
+                          <span
+                            style="font-size: 12px; 
+                                   color: royalblue;
+                                   /*border-color:royalblue !important; */
+                                   border: none !important;
+                                   width: 30px !important; 
+                                   background-color: transparent !important; 
+                                   border-radius: 1px !important; 
+                                   cursor: pointer;"
+                            class="badge badge-pill border" 
+                            (click)="openVisualizacaoLancamento(info.IDG099, info2.IDG092, info.IDG090)"
+                            *ngIf="(this.utilServices.in_array(info2.IDG092, arListaApontaUser))"
+                            ><i class="fas fa-eye"></i>
+                          </span>
+                          <!-- </div> -->
+                        </td>
+                      </tr>
+                      <tr style="background-color: transparent !important">
+                        <td style="padding: 0px 0px 0px 0px !important;     border: none; ">
+                          <span
+                          style="font-size: 12px; 
+                                  color: #ea1313;  
+                                  border-color:#ea1313 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="atualizarLancamento(0,info.IDG099,info2.IDG092,info.IDG090,info.IDG024,stLancam)"
+                          *ngIf="(this.utilServices.in_array(info2.IDG092, arListaApontaUser))">
+                            <i class="fas fa-angle-down"></i>
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td  [hidden]="!(this.utilServices.in_array(17, arListaApontaUser))" >
+                    <!-- KM rodado -->
+
+                    <table class="table" style="margin-bottom:0px !important; background-color: transparent !important" [hidden]="!( !(info.SNDIAJOB == 'N' && this.stLancam == true) && arListaApontaUserAcl[17] == undefined || this.utilServices.in_array(info.IDG024, ( arListaApontaUserAcl[17]  != undefined ? arListaApontaUserAcl[17].split(',') : [])))">
+                      <tr style="background-color: transparent !important">
+                        <td style="vertical-align: inherit; padding: 0px 0px 0px 0px !important; border: none;">
+                          
+                            Km:
+                            <input id="vr_km_{{info.IDG099}}_17"
+                                 type="text"
+                                 style="width: 50px;
+                                        border: none; 
+                                        text-align: center;
+                                        margin-right: -1px;"
+                                 value="{{info.VRKM17}}"
+                                 disabled="true"        />
+                        </td>
+                        <td rowspan="2" style="vertical-align: inherit; padding: 0px 0px 0px 0px !important; border: none;">
+                          &nbsp;
+                          <span
+                          style="font-size: 12px; 
+                                  color: #333333;  
+                                  border-color:#333333 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="editarLancamentoKm(17,info.IDG099)"
+                          *ngIf="!(arListaSnLancando['km_'+info.IDG099+'_'+17]) && (this.utilServices.in_array(17, arListaApontaUser))" 
+                          ><i class="fas fa-pencil-alt"></i></span>
+
+
+                          <span
+                          style="font-size: 12px; 
+                                  color: #1e6f33;  
+                                  border-color:#1e6f33 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important;
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="atualizarLancamentoKm(2,info.IDG099,17,info.IDG090,info.IDG024,stLancam)"
+                          *ngIf="(arListaSnLancando['km_'+info.IDG099+'_'+17])"><i class="fas fa-check"></i></span>
+
+                          <span
+                          style="font-size: 12px; 
+                                  color: #ea1313;  
+                                  border-color:#ea1313 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="limparLancamentoKm(17,info.IDG099)"
+                          *ngIf="(arListaSnLancando['km_'+info.IDG099+'_'+17])"><i class="fas fa-times"></i></span>
+
+                        </td>
+                      </tr>
+
+                      <tr style="background-color: transparent !important">
+                        <td style="vertical-align: inherit; padding: 0px 0px 0px 0px !important; border: none;">
+                          Pt's:
+                          <input id="pt_km_{{info.IDG099}}_17"
+                                 type="text"
+                                 style="width: 50px;
+                                        border: none; 
+                                        text-align: center;" 
+                                 value="{{info.VRPT17}}"
+                                 disabled="true" />
+                        </td>
+                      </tr>
+
+                    </table>
+
+                  </td>
+                  <td [hidden]="!(this.utilServices.in_array(19, arListaApontaUser))">
+                    <!-- Média esperada por modelo km/litro -->
+                    <table class="table" style="margin-bottom:0px !important; background-color: transparent !important"  [hidden]="!( !(info.SNDIAJOB == 'N' && this.stLancam == true) && arListaApontaUserAcl[19] == undefined || this.utilServices.in_array(info.IDG024, ( arListaApontaUserAcl[19]  != undefined ? arListaApontaUserAcl[19].split(',') : [])))">
+                      <tr style="background-color: transparent !important">
+                        <td rowspan="2" style="vertical-align: inherit; padding: 0px 0px 0px 0px !important; border: none;">
+
+                          <select id="id_md_{{info.IDG099}}_19" disabled="true" style="width: 100%;" class="custom-select" value="{{info.VRPT19}}">
+                            <option value="0"></option>
+                            <option value="18">Na média</option>
+                            <option value="16">Média acima</option>
+                            <option value="12">Média abaixo</option>
+                          </select>
+
+                        </td>
+                       <!--  <td></td> -->
+
+
+                        <td rowspan="2" style="vertical-align: inherit; padding: 0px 0px 0px 0px !important; border: none;">
+                          <span
+                          style="font-size: 12px; 
+                                  color: #333333;  
+                                  border-color:#333333 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="editarLancamentoMd(19,info.IDG099)"
+                          *ngIf="!(arListaSnLancando['md_'+info.IDG099+'_'+19]) && (this.utilServices.in_array(19, arListaApontaUser))" ><i class="fas fa-pencil-alt"></i></span>
+
+
+                          <span
+                          style="font-size: 12px; 
+                                  color: #1e6f33;  
+                                  border-color:#1e6f33 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="atualizarLancamentoMd(3,info.IDG099,19,info.IDG090,info.IDG024,stLancam)"
+                          *ngIf="(arListaSnLancando['md_'+info.IDG099+'_'+19])"><i class="fas fa-check"></i></span>
+
+                          <span
+                          style="font-size: 12px; 
+                                  color: #ea1313;  
+                                  border-color:#ea1313 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="limparLancamentoMd(19,info.IDG099)"
+                          *ngIf="(arListaSnLancando['md_'+info.IDG099+'_'+19])"><i class="fas fa-times"></i></span>
+
+                        </td>
+
+                      </tr>
+<!--                       <tr>
+                        <td></td>
+                      </tr> -->
+                    </table>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </app-cards>
+</div>
+
+
+
+<!-- MODAL VISUALIZAR LANÇAMENTOS -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalLancamento let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Informações</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div class="row" *ngFor="let info3 of arListaLancamento; let j = index;">
+      <div class="form-group col-sm-12 col-md-12 col-lg-12">
+        <table>
+          <tr>
+            <td><button type="button" class="btn btn-danger btn-sm" (click)="removerLancamento(info3.IDG093, this.stLancam)"><i class="fas fa-times"></i></button></td>
+            <td>&nbsp;</td>
+            <td><h2>{{(j+1)}} - Lançamento {{info3.IDG093}}</h2></td>
+          </tr>
+        </table>
+        
+        <div class="card">
+          <form class="form-horizontal" [formGroup]="objFormConfiguracao" >
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12" *ngIf="(this.stLancam == false || info3.STLANCAM == 2)">
+                <div class="box">
+                  <input type="file" name="file-{{j}}[]" id="file-{{j}}" class="" ng2FileSelect [uploader]="arUpload[info3.IDG093]" multiple/>
+                </div>
+              </div>
+              <div class="col-md-12" style="margin-top: 25px;" *ngIf="arUpload[info3.IDG093].queue.length != 0">
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th width="50%">Nome</th>
+                      <th style="text-align: center">Tamanho</th>
+                      <!-- <th style="text-align: center">Status</th> -->
+                      <th style="text-align: center" *ngIf="(this.stLancam == false || info3.STLANCAM == 2)">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of arUpload[info3.IDG093].queue">
+                      <td>
+                        <strong>
+                        {{ item?.file?.name }}
+                        </strong>
+                      </td>
+                      <td  nowrap style="text-align: center">
+                        {{ item?.file?.size/1024/1024 | number:'.2' }} MB
+                      </td>
+                      <td nowrap style="text-align: center" *ngIf="(this.stLancam == false || info3.STLANCAM == 2)">
+                        <i class="far fa-trash-alt btTableR cursorIcon" (click)="item.remove()"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+<!--                 <div class="row">
+                  <div class="col-md-12">
+                    <div class="boxer">
+                      <label style="height:100%; width: 100%; padding-top: 10px; cursor: pointer;">
+                        <span class="textBIconQ" style="font-size: 13px !important;">  {{ arUpload[info3.IDG093]?.queue?.length }} ARQUIVO(S)</span>
+                      </label>
+                    </div>
+                  </div>
+                </div> -->
+                <div class="row" *ngIf="(this.stLancam == false || info3.STLANCAM == 2)">
+                  <div class="col-md-12">
+                    <button type="button" class="btn btn-success btBottom" (click)="envioUpload(info3.IDG093)" [disabled]="!arUpload[info3.IDG093].getNotUploadedItems().length">
+                    <i class="fas fa-upload"></i> Enviar arquivo(s)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mr-auto" *ngIf="arListaAnexoLancamento[info3.IDG093].length != 0">
+              <hr>
+              <h3 class="mt-0 mb-0 text-uppercase">
+              <small class="fw-300" style="font-size: 13px !important;">ARQUIVOS(s)</small>
+              </h3>
+            </div>
+            
+            <div class="col-md-12" *ngIf="arListaAnexoLancamento[info3.IDG093].length != 0">
+              
+              
+              <table class="table table-sm table-striped">
+                <thead>
+                  <tr>
+                    <th style="text-align: left;">Cód. Evolog</th>
+                    <th style="text-align: left;">Nome</th>
+                    <th style="text-align: right; width: 20px;">Download</th>
+                    <th style="text-align: right; width: 20px;" *ngIf="(this.stLancam == false || info3.STLANCAM == 2)">Remover</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of arListaAnexoLancamento[info3.IDG093]">
+                    <td nowrap style="text-align: left">
+                      {{ item.IDA004 }}
+                    </td>
+                    <td nowrap style="text-align: left">
+                      {{ item.NMANEXO }}
+                    </td>
+                    <td nowrap style="text-align: center">
+                      <i class="fas fa-download btTableI cursorIcon" style="cursor: pointer;" (click)="downloadAnexoLancamento(item)"></i>
+                    </td>
+                    <td nowrap style="text-align: center" *ngIf="(this.stLancam == false || info3.STLANCAM == 2)">
+                      <i class="fas fa-times btTableI cursorIcon" style="cursor: pointer;" (click)="openModalConfirmacao(item)"></i>
+                    </td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mr-auto">
+              <hr>
+
+                    <table class="table" style="margin-bottom:0px !important; background-color: transparent !important">
+                      <tr style="background-color: transparent !important">
+                        <td rowspan="2" style="vertical-align: inherit; padding: 0px 0px 0px 0px !important; border: none;">
+
+                <!-- <form class="form-horizontal" [formGroup]="this['objFormObservacao'+info3.IDG093]" > -->
+                  <textarea 
+                    id="textarea_{{info3.IDG093}}"
+                    disabled="true"
+                    class="form-control"
+                    rows="6"
+                    aria-label="Descrição"
+                    style="min-height: 100px"
+                    ></textarea>
+
+
+                <!-- </form> -->
+              </td>
+              <td style="width: 10px !important;" *ngIf="(this.stLancam == false || info3.STLANCAM == 2)">
+                
+
+ &nbsp;
+                          <span
+                          style="font-size: 12px; 
+                                  color: #333333;  
+                                  border-color:#333333 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="editarObservacao(info3.IDG093)"
+                          *ngIf="!(arListaObservacao[info3.IDG093])" ><i class="fas fa-pencil-alt"></i></span>
+
+
+                          <span
+                          style="font-size: 12px; 
+                                  color: #1e6f33;  
+                                  border-color:#1e6f33 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="atualizarObservacao(info3.IDG093)"
+                          *ngIf="(arListaObservacao[info3.IDG093])"><i class="fas fa-check"></i></span>
+
+                          <span
+                          style="font-size: 12px; 
+                                  color: #ea1313;  
+                                  border-color:#ea1313 !important; 
+                                  width: 30px !important; 
+                                  background-color: transparent !important; 
+                                  border-radius: 1px !important; 
+                                  cursor: pointer;"
+                          class="badge badge-pill border" (click)="limparObservacao(info3.IDG093)"
+                          *ngIf="(arListaObservacao[info3.IDG093])"><i class="fas fa-times"></i></span>
+
+              </td>
+            </tr>
+          </table>
+            </div>
+
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-info" (click)="close()">Fechar</button>
+    </div>
+</ng-template>

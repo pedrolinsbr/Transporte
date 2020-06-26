@@ -1,0 +1,732 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="this[nmFunctionDelete]()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="{{ 'global.form.idt001.ot' | translate }}"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-combobox-multi
+              label="Rota"
+              [url]="urlFiltroRota"
+              [formMultiSelect] = "objFormFilter"
+              [formControlNameMultiSelect] = "'IDT001'">
+          </app-combobox-multi>
+        </div>
+        
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-cluster
+            [objForm] = "objFormFilter"
+            [formName] = "'IDT005'">
+          </app-single-cluster>
+        </div>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-cidade-estado
+            [objForm] = "objFormFilter"
+            [formName] = "'G003_IDG003'">
+          </app-single-cidade-estado>
+        </div>
+      </div>
+
+        <div class="row">
+
+          <div class="form-group col-sm-6 col-md-6 col-lg-6">
+            <app-single-transportadora
+              [objForm] = "objFormFilter"
+              [formName] = "'IDG024'">
+            </app-single-transportadora>
+          </div>
+        
+          <div class="form-group col-sm-6 col-md-6 col-lg-6">
+            <label>Clientes</label>
+            <app-combobox-multi [url]="urlFiltroClientes" [formMultiSelect]="objFormFilter"
+              [disabledViewMultiSelect]='false' [formControlNameMultiSelect]="'T003_IDG005'">
+            </app-combobox-multi>
+          </div>
+
+            
+          
+        </div>
+
+        <div class="row">
+
+          <div class="col-md-4">
+              <label>Calendarização:</label>
+              <app-combobox (click)="validaCalend()"
+                [selectedPeople] = "objFormFilter.controls['CALEND'].value"
+                [formSelect] = "objFormFilter"
+                [formControlNameSelect] = "'CALEND'"
+                [comboFix]="'simNaoTodos'">
+              </app-combobox>
+
+
+            </div>
+
+            <div *ngIf="mostraDias">
+              <label>Dias da semana: </label>
+              <i class="far fa-question-circle" id="tooltip">
+                  <span class="tooltiptext">Conjunto selecionado equivale ao conjunto cadastrado.</span>	
+              </i>
+              
+            <div class="row">
+                <div class="form-group" [formGroup] = "objFormFilter">
+                  <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                    <input type="checkbox" class="custom-control-input" formControlName="SNDIA0_filter"/>
+                    <span class="custom-control-indicator"></span>
+                    Domingo
+                  </label>
+                </div>
+
+                <div class="form-group" [formGroup] = "objFormFilter">
+                  <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                    <input type="checkbox" class="custom-control-input" formControlName="SNDIA1_filter"/>
+                    <span class="custom-control-indicator"></span>
+                    Segunda
+                  </label>
+                </div>
+
+                <div class="form-group" [formGroup] = "objFormFilter">
+                  <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                    <input type="checkbox" class="custom-control-input" formControlName="SNDIA2_filter"/>
+                    <span class="custom-control-indicator"></span>
+                    Terça
+                  </label>
+                </div>
+
+                <div class="form-group" [formGroup] = "objFormFilter">
+                  <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                    <input type="checkbox" class="custom-control-input" formControlName="SNDIA3_filter"/>
+                    <span class="custom-control-indicator"></span>
+                    Quarta
+                  </label>
+                </div>
+
+                <div class="form-group" [formGroup] = "objFormFilter">
+                  <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                    <input type="checkbox" class="custom-control-input" formControlName="SNDIA4_filter"/>
+                    <span class="custom-control-indicator"></span>
+                    Quinta
+                  </label>
+                </div>
+                
+                <div class="form-group" [formGroup] = "objFormFilter">
+                  <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                    <input type="checkbox" class="custom-control-input" formControlName="SNDIA5_filter"/>
+                    <span class="custom-control-indicator"></span>
+                    Sexta
+                  </label>
+                </div>
+
+                <div class="form-group" [formGroup] = "objFormFilter">
+                  <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                    <input type="checkbox" class="custom-control-input" formControlName="SNDIA6_filter"/>
+                    <span class="custom-control-indicator"></span>
+                    Sábado
+                  </label>
+                </div>
+              </div>
+            </div>
+        </div>
+      
+    </form>
+    <br>
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'rotas'"
+        [url]="urlRotaGrid"
+        [tela]="170"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteDePara',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addDePara', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewRotas',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateRotas',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDeleteRota', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDT001" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="rotas-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+
+
+        <th data-id="IDT001" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDT001"data-align-right="true" >Rota</th>
+        <th data-id="DSPRACA"data-align-left="true" >Praça</th>
+        <th data-id="G024_NMTRANSP" data-align-left="true">Transportadora</th>
+        <th data-id="T005_DSCLUSTE" data-align-left="true" data-function="ifNull">Cluster</th>
+        <th data-id="SNDIA0" data-align-left="true" data-function="snVira">Dom.</th>
+        <th data-id="SNDIA1" data-align-left="true" data-function="snVira">Seg.</th>
+        <th data-id="SNDIA2" data-align-left="true" data-function="snVira">Ter.</th>
+        <th data-id="SNDIA3" data-align-left="true" data-function="snVira">Qua.</th>
+        <th data-id="SNDIA4" data-align-left="true" data-function="snVira">Qui.</th>
+        <th data-id="SNDIA5" data-align-left="true" data-function="snVira">Sex.</th>
+        <th data-id="SNDIA6" data-align-left="true" data-function="snVira">Sáb.</th>
+        <th data-id="NRCIDADES" data-align-right="true">Qt. Cidades</th>   
+
+    </app-datagrid>
+  </app-cards>
+</div>
+<br>
+
+<!--  2 - ROTA NOVO/EDITAR -->
+<ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)" >
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+    <div [style.pointer-events]="checkViewDePara != 1 ? 'all' : 'none' ">
+      <form class="form-horizontal" [formGroup]="objFormRota" (ngSubmit)="save()" >
+        <input type="text" id="IDT001" formControlName="IDT001" hidden>
+        <div class="row">
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-single-transportadora
+              [objForm] = "objFormRota"
+              [displayName] = "'CD Origem'"
+              [formName] = "'IDG024'">
+            </app-single-transportadora>
+          </div>
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-input
+              id="DSPRACA"
+              name="DSPRACA"
+              [isRequired] ='true'
+              placeholder="Descrição Rota"
+              [formInput] = "objFormRota"
+              [formControlNameInput] = "'DSPRACA'"
+              [label]="'Descrição Rota'"
+            >
+            </app-input>
+          </div>
+
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-single-cluster
+              name="DSCLUSTE"
+              class="default"
+              [objForm]="objFormRota"
+              [formName]="'IDT005'"
+              [displayName]="'Cluster'"
+            ></app-single-cluster>
+          </div>
+
+          <div class="form-group col-sm-2 col-md-2 col-lg-2">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              [formOF]="objFormRota"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+          
+
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <label>Clientes</label>
+            <app-combobox-multi [url]="urlFiltroClientes" [formMultiSelect]="objFormRota"
+              [disabledViewMultiSelect]='false' [formControlNameMultiSelect]="'G005_IDG005'" [showInfo]="showInfo">
+            </app-combobox-multi>
+          </div>
+
+
+          <div>
+            <label>Dias da semana: </label>
+            <i class="far fa-question-circle" id="tooltip" *ngIf="butsEdit">
+                <span class="tooltiptext">Conjunto selecionado equivale ao conjunto cadastrado.</span>	
+            </i>
+            
+          <div class="row">
+              <div class="form-group" [formGroup] = "objFormRota">
+                <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                  <input type="checkbox" class="custom-control-input" formControlName="SNDIA0"/>
+                  <span class="custom-control-indicator"></span>
+                  Domingo
+                </label>
+              </div>
+
+              <div class="form-group" [formGroup] = "objFormRota">
+                <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                  <input type="checkbox" class="custom-control-input" formControlName="SNDIA1"/>
+                  <span class="custom-control-indicator"></span>
+                  Segunda
+                </label>
+              </div>
+
+              <div class="form-group" [formGroup] = "objFormRota">
+                <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                  <input type="checkbox" class="custom-control-input" formControlName="SNDIA2"/>
+                  <span class="custom-control-indicator"></span>
+                  Terça
+                </label>
+              </div>
+
+              <div class="form-group" [formGroup] = "objFormRota">
+                <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                  <input type="checkbox" class="custom-control-input" formControlName="SNDIA3"/>
+                  <span class="custom-control-indicator"></span>
+                  Quarta
+                </label>
+              </div>
+
+              <div class="form-group" [formGroup] = "objFormRota">
+                <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                  <input type="checkbox" class="custom-control-input" formControlName="SNDIA4"/>
+                  <span class="custom-control-indicator"></span>
+                  Quinta
+                </label>
+              </div>
+              
+              <div class="form-group" [formGroup] = "objFormRota">
+                <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                  <input type="checkbox" class="custom-control-input" formControlName="SNDIA5"/>
+                  <span class="custom-control-indicator"></span>
+                  Sexta
+                </label>
+              </div>
+
+              <div class="form-group" [formGroup] = "objFormRota">
+                <label class="custom-control custom-checkbox" style="margin-left: 10px !important">
+                  <input type="checkbox" class="custom-control-input" formControlName="SNDIA6"/>
+                  <span class="custom-control-indicator"></span>
+                  Sábado
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+          <br><br>
+          <br><br>
+   
+
+
+        <div class="row">
+          <div class="col-sm-5"></div>
+          <div class="col-sm-7 col-md-7 col-lg-7 text-right">
+
+            <!-- VOLTAR -->
+            <app-botoes *ngIf="!butsEdit"
+            class="danger"
+            icon="far fa-times-circle"
+            text="Voltar"
+            (click)="goHome(event);">
+            </app-botoes>
+
+            <!-- CANCELAR -->
+            <app-botoes *ngIf="butsEdit"
+            class="danger"
+            icon="far fa-times-circle"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="goHome(event);">
+            </app-botoes>
+
+            <!-- CIdades 
+            <app-botoes
+            *ngIf="butsEdit"
+            class="info"
+            icon="fas fa-map"
+            text="{{ 'tp.form.botoes.ci' | translate }}"
+            (click)="openCidades();">
+            </app-botoes>
+
+             
+            <app-botoes
+            *ngIf="butsEdit"
+            class="warning"
+            icon="fas fa-user"
+            text="{{ 'tp.form.botoes.cl' | translate }}"
+            (click)="openClientes();">
+            </app-botoes>
+          -->
+
+
+            <!-- SALVAR -->
+            <app-botoes
+            *ngIf="checkViewDePara != 1"
+            class="success"
+            icon="far fa-save"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveRota();">
+            </app-botoes>
+          </div>
+        </div>
+    </ng-template>
+  </ngb-panel>
+
+  <!--  -->
+  
+  <ngb-panel id="2" title="Cidades da Rota {{idRota}}"  >
+      <ng-template ngbPanelContent>
+        <app-datagrid
+            [id]="'cidades'"
+            [url]="urlRotaGridCidade"
+            [tela]="149"
+            [telaGlobal]=globalTelaCit
+            [telaAcoes]="acoesTelaCit"
+            [nivel]="0"
+            [thisParent]="this"
+            [additionalFields]="{'parameter[IDT001]': idRota}"            
+            [excelServer]="true">
+
+
+            <th data-id="IDT002" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+            <th data-id="IDT002" data-align-right="true">Cidade Rota</th>
+            <th data-id="NRORDCAR" data-align-right="true"> Ordem</th>
+            <th data-id="G003_NMCIDADE" data-align-left="true">Cidade</th>   
+            <th data-id="SNDIA0" data-align-left="true" data-function="snVira">Dom.</th>
+            <th data-id="SNDIA1" data-align-left="true" data-function="snVira">Seg.</th>
+            <th data-id="SNDIA2" data-align-left="true" data-function="snVira">Ter.</th>
+            <th data-id="SNDIA3" data-align-left="true" data-function="snVira">Qua.</th>
+            <th data-id="SNDIA4" data-align-left="true" data-function="snVira">Qui.</th>
+            <th data-id="SNDIA5" data-align-left="true" data-function="snVira">Sex.</th>
+            <th data-id="SNDIA6" data-align-left="true" data-function="snVira">Sáb.</th>
+            
+
+            <th data-id="G024_NMTRANSP" data-align-left="true">Transportadora</th>
+
+            <th data-id="IDT001"data-align-right="true" >Rota</th>
+            <th data-id="DSPRACA"data-align-left="true" >Praça</th>
+            <th data-id="DSCLUSTE" data-align-left="true" data-function="ifNull">Cluster</th>
+        </app-datagrid>
+      </ng-template>
+  </ngb-panel>
+  
+
+  <ngb-panel id="3" title="Clientes da Rota {{idRota}}" >
+    <ng-template ngbPanelContent>
+      <app-datagrid
+          [id]="'clientesRota'"
+          [url]="urlRotaGridClientes"
+          [tela]="149"
+          [telaGlobal]=globalTelaCli
+          [telaAcoes]="acoesTelaCli"
+          [nivel]="0"
+          [thisParent]="this"
+          [additionalFields]="{'parameter[IDT001]': idRota}"
+          [notOnLoad]="true">
+
+          <th data-id="IDT003" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+          <th data-id="IDT003" data-align-right="true">Cliente Rota</th>
+          <th data-id="NRORDCAR" data-align-right="true"> Ordem</th>
+          <th data-id="G005_NMCLIENT" data-align-left="true">Cliente</th>
+          <th data-id="G024_NMTRANSP" data-align-left="true">Transportadora</th>
+      </app-datagrid>
+
+    </ng-template>
+  </ngb-panel>
+  
+</ngb-accordion>
+
+
+<!-- 3 - CIDADES -->
+<!-- <ngb-accordion #acd="ngbAccordion" activeIds="1" *ngIf="exibir == 3" >
+  <ngb-panel id="1" title="Cidades da Rota {{idRota}}">
+    <ng-template ngbPanelContent>
+
+      <app-datagrid
+          [id]="'cidades'"
+          [url]="urlRotaGridCidade"
+          [tela]="149"
+          [telaGlobal]="[
+                  {'id' : 3, 'metodo' : 'deleteCidade',  'icone':'fa fa-minus'},
+                  {'id' : 4, 'metodo' : 'addCidade', 'icone':'fa fa-plus'},
+                  {'id' : 'excel'},
+                  {'id' : 'colvis'} ]"
+          [telaAcoes]="[
+                  {'id' : 1, 'metodo' : 'viewCidade',   'icone': 'fa fa-eye'},
+                  {'id' : 2, 'metodo' : 'updateCidade',   'icone': 'fas fa-pencil-alt'},
+                  {'id' : 3, 'metodo' : 'openDeleteCidade', 'icone': 'fas fa-trash-alt'}]"
+          [nivel]="0"
+          [thisParent]="this"
+          [additionalFields]="{'parameter[IDT001]': idRota}"
+          [notActions]="viewGrid">
+
+
+          <th data-id="IDT002" *ngIf="!viewGrid" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+          <th data-id="IDT002" data-align-right="true">{{ 'global.form.idt001.ds' | translate }}</th>
+          <th data-id="NRORDCAR" data-align-right="true"> Ordem</th>
+          <th data-id="G003_NMCIDADE" data-align-left="true">Cidade</th>
+
+          <th data-id="G024_NMTRANSP" data-align-left="true">{{ 'global.form.nmtransp.pd' | translate }}</th>
+      </app-datagrid>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion> -->
+
+<!--  6 - CLIENTE NOVO/EDITAR -->
+<ngb-accordion #acf="ngbAccordion" activeIds="1" *ngIf="exibir == 6" >
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormCidade"  >
+        <input type="text" id="IDT002" formControlName="IDT002" hidden>
+        <input type="text" id="IDT001" formControlName="IDT001" hidden>
+
+        <div class="row">
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+<!--             <label for="G051_IDG005RE">Cidade</label>
+            <app-combobox
+              [url]="apiUrl+'filtro/cidades'"
+              [formSelect] = "objFormCidade"
+              [disabledViewSelect] = 'false'
+              [formControlNameSelect] = "'IDG003'">
+            </app-combobox> -->
+            <app-single-cidade-estado
+              name="IDG003"
+              class="default"
+              [objForm]="objFormCidade"
+              [formName]="'IDG003'"
+            ></app-single-cidade-estado>
+
+          </div>
+
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-input
+              id="NRORDCAR"
+              name="NRORDCAR"
+              [isRequired] ='true'
+              type="number"
+              placeholder="Número Ordem"
+              [formInput] = "objFormCidade"
+              [formControlNameInput] = "'NRORDCAR'"
+              [label]="'Número Ordem'"
+            >
+            </app-input>
+          </div>
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              model="{{objFormCidade.controls['STCADAST'].value}}"
+              [formOF]="objFormCidade"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+        </div>
+        
+          <div class="row">
+
+            <div class="form-group classCheck">
+              <label class="custom-control custom-checkbox" style="margin-bottom: 0px !important">
+                <input type="checkbox" class="custom-control-input" formControlName="SNDIA0" [(ngModel)]="objFormCidade.controls['SNDIA0'].value" />
+                <span class="custom-control-indicator"></span>
+                Domingo
+              </label>
+            </div>
+
+            <div class="form-group classCheck2">
+              <label class="custom-control custom-checkbox" style="margin-bottom: 0px !important">
+                <input type="checkbox" class="custom-control-input" formControlName="SNDIA1" [(ngModel)]="objFormCidade.controls['SNDIA1'].value" />
+                <span class="custom-control-indicator"></span>
+                Segunda
+              </label>
+            </div>
+
+            <div class="form-group classCheck2">
+              <label class="custom-control custom-checkbox" style="margin-bottom: 0px !important">
+                <input type="checkbox" class="custom-control-input" formControlName="SNDIA2" [(ngModel)]="objFormCidade.controls['SNDIA2'].value" />
+                <span class="custom-control-indicator"></span>
+                Terça
+              </label>
+            </div>
+
+            <div class="form-group classCheck2">
+              <label class="custom-control custom-checkbox" style="margin-bottom: 0px !important">
+                <input type="checkbox" class="custom-control-input" formControlName="SNDIA3" [(ngModel)]="objFormCidade.controls['SNDIA3'].value" />
+                <span class="custom-control-indicator"></span>
+                Quarta
+              </label>
+            </div>
+
+            <div class="form-group classCheck2">
+              <label class="custom-control custom-checkbox" style="margin-bottom: 0px !important">
+                <input type="checkbox" class="custom-control-input" formControlName="SNDIA4" [(ngModel)]="objFormCidade.controls['SNDIA4'].value" />
+                <span class="custom-control-indicator"></span>
+                Quinta
+              </label>
+            </div>
+
+            <div class="form-group classCheck2">
+              <label class="custom-control custom-checkbox" style="margin-bottom: 0px !important">
+                <input type="checkbox" class="custom-control-input" formControlName="SNDIA5" [(ngModel)]="objFormCidade.controls['SNDIA5'].value" />
+                <span class="custom-control-indicator"></span>
+                Sexta
+              </label>
+            </div>
+
+            <div class="form-group classCheck2">
+              <label class="custom-control custom-checkbox" style="margin-bottom: 0px !important">
+                <input type="checkbox" class="custom-control-input" formControlName="SNDIA6" [(ngModel)]="objFormCidade.controls['SNDIA6'].value" />
+                <span class="custom-control-indicator"></span>
+                Sábado
+              </label>
+            </div>
+          </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-7"></div>
+          <div class="col-sm-5 col-md-5 col-lg-5 text-right">
+
+            <!-- CANCELAR -->
+            <app-botoes 
+            class="danger"
+            icon="far fa-times-circle"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="breadcrumbs.goBack()">
+            </app-botoes>
+            
+            <!-- SALVAR -->
+            <app-botoes
+            *ngIf="checkSaveCliente"
+            class="success"
+            icon="far fa-save"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveCidade();">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+<!-- 4 - CLIENTES -->
+<!-- <ngb-accordion #ace="ngbAccordion" activeIds="1"  *ngIf="exibir == 4">
+  <ngb-panel id="1" title="Clientes da Rota {{idRota}}">
+    <ng-template ngbPanelContent>
+      <app-datagrid
+          [id]="'clientesRota'"
+          [url]="urlRotaGridClientes"
+          [tela]="149"
+          [telaGlobal]="[
+                  {'id' : 3, 'metodo' : 'deleteCliente',  'icone':'fa fa-minus'},
+                  {'id' : 4, 'metodo' : 'addCliente', 'icone':'fa fa-plus'},
+                  {'id' : 'excel'},
+                  {'id' : 'colvis'} ]"
+          [telaAcoes]="[
+                  {'id' : 1, 'metodo' : 'viewCliente',   'icone': 'fa fa-eye'},
+                  {'id' : 2, 'metodo' : 'updateCliente',   'icone': 'fas fa-pencil-alt'},
+                  {'id' : 3, 'metodo' : 'openDeleteCliente', 'icone': 'fas fa-trash-alt'}]"
+          [nivel]="0"
+          [thisParent]="this"
+          [additionalFields]="{'parameter[IDT001]': idRota}"
+          [notActions]="viewGrid"
+          [notOnLoad]="true">
+
+          <th data-id="IDT003" *ngIf="!viewGrid" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+          <th data-id="IDT003" data-align-right="true">{{ 'global.form.idt001.ds' | translate }}</th>
+          <th data-id="NRORDCAR" data-align-right="true"> Ordem</th>
+          <th data-id="G005_NMCLIENT" data-align-left="true">Cliente</th>
+          <th data-id="G024_NMTRANSP" data-align-left="true">{{ 'global.form.nmtransp.pd' | translate }}</th>
+      </app-datagrid>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion> -->
+
+<!--  5 - CLIENTE NOVO/EDITAR -->
+<ngb-accordion #acf="ngbAccordion" activeIds="1" *ngIf="exibir == 5" >
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormCliente"  >
+        <input type="text" id="IDT003" formControlName="IDT003" hidden>
+        <input type="text" id="IDT001" formControlName="IDT001" hidden>
+
+        <div class="row">
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <label for="G051_IDG005RE">Cliente</label>
+            <app-combobox
+              [url]="apiUrl+'filtro/clientes'"
+              [formSelect] = "objFormCliente"
+              [disabledViewSelect] = 'false'
+              [formControlNameSelect] = "'IDG005'">
+            </app-combobox>
+          </div>
+
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-input
+              id="NRORDCAR"
+              name="NRORDCAR"
+              [isRequired] ='true'
+              type="number"
+              placeholder="Número Ordem"
+              [formInput] = "objFormCliente"
+              [formControlNameInput] = "'NRORDCAR'"
+              [label]="'Número Ordem'"
+            >
+            </app-input>
+          </div>
+          <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              model="{{objFormCliente.controls['STCADAST'].value}}"
+              [formOF]="objFormCliente"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-7"></div>
+          <div class="col-sm-5 col-md-5 col-lg-5 text-right">
+
+            <!-- CANCELAR -->
+            <app-botoes
+            class="danger"
+            icon="far fa-times-circle"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="breadcrumbs.goBack()">
+            </app-botoes>
+
+            <!-- SALVAR -->
+            <app-botoes
+            *ngIf="checkSaveCliente"
+            class="success"
+            icon="far fa-save"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveCliente();">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

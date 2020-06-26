@@ -1,0 +1,13 @@
+{
+    "data": [
+{ "LINHA": "1", "STATUS": "1", "AGENDAMENTO": "00001", "OPERACAO": "Carga", "DATA": "02/03/2018", "PLACA": "HMB-7128", "MOTORISTA": "Pedro Augusto" },
+{ "LINHA": "2", "STATUS": "2", "AGENDAMENTO": "00001", "OPERACAO": "Carga", "DATA": "02/03/2018", "PLACA": "HMB-7128", "MOTORISTA": "Pedro Augusto" },
+{ "LINHA": "3", "STATUS": "3", "AGENDAMENTO": "00001", "OPERACAO": "Carga", "DATA": "02/03/2018", "PLACA": "HMB-7128", "MOTORISTA": "Pedro Augusto" },
+{ "LINHA": "4", "STATUS": "4", "AGENDAMENTO": "00001", "OPERACAO": "Carga", "DATA": "02/03/2018", "PLACA": "HMB-7128", "MOTORISTA": "Pedro Augusto" },
+{ "LINHA": "5", "STATUS": "1", "AGENDAMENTO": "00001", "OPERACAO": "Carga", "DATA": "02/03/2018", "PLACA": "HMB-7128", "MOTORISTA": "Pedro Augusto" }
+
+],
+"recordsTotal": 5,
+"recordsFiltered": 5,
+"draw": "null"
+}

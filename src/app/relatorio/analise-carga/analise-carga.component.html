@@ -1,0 +1,257 @@
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalCarga let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Informações</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" >
+     <info-carga-geral
+      [IDG046]="idCargaView"
+      [showCarga]="true"
+      [showParadas]="true"
+      [showCTE]="true"
+      [showNFE]="true"
+      [showNFE_AUX]="true"
+      [showAtendimentos]="true"
+    >
+    </info-carga-geral>
+  </div>
+  
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>
+
+
+
+
+
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Análise de carga"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <label for="">Data da Carga</label>
+          <app-datepicker-intervalo
+            [formDateIntervalo]="objFormFilter"
+            [formControlNameDateIntervalo]="'G046_DTCARGA'">
+          </app-datepicker-intervalo>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <label for="">Data de Saída da Carga</label>
+          <app-datepicker-intervalo
+            [formDateIntervalo]="objFormFilter"
+            [formControlNameDateIntervalo]="'G046_DTSAICAR'">
+          </app-datepicker-intervalo>
+        </div>
+        
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-multi-empresa-logos
+              strLabel ="Empresa"
+              [objForm]  = "objFormFilter"
+              [formName] = "'G024_IDLOGOS'">
+          </app-multi-empresa-logos>
+        </div>
+
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <app-multi-tipo strLabel ="Tipo de Transporte" [objForm]="objFormFilter" [formName]="'G046_TPTRANSP'">
+          </app-multi-tipo>
+        </div>
+        
+        
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-5 col-md-5 col-lg-5">
+          <label>Clientes</label>
+          <app-combobox-multi [url]="apiUrl+'filtro/clientes'" [formMultiSelect]="objFormFilter"
+            [disabledViewMultiSelect]='false' [formControlNameMultiSelect]="'G005_IDG005'" [showInfo]="showInfo">
+          </app-combobox-multi>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-tipo-modelo-carga
+          [objForm]  = "objFormFilter"
+          [formName] = "'G046_TPMODCAR'">
+          </app-single-tipo-modelo-carga>
+        </div>
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-multi-status strLabel="Status da carga" [objForm]="objFormFilter" [formName]="'G046_STCARGA'">
+          </app-multi-status>
+        </div>
+      </div>
+        
+    
+      <div class="row">
+        
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-combobox-multi
+              label="Motoristas"
+              [url]="apiUrl+'filtro/motoristas-full'"
+              [formMultiSelect] = "objFormFilter"
+              [formControlNameMultiSelect] = "'G046_IDG031M1'">
+          </app-combobox-multi>
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-tipo-veiculo [objForm]="objFormFilter" [formName]="'G030_IDG030'">
+          </app-single-tipo-veiculo>
+        </div>
+  
+        <div class="form-group col-sm-5 col-md-5 col-lg-5">
+          <app-combobox-multi label="Veículo" [url]="apiUrl+'filtro/buscarDescVeiculos'" [formMultiSelect]="objFormFilter" [formControlNameMultiSelect]="'G032V1_DSVEICUL'">
+          </app-combobox-multi>
+        </div>
+      </div>
+      
+
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        #visaoUm
+        [id]="'AnaliseCarga'"
+        [url]="urlAnaliseCargaGrid"
+        [tela]="149"
+        [allList]="true"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [nivel]="0"
+        [thisParent]="this"
+        [excelCustom]="true"
+        [notOnLoad]="true"
+        [notPagination]="true"
+        [drawCallback]="'totalizadorGrid'"
+        [scroll]="350"
+        [excelServer]="true"
+        >
+        <th data-id="IDG046" data-type-column="checkbox"> 
+          <label class="custom-control custom-checkbox"></label>
+          <label class="custom-control custom-checkbox" style="display: none;">
+          <input id="analiseCarga-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>   
+
+
+        <th data-id="IDG046"     data-object="true" data-align-right="true" data-exec="viewCarga" data-exec-id="IDG046">Carga</th>
+        <th data-id="STCARGA"    data-function="statusCargaTpDG">St.</th>
+        <th data-id="DTCARGA"    data-function="dataTimeDG" data-align-right="true">Data carga</th>
+
+        <th data-id="NMTRANSP"   data-function="validaNullMonitoria" data-align-left="true">Transportadora</th>
+        <th data-id="TPMODCAR"   data-align-left="true" data-function="tipoModeloCargaLayout">Mod.</th>
+
+        
+        <th data-id="DSCARGA"    data-align-left="true">Descrição</th>
+        <th data-id="NMMOTORI1"  data-function="validaNullMonitoria" data-align-left="true" >Motorista</th>
+        <th data-id="CJMOTORI"   data-function="validCnpjCpf" data-align-right="true">CPF Motorista</th>
+        <th data-id="DSTIPVEI"   data-function="validaNullMonitoria" data-align-left="true">Tp. veículo</th>
+        <th data-id="DSVEICULV1" data-function="validaNullMonitoria" data-align-left="true" >Veículo</th>
+        <th data-id="NRPLAVEI"   data-function="formataPlacaVeiculo" data-align-right="true" >Placa Veículo</th>
+        <th data-id="NMTRANSPV"  data-align-left="true" data-function="validaNullMonitoria">Transp. veículo</th>
+        <th data-id="IDS001GF"   data-function="validaNullMonitoria" data-align-left="true" >Gestor da Frota</th>
+
+        
+        <th data-id="QTCAPPES"   data-function="formataPeso" data-align-right="true">Capacidade peso</th>
+        <th data-id="PSCARGA"    data-align-right="true" data-function="formataPeso">Peso carga</th>
+
+        <th data-id="VRCARGA"    data-align-right="true" data-function="formataDinheiro">Valor carga</th>
+
+        <th data-id="VRPOROCU"   data-function="porcentagemCarga" data-align-right="true">Ocupação (%)</th>
+        <th data-id="DTPRESAI"   data-function="dataTimeDG" data-align-right="true">Data previsão saída</th>
+        <th data-id="DTSAICAR"   data-function="dataTimeDG" data-align-right="true">Data saída</th>
+        <th data-id="QTDISPER"   data-function="formataDistancia" data-align-right="true">Distância carga</th>
+        <!-- <th data-id="QTDISBAS"   data-function="formataDistancia" data-align-right="true">Distância volta base</th> -->
+        <th data-id="QTVOLCAR"   data-function="validaNullMonitoria" data-align-right="true">Volume carga</th>
+
+    </app-datagrid>
+  </app-cards>
+
+  <div class="row boxButtons text-center">
+    <div class="col-sm-12" style="color: #474747;">
+      <table class="table table-striped table-sm" style="margin-bottom: 0px;">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" >CARGAS</th>
+            <th scope="col" >CTRC</th>
+            <th scope="col" >DELIVERY</th>
+            <th scope="col" >NF's</th>
+            <th scope="col" >NF's entregues</th>
+            <th scope="col">PESO</th>
+            <th scope="col">VALOR MERCADORIAS</th>
+            <th scope="col" >Km's percorridos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Geral</th>
+
+            <td>{{totalizador.qtdcargas}}</td>
+            
+            <td>{{totalizador.qtdctrc}}</td>
+            <td>{{totalizador.qtddelivery}}</td>
+            <td>{{totalizador.qtdnota}}</td>
+            <td>{{totalizador.qtdnotaentrega}}</td>
+            
+
+            <td>{{totalizador.psbruto ? (totalizador.psbruto | number:'1.2-2'):('0') }} Kg</td>
+            <td>{{totalizador.vrmercad | currency:'BRL'}}</td>
+            <td>{{utilServices.formataDistancia(totalizador.qtddisper)}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Marcados</th>
+
+            <td>{{totalSeleci.qtdcargas}}</td>
+            
+            
+            <td>{{totalSeleci.qtdctrc}}</td>
+            <td>{{totalSeleci.qtddelivery}}</td>
+            
+            <td>{{totalSeleci.qtdnota}}</td>
+            <td>{{totalSeleci.qtdnotaentrega}}</td>
+
+            <td>{{totalSeleci.psbruto ? (totalSeleci.psbruto | number:'1.2-2'):('0') }} Kg</td>
+            <td>{{totalSeleci.vrmercad | currency:'BRL'}}</td>
+            <td>{{utilServices.formataDistancia(totalSeleci.qtddisper)}}</td>
+          </tr>
+        </tbody>
+        </table>
+
+    </div>
+  </div>
+</div>

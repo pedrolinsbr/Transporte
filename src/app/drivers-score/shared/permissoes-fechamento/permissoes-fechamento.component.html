@@ -1,0 +1,170 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeletePermissoesFechamento()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+<br>
+<app-breadcrumbs
+  #breadcrumbs
+  home="Permissões fechamento"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-tipo-apontamento
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG103'">
+          </app-single-tipo-apontamento>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'permissoesFechamento'"
+        [url]="urlPermissoesFechamentoGrid"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deletePermissoesFechamento',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addPermissoesFechamento', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewPermissoesFechamento',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updatePermissoesFechamento',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <!-- <th data-id="IDG103" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="permissoesFechamento-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th> -->
+
+
+        <th data-id="IDG103"   data-type-column="actions" data-object="true">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG103"   data-align-right="true">Código</th>
+        <th data-id="NMUSUARI" data-align-left="true" data-function="registroNullDG">Usuário</th>
+        <th data-id="DSCAMPAN" data-align-left="true" data-function="registroNullDG">Descrição campanha</th>
+
+        <th data-id="IDKEY" data-align-left="true" data-function="registroNullDG">Cód. Apontamento</th>
+        <th data-id="DSVALUE" data-align-left="true" data-function="registroNullDG">Apontamento</th>
+
+        <th data-id="NMTRANSP" data-align-left="true" data-function="registroNullDG">Transportadora</th>
+        <th data-id="NMUSUARIPA" data-align-left="true" data-function="registroNullDG">Usuário referente </th>
+        <th data-id="DTCADAST" data-function="dataDG" data-align-left="true" >{{ 'global.form.dtcadast.pd' | translate }}</th>   
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormConfiguracao" (ngSubmit)="save()" >
+            <input type="text" id="IDG103" formControlName="IDG103" hidden>
+            <div class="row">
+
+
+                <!-- IDG103: [],
+                IDS001: ['', Validators.required],
+                IDG090: ['', Validators.required],
+                IDG024: ['', Validators.required],
+                IDG097: ['', Validators.required],
+                IDS001PA: ['', Validators.required], -->
+
+                <div class="form-group col-sm-2 col-md-2 col-lg-2" [formGroup]="objFormConfiguracao">
+                  <label>Tipo apontamento</label>
+                  <ng-select [items]="tipoAponta" [clearable]="false" bindLabel="name" bindValue="id" placeholder="Selecione" [(ngModel)]="selectedTipoAponta" formControlName="IDG097">
+                  </ng-select>
+                </div>
+
+                <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                  <app-single-usuario 
+                    [objForm] = "objFormConfiguracao"
+                    [formName] = "'IDS001'"
+                    [displayName]="'Usuário para permissão'">
+                  </app-single-usuario>
+                </div>
+
+                <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                  <app-single-campanha 
+                    [objForm]="objFormConfiguracao" 
+                    [formName]="'IDG090'">
+                  </app-single-campanha>
+                </div>
+
+                <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                  <app-single-transportadora-bravo 
+                    [objForm]="objFormConfiguracao" 
+                    [formName]="'IDG024'">
+                  </app-single-transportadora-bravo>
+                </div>
+
+                <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                  <app-single-usuario 
+                    [objForm]="objFormConfiguracao" 
+                    [formName]="'IDS001PA'"
+                    [displayName]="'Usuário referência'">
+                  </app-single-usuario>
+                </div>
+
+                
+
+            </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-8"></div>
+              <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                <!-- Salvar -->
+                <app-botoes 
+                *ngIf="checkViewPermissoesFechamento != 1"
+                class="success" 
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="savePermissoesFechamento();">
+                </app-botoes>
+                
+                <!-- Cancelar -->
+                <app-botoes 
+                class="danger" 
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="goHome(event);">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>

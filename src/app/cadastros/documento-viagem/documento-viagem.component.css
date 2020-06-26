@@ -1,0 +1,29 @@
+.custom-file-input:lang(en)~.custom-file-label::after {
+    content: "Procurar";
+}
+
+.toast-success {
+    background-color: #51A351;
+}
+
+.toast-error {
+    background-color: #BD362F;
+}
+
+.toast-info {
+    background-color: #2F96B4;
+}
+
+.toast-warning {
+    background-color: #F89406;
+}
+
+.btn-custom {
+	padding: 3px 6px 4px 6px;
+    border-radius: 50px;
+    margin-top: 4px;
+}
+.btn-icon {
+	padding: 8px;
+	background: #ffffff;
+}

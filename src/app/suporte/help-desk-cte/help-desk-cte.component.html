@@ -1,0 +1,92 @@
+<div>
+
+  <div *ngIf="false" style="display: flex; overflow-x: auto;">
+    <div *ngFor="let propIndicador of propIndicadores"
+      style="display: flex; overflow-x: auto; color: whitesmoke; width: 16% ; margin-left: 0.5%">
+      <div class="card card-body card-widget card-inverse" [ngStyle]="{'background-color':propIndicador.COR}">
+        <div class="mr-auto">
+          <h3 class="fw-300 mb-0">{{propIndicador.QTDMDF}}</h3>
+          <small>{{ propIndicador.NMTRANSP }}</small>
+
+        </div>
+        <div class="d-block">
+
+          <i class="{{ propIndicador.ICON }}" style='font-size:24px'></i>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <app-cards-filter titleDrop="Filtros" nameSubmitFunction="getInfoCTE" nameClearFunction="limpar" [isCollapsed]="true"
+    [dropdown]="true" [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter">
+      <div class="row" *ngIf="false">
+        <div class="form-group col-sm-12 col-md-12 col-lg-12" style="text-align: right;">
+          <button onClick="javascript:window.open('https://dfe-portal.svrs.rs.gov.br/Mdfe/Consulta', '_blank');"
+            class="btn btn-outline-light btn-link">Consulta Pública</button>
+          <button
+            onClick="javascript:window.open('https://dfe-portal.svrs.rs.gov.br/MdfeSSL/DownloadXmlDfe', '_blank');"
+            class="btn btn-outline-light btn-link">Download XML</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-transportadora-bravo [objForm]="objFormFilter" [formName]="'IDG024'" displayName="Transportadora">
+          </app-single-transportadora-bravo>
+        </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label>Cód. CTRC</label>
+          <app-input model="{{objFormFilter.controls['CDCTRC'].value}}" [formInput]="objFormFilter"
+            [formControlNameInput]="'CDCTRC'">
+          </app-input>
+        </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label>Cód. Evolog</label>
+          <app-input model="{{objFormFilter.controls['IDG051'].value}}" [formInput]="objFormFilter"
+            [formControlNameInput]="'IDG051'">
+          </app-input>
+        </div>
+
+      </div>
+
+      <br />
+    </form>
+
+  </app-cards-filter>
+</div>
+<ngb-accordion #acc="ngbAccordion" activeIds="1">
+
+
+  <ngb-panel id="1" title="Relatório">
+    <ng-template ngbPanelContent>
+      <br />
+      <div class="row">
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          Status do CTE: {{ utilServices.statusCTE(STCTE)}}. 
+        </div>
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          Data de emissão: {{utilServices.dataDG(emissaoCTE)}}
+        </div>
+      </div>
+      <div class="form-group">
+        <ul>
+          <li><i class="fa fa-check-circle" id="dtEntreg" name="dtEntreg"></i>Tem data de entrega</li>
+          <li><i class="fa fa-check-circle" id="dtEntcon"></i>Data SLA está preenchida (DTENTCON)</li>
+          <li><i class="fa fa-check-circle" id="carlog"></i>Tem carga Logos</li>
+          <li><i class="fa fa-check-circle" id="carevo"></i>Tem carga Evolog</li>
+          <li><i class="fa fa-check-circle" id='deliveryC'></i>Delivery está cancelada (STETAPA 7 ou 8)</li>
+          <li><i class="fa fa-check-circle" id="SnDelete43"></i>G043 está com SNDelete</li>
+          <li><i class="fa fa-check-circle" id="SnDelete83"></i>G083 está com SNDelete</li>
+          <li><i class="fa fa-check-circle" id="carga4Pl"></i>Em caso de Delivery, se tem carga 4PL ativa (CDG46ETA)
+          </li>
+          <li><i class="fa fa-check-circle" id="transpAtual"></i>Transportadora atual - IDG024AT: {{transpAtual}}</li>
+          <li><i class="fa fa-check-circle" id="statusCte"></i>Status do CTE</li>
+          <li><i class="fa fa-check-circle" id="cteIntegrado"></i>CTE integrado.</li>
+        </ul>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

@@ -1,0 +1,331 @@
+
+<!-- <tag-input [(ngModel)]='items'></tag-input> -->
+
+
+<!-- <material-chips [(ngModel)]="tags" ></material-chips> -->
+
+
+<app-breadcrumbs
+    #breadcrumbs
+    home="Montar carga"
+    [arBreadcrumbs]="arBreadcrumbsLocal"
+    (goHome)="goHome($event)"
+    (clearNext)="clearNext($event)"
+    [context]="this"
+>
+</app-breadcrumbs>
+
+<div style="margin-top: 15px;">
+<app-cards-filter
+  titleDrop="Filtros"
+  nameSubmitFunction="filtrar"
+  nameClearFunction="limpar"
+  [dropdown]="true"
+  [isCollapsed]="true"
+  [context]="this">
+  <div class="row">
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+      <label for="G043_IDG005RE">Remetente:</label>
+      <app-combobox
+      [url]="url+'filtro/clientes'"
+      [disabledViewSelect] = 'false'
+      [formSelect] = "objFormFilterH"
+      strPlaceholder = "Nome do remetente"
+      [formControlNameSelect] = "'G043_IDG005RE'">
+      </app-combobox>
+    </div>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+      <label for="G043_IDG005DE">Destinatário:</label>
+      <app-combobox
+      [url]="url+'filtro/clientes'"
+      [disabledViewSelect] = 'false'
+      [formSelect] = "objFormFilterH"
+      strPlaceholder = "Nome do destinatário"
+      [formControlNameSelect] = "'G043_IDG005DE'">
+      </app-combobox>
+    </div>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+      <label for="G043_IDG005RE">ID Delivery:</label>
+      <app-chips-input
+      [typeInput]="'numberText'"
+      [chips]='chips'
+      [removable]='true'
+      [addOnBlur]='true'
+      [duplicate]='false'
+      [objStyle]="objStyle"
+      [inputSpace]='true'
+      >
+      </app-chips-input>
+    </div>
+
+    <!-- <div class="form-group col-sm-4 col-md-4 col-lg-4">
+      <app-single-rota
+          [objForm]  = "objFormFilter"
+          [formName] = "'testao'"
+      ></app-single-rota>
+
+    </div> -->
+
+  </div>
+</app-cards-filter>
+
+
+
+
+<ngb-accordion  #acc="ngbAccordion" activeIds="2">
+    <!-- <ngb-panel id="1" title="Filtro Avançado">
+        <ng-template ngbPanelContent>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <app-single-armazem
+                    [objForm]  = "objFormFilter"
+                    [formName] = "'IDG028'"
+                ></app-single-armazem>
+            </div>
+
+            <div class="col-sm-3">
+                <app-single-tomador
+                    [objForm]  = "objFormFilter"
+                    [formName] = "'tomador'"
+                ></app-single-tomador>
+            </div>
+            <div class="col-sm-6">
+                <label>Intervalo de Datas:</label>
+                <app-datepicker-interval
+                    navegacao='select'
+                    styleMode='horizontal'
+                    [outsideDays]='visible'
+                    [dataMinima]='dataMinima'
+                    [dataMaxima]='dataMaxima'
+                    [dataSelecionada]='dataSelecionada'
+                    [mesesDisplay]='1'
+                    [desabilitar]='false'
+
+                    [outsideDays2]='visible'
+                    [dataSelecionada2]='dataSelecionada2'
+                    [mesesDisplay2]='1'
+                    [desabilitar2]='false'
+                    (otpDataMinimaInterval)='getValueMinDateInterval($event);'
+                    (otpDataMaximaInterval)='getValueMaxDateInterval($event);'
+                    [range]='numRange'
+                >
+                </app-datepicker-interval>
+            </div>
+        </div>
+
+        <div class="row" style="float: right">
+            <div class="col-sm-2">
+                <button class="btn btn-success"><i class="fas fa-filter"></i> Filtrar</button>
+            </div>
+        </div>
+
+        </ng-template>
+    </ngb-panel> -->
+    <ngb-panel id="2" title="Informações Deliveries">
+        <ng-template ngbPanelContent>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="grid bkRoxo">
+                        Informações de Carga
+                    </div>
+                    <div class="grid-conteudoS">
+                        <div>
+                            <div class="bkConteudo">
+                                <i class="fas fa-balance-scale" style="width: 15px; text-align: center;"></i>
+                                <span>{{pesoCarga}} (KG)</span>
+                            </div>
+
+                            <div class="bkConteudo">
+                                <i class="fas fa-dollar-sign" style="width: 15px; text-align: center;"></i>
+                                <span>{{vlCarga}},00 (R$)</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div style="float: right; margin-bottom: 0px;">
+                            <app-botoes
+                                class="danger"
+                                text="Cancelar"
+                                (click)="openModalConfirma('C')"
+                            >
+                            </app-botoes>
+                            <app-botoes
+                                class="{{classBtn}}"
+                                text="{{btnNome}} Todos"
+                                (click)="marcaTodos()"
+                            >
+                            </app-botoes>
+                            <app-botoes
+                                class="success"
+                                text="Aceitar"
+                                (click)="openModalConfirmaAceite()"
+                            >
+                            </app-botoes>
+                            <ng-template #content let-c="close" let-d="dismiss">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Atenção</h4>
+                                    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Você precisa selecionar notas para poder agendar.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Fechar</button>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <div class="grid bkRoxo">
+                        Notas Selecionadas
+                    </div>
+                    <div class="grid-conteudoS" [dragula]='"fourth-bag"' [dragulaModel]="click">
+                          <div class="sizeFilter" *ngFor="let info of click; let i = index">
+                            <div class="card card-body card-widget backlog card-inverse">
+                              <div class="mr-auto">
+                                <h3 class="fw-300 mb-0"><i class="fas fa-truck" style="font-size: 19px;width: 19px !important; text-align: center;"> </i> &nbsp;&nbsp;&nbsp;<span style="font-size: 19px;">{{info}}</span></h3>
+                              </div>
+                              <div class="d-block">
+                                <div class="icon h1 mb-0">
+                                  <i style="font-size: 24px;">{{i+1}} a</i>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                            <!-- <span>{{i+1}}</span>
+                            <i class="fas fa-truck" style="width: 15px; text-align: center;"></i>
+                            <span>{{info}}</span> -->
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="grid bkRoxo">
+                        Deliveries
+                        <div *ngIf="!carregando" class="direta col-sm-12"><img style="width: 20px; height: 20px" src="../../assets/images/loading.gif"></div>
+                        <div *ngIf="grade" class="direta col-sm-12"><span class="qtdGrid">{{grade.length}}</span><span class="tamanhoQtd"> Qtd</span></div>
+                    </div>
+                    <div class="grid-conteudo">
+                        <div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped mb-0" style="overflow-x:auto;">
+                                    <thead>
+                                        <tr>
+                                            <th><!-- Selecionar --></th>
+                                            <th>Nº Delivery</th>
+                                            <th>Cd Delivery</th>
+                                            <th>Emissão</th>
+                                            <th>Destinatário</th>
+                                            <th>Cidade Destinatário</th>
+                                            <!-- <th>Cidade/UF</th> -->
+                                            <th>Remetente</th>
+                                            <th>Cidade Remetente</th>
+                                            <th>Peso</th>
+                                            <th>Valor R$</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let info of grade">
+                                        <td>
+                                            <label class="container" style="padding-left: 20px !important;">
+                                                <input
+                                                    type="checkbox"
+                                                    (click)="adiciona(info.IDG043, info.PSBRUTO, info.VRDELIVE, info, $event)"
+                                                    [checked]="checar"
+                                                >
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </td>
+                                        <td>{{info.IDG043}}</td>
+                                        <td>{{info.CDDELIVE}}</td>
+                                        <td>{{info.DTLANCTO | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{info.DESTINATARIO}}</td>
+                                        <td>{{info.NMG003DE}}</td>
+
+                                        <!-- <td>{{info.cidade}}</td> -->
+                                        <td>{{info.REMETENTE}}</td>
+                                        <td>{{info.NMG003RE}}</td>
+                                        <td>{{info.pesoFormat}}</td>
+                                        <td>{{info.valorFormat}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>
+
+</div>
+
+
+
+<!-- MODAL COMFIRMAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalConfirma let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6>Confirmação</h6>
+  </div>
+  <div class="modal-body">
+    Deseja realmente {{action}}?
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Não</button>
+    <button type="button" class="btn btn-success" (click)="confirma(action)">Sim</button>
+  </div>
+</ng-template>
+<!-- FIM MODAL -->
+
+
+
+<!-- MODAL COMFIRMAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalConfirmaAceite let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6>Confirmação</h6>
+  </div>
+  <div class="modal-body">
+
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+
+
+            <div class="row">
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">
+
+
+                  <app-single-tipo-veiculo-neolog
+                    [objForm] = "objFormAux"
+                    [formName] = "'IDG030'">
+                  </app-single-tipo-veiculo-neolog>
+
+              </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Não</button>
+    <button id="buttonAceitar" type="button" class="btn btn-success" [disabled]="desabilitar == 1" (click)="confirma('aceitar')">Sim</button>
+  </div>
+</ng-template>
+<!-- FIM MODAL -->

@@ -1,0 +1,2102 @@
+<app-breadcrumbs
+    #breadcrumbs
+    home="Filtros"
+    [arBreadcrumbs]="arBreadcrumbsLocal"
+    (goHome)="goHome($event)"
+    (clearNext)="clearNext($event)"
+    [context]="this"
+    size="sm"
+>
+</app-breadcrumbs>
+<div class="" style="padding-top: 15px;">
+
+<div class="row "  *ngIf="controlView == 2">
+</div>
+
+<div class="row"  [hidden]="!controlViewTable" style="pointer-events: none;">
+  <indicadores-filter [hidden]="!(isVerifica4pl == 0)"
+    #indicador
+    class="col-md-12"
+    [objForm]="objFormFilter"
+    [indicadores]="indicadores"
+    (filtrar)="filtrarIndi($event)">
+  </indicadores-filter>
+
+  <indicadores-filter [hidden]="!(isVerifica4pl == 1)"
+    #indicador
+    class="col-md-12"
+    [objForm]="objFormFilter"
+    [indicadores]="indicadores4pl"
+    (filtrar)="filtrarIndi($event)">
+  </indicadores-filter>
+
+
+</div>
+
+  <app-cards-filter
+    [hidden]="!controlViewTable"
+    titleDrop="Filtros"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [dropdown]="true"
+    [isCollapsed]="collapsedFilter"
+    [context]="this">
+    <div class="row">
+
+      <!-- <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-single-transportadora-bravo
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDG024_CARGA'"
+            displayName = "CD Origem">
+        </app-single-transportadora-bravo>
+      </div> -->
+
+      <div class="col-sm-3"> <!-- transportadora -->
+        <!-- <label for="NMCIDADE">Transportadora:</label> -->
+        <app-combobox-multi
+            [url]="url+'filtro/transportadoras-bravo'"
+            [formMultiSelect] = "objFormFilter"
+            [disabledViewMultiSelect] = 'false'
+            [formControlNameMultiSelect] = "'IDG024'"
+            label = "CD Origem" 
+            (ativaSelect)="alteraTranspCarga($event)"
+            [dataFix]="true"
+        ></app-combobox-multi>
+      </div>
+
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-single-transportadora-bravo
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDG024_CARGA'" 
+            displayName = "Transportadora Carga"
+            [items]="objFormFilter.controls['IDG024'].value"
+            [dataFix]="true">
+        </app-single-transportadora-bravo>
+      </div>
+
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-cliente
+            [objForm]  = "objFormFilter"
+            [formName] = "'G051_IDG005C0AUX'"
+            displayName = "Tomador">
+        </app-multi-cliente>
+      </div>
+
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-cliente
+            [objForm]  = "objFormFilter"
+            [formName] = "'G051_IDG005REAUX'"
+            displayName = "Remetente"
+            [remetrans] = "remetrans">
+        </app-multi-cliente>
+      </div>
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+
+        <app-multi-cliente
+            [objForm]  = "objFormFilter"
+            [formName] = "'G051_IDG005DEAUX'"
+            displayName = "Destinatário">
+        </app-multi-cliente>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-tipo
+            [objForm]  = "objFormFilter"
+            [formName] = "'TPTRANSP'">
+        </app-multi-tipo>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-single-cluster
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDT005'"
+            displayName ="Padrão de roteirização">
+        </app-single-cluster>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-single-rota
+            [objForm]  = "objFormFilter"
+            [dataFix]  = "false"
+            [formName] = "'IDT001'"
+            [depName]  ="'IDT005,IDG024_CARGA'">
+        </app-single-rota>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-estado
+            [objForm]  = "objFormFilter"
+            [dataFix]  = "true"
+            [formName] = "'IDG002'"
+            displayName ="Estado destino" >
+        </app-multi-estado>
+      </div>
+      <div class="form-group col-sm-4 col-md-4 col-lg-3">
+        <app-multi-cidade
+            [objForm]  = "objFormFilter"
+            [formName] = "'IDG003'"
+            displayName = "Cidade destino">
+        </app-multi-cidade>
+      </div>
+<!--       <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <app-single-sim-nao-todos
+            strLabel="Proprietário?"
+            [objForm]  = "objFormFilter"
+            [formName] = "'snt'">
+        </app-single-sim-nao-todos>
+      </div> -->
+
+<!--       <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <label for="">Entrega Prevista</label>
+        <app-datepicker-intervalo
+          [formDateIntervalo]="objFormFilter"
+          [formControlNameDateIntervalo]="'DTMAROTO'">
+        </app-datepicker-intervalo>
+      </div> -->
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3" [hidden]="this.snCar4pl == 0">
+        <label for="G043_IDG005RE">Delivery</label>
+        <app-chips-input
+        [typeInput]="'numberText'"
+        [chips]='arIdsIDG043'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='true'
+        >
+        </app-chips-input>
+      </div>
+      <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <label for="G043_IDG005RE">CTRC</label>
+        <app-chips-input
+        [typeInput]="'numberText'"
+        [chips]='arIdsIDG051'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='true'
+        >
+        </app-chips-input>
+      </div>
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3" [hidden]="this.snCar4pl == 0">
+        <label for="G043_CDDELIVE">Código da Delivery</label>
+        <app-chips-input
+        [typeInput]="'text'"
+        [chips]='arIdsCDDELIVE'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='false'
+        >
+        </app-chips-input>
+      </div>
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <label for="G043_NRNOTA">Nº nota</label>
+        <app-chips-input
+        [typeInput]="'numberText'"
+        [chips]='arIdsNRNOTA'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='false'
+        >
+        </app-chips-input>
+      </div>
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3" [hidden]="this.snCar4pl == 0">
+        <label for="G043_VRCAMPO">Sales Office</label>
+        <app-chips-input
+        [typeInput]="'text'"
+        [chips]='arIdsVRCAMPO'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='false'
+        >
+        </app-chips-input>
+      </div>
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3" [hidden]="true">
+        <label for="G043_G0769">Grupo de Clientes</label>
+        <app-chips-input
+        [typeInput]="'text'"
+        [chips]='arIdsG0769'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='false'
+        >
+        </app-chips-input>
+      </div>
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3" [hidden]="true">
+        <label for="G043_G07610">Grupo de Preços</label>
+        <app-chips-input
+        [typeInput]="'text'"
+        [chips]='arIdsG07610'
+        [removable]='true'
+        [addOnBlur]='true'
+        [duplicate]='false'
+        [objStyle]="objStyle"
+        [inputSpace]='false'
+        >
+        </app-chips-input>
+      </div>
+
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-2" [hidden]="this.snCar4pl == 0">
+        <app-single-sim-nao-todos
+            strLabel="Vira?"
+            [objForm]  = "objFormFilter"
+            [formName] = "'SNVIRA'"
+            [comboFix] = "'simTodos'">
+        </app-single-sim-nao-todos>
+      </div>
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-2" [hidden]="this.snCar4pl == 0">
+        <app-single-sim-nao-todos
+            strLabel="Prioritário?"
+            [objForm]  = "objFormFilter"
+            [formName] = "'SNPRIORI'"
+            [comboFix] = "'simNaoTodos'">
+        </app-single-sim-nao-todos>
+      </div>
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3">
+        <label for="">Data Vencimento</label>
+        <app-datepicker-intervalo
+          [formDateIntervalo]="objFormFilter"
+          [formControlNameDateIntervalo]="'DTENTCON'">
+        </app-datepicker-intervalo>
+      </div>
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-2" [hidden]="this.snCar4pl == 0">
+       <!--  (ativaSelect) = "tipoDocumento()" -->
+        <app-single-sim-nao-todos
+            (ativaSelect) = "tipoDocumento()"
+            strLabel ="Tipo de Documento"
+            [objForm]  = "objFormFilter"
+            [formName] = "'TPDOCUME'"
+            [comboFix] = "'deliveryCtrc'">
+        </app-single-sim-nao-todos>
+      </div>
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-2">
+        <app-single-sim-nao-todos
+            strLabel="NF Liberadas?"
+            [objForm]  = "objFormFilter"
+            [formName] = "'NOTLIBER'">
+        </app-single-sim-nao-todos>
+      </div>
+
+      <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        <app-multi-dia-semana
+            [objForm]  = "objFormFilter"
+            [formName] = "'CALENDARIO'">
+        </app-multi-dia-semana>
+      </div>
+
+
+      <div class="form-group col-sm-2 col-md-2 col-lg-2" [hidden]="this.snCar4pl == 0">
+        <app-multi-calendarizacao-carga
+          [objForm]="objFormFilter"
+          [formName]="'ARCALEND'">
+        </app-multi-calendarizacao-carga>
+      </div>
+
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3" [hidden]="this.snCar4pl == 0">
+        <app-multi-operacao
+          [objForm]="objFormFilter"
+          [formName]="'IDG014'">
+        </app-multi-operacao>
+      </div>
+      
+
+    </div>
+    <div class="row" style="padding-bottom: 20px;">
+      <div class="col-sm-12" style="background: #ebebeb; height: 45px;">
+        <div class="row text-center" >
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'rota'}" (click)="changeOptionView('rota')">
+            <h5 class="mt-0 mb-0 text-uppercase">
+              <i class="fa fa-map" style="font-size: 15px;"> </i>
+              <small class="fw-300" st>Visão Por Rota</small>
+            </h5>
+          </div>
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'cidade'}" (click)="changeOptionView('cidade')">
+            <h5 class="mt-0 mb-0 text-uppercase">
+              <i class="fas fa-map-marker-alt" style="font-size: 15px;"> </i>
+              <small class="fw-300">Visão por Cidade</small>
+            </h5>
+          </div>
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'recebedor'}" (click)="changeOptionView('recebedor')">
+            <h5 class="mt-0 mb-0 text-uppercase" >
+              <i class="fas fa-user" style="font-size: 15px;"> </i>
+              <small class="fw-300">Visão por Recebedor</small>
+            </h5>
+          </div>
+          <div class="col-sm-3 optionsView" [ngClass]="{'optionsView-activate': validOptionsView == 'CTRC'}" (click)="changeOptionView('CTRC')">
+            <h5 class="mt-0 mb-0 text-uppercase" >
+              <i class="fas fa-file-alt" style="font-size: 15px;"> </i>
+              <small class="fw-300">Visão por Documentos</small>
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </app-cards-filter>
+</div>
+
+
+
+
+
+
+<ngb-accordion #acc="ngbAccordion" activeIds="1" *ngIf="controlView < 6 && controlView > 0">
+<!-- <ngb-accordion #acc="ngbAccordion" activeIds="1" *ngIf="true"> -->
+  <ngb-panel  title="{{titleCard}}" id="1" >
+    <ng-template ngbPanelContent>
+      <div class="row boxLegend"> 
+          <div class="col-md-2" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fa fa-circle" style="color:rgba(249, 156, 37, 0.7); font-size: 10px;"> </i>
+              <small class="fw-300">vencidos</small></h6>
+          </div>
+          <div class="col-md-2" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fa fa-circle" style="color:#28baad; font-size: 10px;"> </i>
+              <small class="fw-300">agendada</small></h6>
+          </div>
+          <div class="col-md-2" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fa fa-circle" style="color:#e91e31; font-size: 10px;"> </i>
+              <small class="fw-300">combinada</small></h6>
+          </div>
+          <div class="col-md-2" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fa fa-circle" style="color:#07853d; font-size: 10px;"> </i>
+              <small class="fw-300">prioritário</small></h6>
+          </div>
+          <div class="col-md-2" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fa fa-circle" style="color:#dacc25; font-size: 10px;"> </i>
+              <small class="fw-300">especial</small></h6>
+          </div>
+<!--           <div class="col-md-2" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fas fa-truck" style="color:#d6d6d6; font-size: 10px;"> </i>
+              <small class="fw-300">Liberado</small></h6>
+          </div> -->
+          <div class="col-md-2" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fas fa-truck" style="color:#ff3e3e; font-size: 10px;"> </i>
+              <small class="fw-300">bloqueado</small></h6>
+          </div>
+<!--           <div class="col-md-3" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fas fa-truck" style="color:#00D2FF; font-size: 10px;"> </i>
+              <small class="fw-300">liberados</small></h6>
+          </div>
+          <div class="col-md-3" style="padding-left: 10px;">
+            <h6 class="mt-0 mb-0 text-uppercase">
+              <i class="fas fa-truck" style="color:#F08200; font-size: 10px;"> </i>
+              <small class="fw-300">atrasados</small></h6>
+          </div> -->
+      </div>
+<!--
+        [telaGlobal]="[{'id' : 'colvis'}]" -->
+
+      <app-datagrid
+        *ngIf="controlView == 1"
+        #visaoUm
+        [id]="'detalhesRota'"
+        [url]="url + 'tp/mountLoad/listarDocumentos'"
+        [tela]="999"
+        [telaAcoes]="[]"
+        [nivel]="0"
+        [thisParent]="this"
+        [additionalFields]="{'visao' :1}"
+        [notPagination]="true"
+        [stateSave]="false"
+        [drawCallback]="'totalizadorGrid'">
+        <th data-id="IDT001" data-type-column="checkbox"> 
+          <!-- <label class="custom-control custom-checkbox"></label> -->
+          <label class="custom-control custom-checkbox">
+          <input id="detalhesRota-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>         
+        
+        <th data-id="IDT001" data-function="mountingLoadIndicadores" data-function-full="true">Indicadores</th>
+        <th data-id="IDT001" data-function="mountingLoadBloqueioDocumentos" data-function-full="true">Status</th>
+
+        <th data-id="PSBRUTO"data-align-right="true" data-function="formataPeso">Peso</th>
+        <th data-id="PSLOTACA"data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+        <th data-id="VRMERCAD" data-align-right="true" data-function="formataDinheiro">Vr. mercadoria</th>
+        <th data-id="IDT001" data-align-right="true" data-function="numberNullDG">Rota</th>
+        <th data-id="DSPRACA" data-align-left="true" data-function="registroNullDG">Praça</th>
+<!--         <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" *ngIf="isCTRC">Qtd. CTRC</th>
+        <th data-id="QTNFE" data-align-right="true" data-function="registroNullDG" *ngIf="isDelivery">Qtd. Delivery</th>
+ -->
+
+        <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" >Qtd. CTRC</th>
+        <th data-id="QTNFE" data-align-right="true" data-function="registroNullDG" *ngIf="snCar4pl == 1">Qtd. Delivery</th>
+
+<!-- 
+        <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" 
+
+[ngClass]="{'display': (isCTRC ? 'block':'none')}"
+>Qtd. CTRC</th>
+        <th data-id="QTNFE" data-align-right="true" data-function="registroNullDG" 
+
+[ngClass]="{'display': (isDelivery ? 'block':'none')}"
+        >Qtd. Delivery</th>
+
+ -->
+        <th data-id="DTENTCON" data-align-left="true" data-function="dataDG">Dt. Venc.</th>
+        <th data-id="DTENT4PL" data-align-left="true" data-function="dataDG" *ngIf="snCar4pl == 1">SLA 4PL</th>
+
+        <th data-id="QTDIAVEN" data-align-right="true"  data-function="registroNullNumberDG">Dias p/ Vencto.</th>
+
+        <th data-id="DTVENROT" data-align-left="true" data-function="dataDG" >Dt. Ven. Rot.</th>
+
+        <th data-id="DSCTE" data-visible="true" data-function="numberNullDG">CTRC's</th>
+        <th data-id="CDDELIVE" data-visible="true" data-function="numberNullDG" *ngIf="snCar4pl == 1">Deliveries</th>
+      </app-datagrid>
+
+      <app-datagrid
+      *ngIf="controlView == 2"
+      #visaoDois
+      [id]="'detalhesCidade'"
+      [url]="url + 'tp/mountLoad/listarDocumentos'"
+      [tela]="999"
+      [telaAcoes]="[]"
+      [nivel]="0"
+      [thisParent]="this"
+      [additionalFields]="{'visao' :2}"
+      [notPagination]="true"
+      [stateSave]="false"
+      [drawCallback]="'totalizadorGrid'">
+      <th data-id="IDT001" data-type-column="checkbox"> 
+        <!-- <label class="custom-control custom-checkbox"></label> -->
+        <label class="custom-control custom-checkbox">
+        <input id="detalhesCidade-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th> 
+
+
+      <th data-id="IDT001" data-function="mountingLoadIndicadores" data-function-full="true">Indicadores</th>
+      <th data-id="IDT001" data-function="mountingLoadBloqueioDocumentos" data-function-full="true">Status</th>
+      <!-- <th data-id="IDT001">CEP</th> -->
+
+      <th data-id="PSBRUTO" data-align-right="true" data-function="formataPeso">Peso</th>
+      <th data-id="PSLOTACA"data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+      <th data-id="VRMERCAD" data-align-right="true" data-function="formataDinheiro">Vr. mercadoria</th>
+      <th data-id="NMCIDADE" data-align-right="true"  data-function="registroNullDG">Cidade</th>
+      <th data-id="CDESTADO" data-align-right="true"  data-function="registroNullDG">UF</th>
+<!--       <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" *ngIf="isCTRC">Qtd. CTRC</th>
+      <th data-id="QTNFE" data-align-right="true" data-function="registroNullDG" *ngIf="isDelivery">Qtd. Delivery</th> -->
+
+      <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" >Qtd. CTRC</th>
+      <th data-id="QTNFE" data-align-right="true" data-function="registroNullDG" *ngIf="snCar4pl == 1">Qtd. Delivery</th>
+
+      <th data-id="DTENTCON" data-align-left="true" data-function="dataDG">Dt. Venc.</th>
+      <th data-id="DTENT4PL" data-align-left="true" data-function="dataDG" *ngIf="snCar4pl == 1">SLA 4PL</th>
+
+      <th data-id="QTDIAVEN" data-align-right="true" data-function="registroNullNumberDG" >Dias p/ Vencto.</th>
+
+      <th data-id="DTVENROT" data-align-left="true" data-function="dataDG" >Dt. Ven. Rot.</th>
+
+      <th data-id="IDT001" data-align-right="true" data-function="numberNullDG">Rota</th>
+      <th data-id="DSPRACA" data-align-left="true"  data-function="registroNullDG">Praça</th>
+      <th data-id="DSCTE" data-visible="false" data-function="numberNullDG">CTRC's</th>
+      <th data-id="CDDELIVE" data-visible="false" data-function="numberNullDG" *ngIf="snCar4pl == 1">Deliveries</th>
+      </app-datagrid>
+
+
+      <app-datagrid
+      *ngIf="controlView == 3"
+      #visaoTres
+      [id]="'detalhesRecebedor'"
+      [url]="url + 'tp/mountLoad/listarDocumentos'"
+      [tela]="999"
+      [telaAcoes]="[]"
+      [nivel]="0"
+      [thisParent]="this"
+      [additionalFields]="{'visao' :3}"
+      [notPagination]="true"
+      [stateSave]="false"
+      [drawCallback]="'totalizadorGrid'">
+      <th data-id="IDT001" data-type-column="checkbox"> 
+        <!-- <label class="custom-control custom-checkbox"></label> -->
+        <label class="custom-control custom-checkbox">
+        <input id="detalhesRecebedor-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th>
+
+
+
+      <th data-id="IDT001"   data-function="mountingLoadIndicadores" data-function-full="true">Indicadores</th>
+      <th data-id="IDT001"   data-function="mountingLoadBloqueioDocumentos" data-function-full="true">Status</th>
+      <th data-id="PSBRUTO"  data-function="formataPeso" data-align-right="true">Peso</th>
+      <th data-id="PSLOTACA" data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+      <th data-id="VRMERCAD" data-function="formataDinheiro" data-align-right="true">Vr. mercadoria</th>
+      <!-- <th data-id="EMITRANS" data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 0">Transportadora Emissora</th> -->
+      <th data-id="DSPRACA"  data-function="registroNullDG" data-align-left="true">Praça</th>
+<!--  <th data-id="CDCTRC"   data-function="numberNullDG" *ngIf="isCTRC"     data-align-right="true">CTRC's</th>
+      <th data-id="IDG043"   data-function="numberNullDG" *ngIf="isDelivery" data-align-right="true">Deliveries</th> -->
+<!--       
+      <th data-id="CDCTRC"   data-function="numberNullDG"      data-align-right="true">CTRC's</th>
+      <th data-id="IDG043"   data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 1">Deliveries</th>
+      <th data-id="CDDELIVE" data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 1">Cód. D.</th>
+      <th data-id="NRNOTA"   data-function="numberNullDG"      data-align-right="true">Nota(s)</th> -->
+
+      <th data-id="QTCTE" data-align-right="true" data-function="registroNullDG" >Qtd. CTRC</th>
+      <th data-id="QTNFE" data-align-right="true" data-function="registroNullDG" *ngIf="snCar4pl == 1">Qtd. Delivery</th>
+
+      <!-- <th data-id="IDT001">CEP</th> -->
+      <th data-id="NMCIDADE" data-function="registroNullDG" data-align-left="true">Cidade</th>
+      <th data-id="CDESTADO" data-function="registroNullDG" data-align-left="true">UF</th>
+      <!-- <th data-id="QTCTE" data-function="registroNullDG">Qtd. CTRC</th> -->
+      <!-- <th data-id="QTNFE" data-function="registroNullDG">Qtd. Delivery</th> -->
+      <!-- <th data-id="DTENTCON" data-function="dataDG" data-align-left="true">Dt. Venc.</th> -->
+        
+      <th data-id="DTENTCON" data-align-left="true" data-function="dataDG" >Dt. Venc.</th>
+      <th data-id="DTENT4PL" data-align-left="true" data-function="dataDG" *ngIf="snCar4pl == 1">SLA 4PL</th>
+
+      <th data-id="QTDIAVEN" data-align-right="true" data-function="registroNullNumberDG" >Dias p/ Vencto.</th>
+
+      <th data-id="DTVENROT" data-align-left="true" data-function="dataDG"  *ngIf="snCar4pl == 1">Dt. Ven. Rot.</th>
+        
+        
+      <!-- <th data-id="QTDIAVEN">Dias p/ Vencto.</th> -->
+      <th data-id="NMCLIEDE" data-align-left="true" data-function="numberNullDG">Destinatário</th>
+
+      <!-- <th data-id="NMCLIECO" data-align-left="true" data-function="numberNullDG">Tomador</th>
+      <th data-id="IDG005CO" data-align-right="true" data-function="numberNullDG">Cód. Tomador</th> -->
+      <th data-id="IDT001"   data-align-right="true" data-function="numberNullDG">Rota</th>
+      
+      <th data-id="DSCTE" data-visible="false" data-function="numberNullDG">CTRC's</th>
+      <th data-id="CDDELIVE" data-visible="false" data-function="numberNullDG" *ngIf="snCar4pl == 1">Deliveries</th>
+
+
+      </app-datagrid>
+
+
+      <app-datagrid
+      *ngIf="controlView == 4"
+      #visaoQuatro
+      [id]="'detalhesCtrc'"
+      [url]="url + 'tp/mountLoad/listarDocumentos'"
+      [tela]="999"
+      [telaAcoes]="[]"
+      [nivel]="0"
+      [thisParent]="this"
+      [additionalFields]="{'visao' :4}"
+      [notPagination]="true"
+      [stateSave]="false"
+      [drawCallback]="'totalizadorGrid'">
+      <th data-id="IDT001" data-type-column="checkbox"> 
+        <!-- <label class="custom-control custom-checkbox"></label> -->
+        <label class="custom-control custom-checkbox">
+        <input id="detalhesCtrc-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+        <span class="custom-control-indicator"></span>
+        </label>
+      </th>
+
+        <!-- VISÃO 4PL -->
+      
+        <th data-id="IDT001"   data-function="mountingLoadIndicadores" data-function-full="true" *ngIf="snCar4pl == 1">Indicadores</th>
+        <th data-id="IDT001"   data-function="mountingLoadBloqueioDocumentos" data-function-full="true" *ngIf="snCar4pl == 1">Status</th>
+        <th data-id="PSBRUTO"  data-function="formataPeso" data-align-right="true" *ngIf="snCar4pl == 1">Peso</th>
+        <th data-id="VRMERCAD" data-function="formataDinheiro" data-align-right="true" *ngIf="snCar4pl == 1">Vr. mercadoria</th>
+        <th data-id="DSPRACA"  data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 1">Praça</th>
+        <th data-id="NMCLIEDE" data-align-left="true" data-function="numberNullDG" *ngIf="snCar4pl == 1">Destinatário</th>
+        <th data-id="NMCIDADE" data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 1">Cidade</th>
+        <th data-id="CDESTADO" data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 1">UF</th>
+        <th data-id="CDDELIVE" data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 1">Cód. D.</th>
+        <th data-id="DTENTCON" data-align-left="true" data-function="dataDG" *ngIf="snCar4pl == 1">Dt. Venc.</th>
+        <th data-id="DTENT4PL" data-align-left="true" data-function="dataDG" *ngIf="snCar4pl == 1">SLA 4PL</th> 
+        <th data-id="CDCTRC"   data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 1">CTRC's</th>
+        <th data-id="DSCTE" data-visible="false" data-function="numberNullDG" *ngIf="snCar4pl == 1">CTRC's</th>
+        <th data-id="NRNOTA"   data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 1">Nota(s)</th>
+        <th data-id="NMCLIECO" data-align-left="true" data-function="numberNullDG" *ngIf="snCar4pl == 1">Tomador</th>
+        <th data-id="IDG005CO" data-align-right="true" data-function="numberNullDG" *ngIf="snCar4pl == 1">Cód. Tomador</th>
+        <th data-id="IDG043"   data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 1">Deliveries</th>
+        <th data-id="CDDELIVE" data-visible="false" data-function="numberNullDG" *ngIf="snCar4pl == 1">Deliveries</th>
+        <th data-id="IDT001"   data-align-right="true" data-function="numberNullDG" *ngIf="snCar4pl == 1">Rota</th>
+        <th data-id="QTDIAVEN" data-align-right="true"  data-function="registroNullNumberDG" *ngIf="snCar4pl == 1">Dias p/ Vencto.</th>
+        <th data-id="DTVENROT" data-align-left="true" data-function="dataDG"  *ngIf="snCar4pl == 1">Dt. Ven. Rot.</th>
+        
+        
+        <!-- VISÃO 3PL -->
+
+        <th data-id="IDT001"   data-function="mountingLoadIndicadores" data-function-full="true" *ngIf="snCar4pl == 0">Indicadores</th>
+        <th data-id="IDT001"   data-function="mountingLoadBloqueioDocumentos" data-function-full="true" *ngIf="snCar4pl == 0">Status</th>
+        <th data-id="PSBRUTO"  data-function="formataPeso" data-align-right="true" *ngIf="snCar4pl == 0">Peso</th>
+        <th data-id="VRMERCAD" data-function="formataDinheiro" data-align-right="true" *ngIf="snCar4pl == 0">Vr. mercadoria</th>
+        <th data-id="NMCIDADE" data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 0">Cidade</th>
+        <th data-id="CDESTADO" data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 0">UF</th>
+        <th data-id="DTENTCON" data-align-left="true" data-function="dataDG" *ngIf="snCar4pl == 0">Dt. Venc.</th>
+        <th data-id="NMCLIECO" data-align-left="true" data-function="numberNullDG" *ngIf="snCar4pl == 0">Tomador</th>
+        <th data-id="IDG005CO" data-align-right="true" data-function="numberNullDG" *ngIf="snCar4pl == 0">Cód. Tomador</th>
+        <th data-id="NMCLIEDE" data-align-left="true" data-function="numberNullDG" *ngIf="snCar4pl == 0">Destinatário</th>
+        <th data-id="CDCTRC"   data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 0">CTRC's</th>
+        <th data-id="DSCTE" data-visible="false" data-function="numberNullDG" *ngIf="snCar4pl == 0">CTRC's</th>
+        <th data-id="DSPRACA"  data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 0">Praça</th>
+        <th data-id="IDT001"   data-align-right="true" data-function="numberNullDG" *ngIf="snCar4pl == 0">Rota</th>
+        <th data-id="NRNOTA"   data-function="numberNullDG"      data-align-right="true" *ngIf="snCar4pl == 0">Nota(s)</th>
+        <th data-id="EMITRANS" data-function="registroNullDG" data-align-left="true" *ngIf="snCar4pl == 0">Transportadora Emissora</th>
+        <th data-id="PSLOTACA" data-align-right="true" data-function="formataPeso" *ngIf="snCar4pl == 0">Peso Lotação</th>
+        <th data-id="QTDIAVEN" data-align-right="true"  data-function="registroNullNumberDG" *ngIf="snCar4pl == 0">Dias p/ Vencto.</th>
+        <th data-id="DTVENROT" data-align-left="true" data-function="dataDG"  *ngIf="snCar4pl == 0">Dt. Ven. Rot.</th>
+        
+      
+
+      
+
+
+      
+
+
+      </app-datagrid>
+
+
+  <div class="row  text-center">
+    <div class="col-sm-12 text-right" style="margin-top: 10px;">
+      <app-botoes
+      *ngIf="controlView < 4"
+      [ngClass]="{'classeSocial': true}"
+      class="info"
+      text="Detalhar"
+      icon="fas fa-search"
+      (click)="controlViewTable = false; this[nameFuncDetail](); "
+      outline>
+    </app-botoes>
+      <app-botoes
+      [ngClass]="{'classeSocial': true}"
+      class="success"
+      text="&nbsp;&nbsp;Carga"
+      icon="fas fa-archive"
+      (click)="openCarga();"
+      outline>
+      </app-botoes>
+      <app-botoes
+      *ngIf="controlView >= 2  && !controlViewTable"
+      [ngClass]="{'classeSocial': true}"
+      class="danger"
+      text="&nbsp;&nbsp;Voltar"
+      icon="fas fa-arrow-left"
+      (click)="breadcrumbs.goBack();"
+      outline>
+      </app-botoes>
+    </div>
+  </div>
+
+    <div class="row boxButtons text-center">
+        <div class="col-sm-12" style="color: #474747;">
+          <table class="table table-striped" style="margin-bottom: 0px;">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col" >CTRC</th>
+                <th scope="col" >DELIVERY</th>
+
+                <th scope="col" *ngIf="snCar4pl == 0">PS. LOTAÇÃO</th>
+
+
+<!--                 <th scope="col" *ngIf="isCTRC">CTRC</th>
+                <th scope="col" *ngIf="isDelivery">DELIVERY</th> -->
+
+                <th scope="col">PESO</th>
+                <th scope="col">VALOR MERCADORIAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Geral</th>
+<!--                 <td *ngIf="isCTRC">{{totalizador.qtctrc}}</td>
+                <td *ngIf="isDelivery">{{totalizador.qtnfe}}</td> -->
+
+                <td>{{totalizador.qtctrc}}</td>
+                <td>{{totalizador.qtnfe}}</td>
+                <td  *ngIf="snCar4pl == 0">{{totalizador.pslotaca ? (totalizador.pslotaca | number:'1.2-2'):('0') }} Kg</td>
+                <td>{{totalizador.psbruto ? (totalizador.psbruto | number:'1.2-2'):('0') }} Kg</td>
+                <td>{{totalizador.vrmercad | currency:'BRL'}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Marcados</th>
+                <td>{{totalSeleci.qtctrc}}</td>
+                <td>{{totalSeleci.qtnfe}}</td>
+
+<!--                 <td *ngIf="isCTRC">{{totalSeleci.qtctrc}}</td>
+                <td *ngIf="isDelivery">{{totalSeleci.qtnfe}}</td> -->
+                <td *ngIf="snCar4pl == 0">{{totalSeleci.pslotaca ? (totalSeleci.pslotaca | number:'1.2-2'):('0') }} Kg</td>
+
+
+                <td>{{totalSeleci.psbruto ? (totalSeleci.psbruto | number:'1.2-2'):('0') }} Kg</td>
+                <td>{{totalSeleci.vrmercad | currency:'BRL'}}</td>
+              </tr>
+            </tbody>
+            </table>
+
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <!-- <div class="col-sm-4 text-center" style="color: #474747;">
+
+      </div> -->
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+<ngb-accordion #acc="ngbAccordion" activeIds="1,4" *ngIf="controlView == 6">
+
+  <ngb-panel  title="Nota(s) Não Liberada(s)" id="4" >
+    <ng-template ngbPanelContent>
+
+      <div class="row">
+          <div class="col-sm-12">
+              <div class="grid bkRoxo">
+                  Entregas
+                  <div *ngIf="!carregando" class="direta col-sm-12"><img style="width: 20px; height: 20px" src="../../assets/images/loading.gif"></div>
+                  <div *ngIf="arGridCarga" class="direta col-sm-12"><span class="qtdGrid">{{arGridCarga.length}}</span><span class="tamanhoQtd"> Qtd</span></div>
+              </div>
+              <div class="grid-conteudo">
+                      <div class="table-responsive">
+                        <div style="margin: 8px; text-rigth">
+
+                            <app-botoes
+                              [ngClass]="{'classeSocial': true}"
+                              class="danger"
+                              text="&nbsp;Limpar"
+                              icon="fas fa-sync-alt"
+                              (click)="openCarga();"
+                              outline>
+                            </app-botoes>
+
+                            <app-botoes
+                              *ngIf="!detalhando"
+                              [ngClass]="{'classeSocial': true}"
+                              class="info"
+                              text="&nbsp;Detalhar Todos"
+                              icon="fas fa-plus"
+                              (click)="detalharGrid('D');"
+                              outline>
+                            </app-botoes>
+
+                            <app-botoes
+                              *ngIf="detalhando"
+                              [ngClass]="{'classeSocial': true}"
+                              class="info"
+                              text="&nbsp;Ocultar Detalhes"
+                              icon="fas fa-minus"
+                              (click)="detalharGrid('O');"
+                              outline>
+                            </app-botoes>
+
+                          </div>
+
+                          <div class="row">
+                            <div class="borderHead col-sm-1">
+                              #
+                            </div>
+                            <div class="borderHead col-sm-1">
+                              Ações
+                            </div>
+                            <div class="borderHead col-sm-1">
+                              Peso
+                            </div>
+                            <div class="borderHead col-sm-1">
+                              Valor
+                            </div>
+                            <div class="borderHead col-sm-2">
+                              Crossdocking
+                            </div>
+                            <div class="borderHead col-sm-2">
+                              Dt. Vencimento
+                            </div>
+                            <div class="borderHead col-sm-2">
+                              Cidade Destinatário
+                            </div>
+                            <div class="borderHead col-sm-2">
+                              Nome Destinatário
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12" [dragula]='"fourth-bag"' [dragulaModel]="arGridCarga">
+                              <div class="row" *ngFor="let info of arGridCarga; let i = index;" >
+                                <div class="col-sm-12">
+                                  <div class="row">
+                                    <div class="celTable col-sm-1" style="font-weight: bold;">
+                                      
+                                      {{i+1}}
+                                    </div>
+                                    <div class="celTable col-sm-1">
+                                      <i *ngIf="!linhas[i]" (click)="detalharLinha(i)" style="color: #636363; font-size: 14px; cursor: pointer;" class="fas fa-plus-circle"></i>
+                                      <i *ngIf="linhas[i]" (click)="detalharLinha(i)" style="color: #636363; font-size: 14px; cursor: pointer;" class="fas fa-minus-circle"></i> &nbsp;
+                                      <i (click)="openDeleteArGridCarga(i)" style="color: #c30c1c; font-size: 14px; cursor: pointer;" class="far fa-trash-alt"></i>
+                                    </div>
+                                    <div class="celTable col-sm-1">
+                                      {{info.PSBRUTO ? (info.PSBRUTO | number:'1.2-2'):('0') }} Kg
+                                    </div>
+                                    <div class="celTable col-sm-1">
+                                      {{info.VRMERCAD | currency:'BRL'}}
+                                    </div>
+                                    <div class="celTable col-sm-2">
+                                      <div *ngIf="info.NMEMPDES" (click)="atribuirTransportadoras(i)" style="cursor: pointer">
+                                        <span style="font-size: 12px; font-weight: bold; color: #0bbe58; cursor: pointer;" >{{info.NMEMPDES }}</span>
+                                      </div>
+                                      <i *ngIf="!info.NMEMPDES"(click)="atribuirTransportadoras(i)" style="color: #0bbe58; font-size: 15px; cursor: pointer; margin-left: 5px;" class="far fa-building"></i>
+                                    </div>
+                                    <div class="celTable col-sm-2">
+                                      {{utils.dataDG(info.DTVENCTO)}}
+                                    </div>
+                                    <div class="celTable col-sm-2">
+                                      {{info.NMCIDADE}} - {{info.CDESTADE}}
+                                    </div>
+                                    <div class="celTable col-sm-2">
+                                      {{info.NMCLIEDE}}
+                                    </div>
+                                </div>
+                                </div>
+
+                                <div *ngIf="linhas[i]" class="col-sm-12 details sttriped">
+                                  <div class="row">
+                                    <div class="col-sm-12 text-center" style="font-size: 12px;font-weight: bold;padding-top: 3px;padding-bottom: 3px;background: #e8e8e8;">
+                                        Detalhes
+                                    </div>
+                                  </div>
+                                  <table style="text-align: center; font-size: 11px; width: 100%; border:0.5px;">
+                                      <thead >
+                                          <tr style=" border-bottom: 1px solid rgba(214, 213, 213, 0.88);border-top: 1px solid rgba(214, 213, 213, 0.88);">
+                                              <th>Endereço</th>
+                                              <th>Restrições</th>
+                                              <th>P.G. Destinatário</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr style=" border-bottom: 1px solid rgba(214, 213, 213, 0.88);">
+                                          <td>{{info.DSENDERE}}</td>
+                                          <td>{{info.DSTIPVEIRET}}</td>
+                                          <td>{{info.NRLATITUDE}},{{info.NRLONGITDE}}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                  <div class="row">
+                                    <div class="col-sm-12 text-center" style="font-size: 12px;font-weight: bold;padding-top: 3px;padding-bottom: 3px;background: #e8e8e8;">
+                                        Documentos
+                                    </div>
+                                  </div>
+                                  <table style="text-align: center; font-size: 11px; width: 100%; border:0.5px;">
+                                    <thead >
+                                        <tr style=" border-bottom: 1px solid rgba(214, 213, 213, 0.88);border-top: 1px solid rgba(214, 213, 213, 0.88);">
+                                            <th width="30px">#</th>
+                                            <th>Documento</th>
+                                            <th>Vencimento</th>
+                                            <th>Tomador</th>
+                                            <th>Apólice  C/ Escolta</th>
+                                            <th>Apólice S/ Escolta</th>
+                                            <th>Remetente</th>
+                                            <th>Peso</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr *ngFor="let obj of info.CHILD; let j = index;" style=" border-bottom: 1px solid rgba(214, 213, 213, 0.88);">
+                                        <td>{{j+1}}</td>
+                                        <td>{{(obj.CDCTRC ? obj.CDCTRC : obj.IDG043)}}</td>
+                                        <td>{{utils.dataDG(obj.DTVENCTO)}}</td>
+                                        <td>{{obj.NMCLIECO}}</td>
+                                        <td>{{utils.formataDinheiro(obj.VRAPOESC)}}</td>
+                                        <td>{{utils.formataDinheiro(obj.VRAPONOR)}}</td>
+                                        <td>{{obj.NMCLIERE}}</td>
+                                        <td>{{utils.formataPeso(obj.PSBRUTO)}}</td>
+                                        <td>{{utils.formataDinheiro(obj.VRMERCAD)}}</td>
+
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                  </div>
+              </div>
+          </div>
+      </div>
+      <br>
+      <div class="row boxButtons text-center">
+          <div class="col-sm-12" style="color: #474747;">
+
+            <table class="table table-striped" style="margin-bottom: 0px;">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">CTRC</th>
+                  <th scope="col">DELIVERY</th>
+                  <th scope="col">PESO</th>
+                  <th scope="col">VALOR MERCADORIAS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Geral</th>
+                  <td>{{qtdCtrc}}</td>
+                  <td>{{qtdNf}}</td>
+                  <td>{{utils.formataPeso(objFormCarga.controls['PSCARGA'].value)}}</td>
+                  <td>{{utils.formataDinheiro(objFormCarga.controls['VRCARGA'].value)}}</td>
+                </tr>
+
+              </tbody>
+              </table>
+
+          </div>
+
+        </div>
+    </ng-template>
+  </ngb-panel>
+
+<!-- <ngb-accordion #acc="ngbAccordion" activeIds="1,2,3" *ngIf="true"> -->
+  <ngb-panel  title="Dados Básicos" id="1" >
+    <ng-template ngbPanelContent>
+      <div class="row" [hidden]="snDelivery">
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <app-single-sim-nao-oferecimento
+            (click)="estruturaForm()"
+            name="SIMNAOOFERECE"
+            class="flip"
+            model="{{objFormCarga.controls['SIMNAOOFERECE'].value}}"
+            [formOF]="objFormCarga"
+            [formControlNameOF]="'SIMNAOOFERECE'"
+          ></app-single-sim-nao-oferecimento>
+          <!-- <input type="text" name="" value="{{objFormCarga.controls['SIMNAOOFERECE'].value}}"> -->
+        </div>
+      </div>
+      <div class="row" [hidden]="!snDelivery">
+        <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <span style="font-weight: bold; color:#159C97">ENVIO PARA OFERECIMENTO</span>
+        </div>
+      </div>
+
+<!--         <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-input
+            id="MALOTE"
+            name="MALOTE"
+            [isRequired] ='false'
+            placeholder="Malote"
+            [formInput] = "objFormCarga"
+            [formControlNameInput] = "'MALOTE'"
+            [label]="'Malote'"
+          >
+          </app-input>
+        </div> -->
+<!--         <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <label for="PSCOMISS">Peso Comissão</label>
+          <app-input
+            id="PSCOMISS"
+            name="PSCOMISS"
+            type="number"
+            [isRequired] ='false'
+            placeholder="Peso Comissão"
+            [formInput] = "objFormCarga"
+            [formControlNameInput] = "'PSCOMISS'"
+          >
+          </app-input>
+        </div> -->
+<!--         <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <label for="VRCREDIT">Crédito</label>
+          <app-input
+            id="VRCREDIT"
+            name="VRCREDIT"
+            [isRequired] ='false'
+            placeholder="Crédito"
+            [formInput] = "objFormCarga"
+            [formControlNameInput] = "'VRCREDIT'"
+          >
+          </app-input>
+        </div> -->
+        <!-- <div class="form-group col-sm-3 col-md-3 col-lg-3"> -->
+          <!-- ESTADO ORIGEM -->
+          <!-- <app-single-estado
+              displayName = "Estado Origem"
+              [objForm]  = "objFormCarga"
+              [formName] = "'IDG002'"
+              [intName] = "'IDG003'">
+          </app-single-estado> -->
+        <!-- </div> -->
+
+      <div class="row">
+        <!-- CIDADE ORIGEM -->
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-cidade-estado
+              displayName = "Cidade Origem"
+              [objForm]  = "objFormCarga"
+              [formName] = "'IDG003OR'">
+          </app-single-cidade-estado>
+        </div>
+        <!-- CIDADE DESTINO -->
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-cidade-estado
+              displayName = "Cidade Destino"
+              [objForm]  = "objFormCarga"
+              [formName] = "'IDG003DE'">
+          </app-single-cidade-estado>
+        </div>
+
+
+        <!-- <div class="form-group col-sm-4 col-md-4 col-lg-4"> -->
+          <!-- ESTADO DESTINO -->
+          <!-- <app-single-estado
+              displayName = "Estado Destino"
+              [objForm]  = "objFormCarga"
+              [formName] = "'ufDestino'"
+              [intName] = "'cidDestino'">
+          </app-single-estado> -->
+        <!-- </div>
+        <div class="form-group col-sm-4 col-md-4 col-lg-4"> -->
+          <!-- CIDADE DESTINO -->
+          <!-- <app-single-cidade
+              displayName = "Cidade Destino"
+              [objForm]  = "objFormCarga"
+              [formName] = "'cidDestino'"
+              [depName] = "'ufDestino'">
+          </app-single-cidade> -->
+        <!-- </div> -->
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <label for="DTPRESAI">Data Prevista Saída</label>
+          <div class="row">
+            <div class="col-sm-8">
+              <app-datepicker-simple
+                [formDateSimple]="objFormCarga"
+                [formControlNameDateSimple]="'DTPRESAI'"
+                [dateRequired]="true">
+              </app-datepicker-simple>
+              <!-- <app-datapicker-popup
+                navegacao='select'
+                [mesesDisplay]='1'
+                [desabilitar]='false'
+                [formDatePop]="objFormCarga"
+                [formControlNameDatePop]="'DTPRESAI'">
+              </app-datapicker-popup> -->
+            </div>
+            <div class="col-sm-4">
+              <app-timepicker
+                  [formTime]  = "objFormCarga"
+                  [formControlNameTime] = "'DTPRESAIH'">
+              </app-timepicker>
+            </div>
+          </div>
+
+        </div>
+<!--         <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label >Jornada Trabalho</label>
+          <app-timepicker
+              [formTime]  = "objFormCarga"
+              [formControlNameTime] = "'HRJORTRA'">
+          </app-timepicker>
+        </div> -->
+<!--         <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label >Alimentação </label>
+          <app-timepicker
+              [formTime]  = "objFormCarga"
+              [formControlNameTime] = "'HRALIMEN'">
+          </app-timepicker>
+        </div> -->
+<!--         <div class="form-group col-sm-2 col-md-2 col-lg-2">
+          <label >Pernoite </label>
+          <app-timepicker
+              [formTime]  = "objFormCarga"
+              [formControlNameTime] = "'HRPERNOI'">
+          </app-timepicker>
+        </div> -->
+<!--         <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <label for="VRQUILOM">Quilometragem</label>
+          <app-input
+            id="VRQUILOM"
+            name="VRQUILOM"
+            [isRequired] ='false'
+            placeholder="Quilometragem"
+            [formInput] = "objFormCarga"
+            [formControlNameInput] = "'VRQUILOM'"
+          >
+          </app-input>
+        </div>
+ -->
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-tipo-carga
+            [objForm]  = "objFormCarga"
+            [formName] = "'TPCARGA'"
+            >
+          </app-single-tipo-carga>
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-ftl-ltl
+            [objForm]  = "objFormCarga"
+            [formName] = "'SNCARPAR'"
+            >
+          </app-single-ftl-ltl>
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-armazem
+              displayName = "Armazém Coleta"
+              [objForm]  = "objFormCarga"
+              [formName] = "'IDG028'"
+              [depName]="'IDG024_CARGA'">
+          </app-single-armazem>
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-sim-nao-todos
+            strLabel ="Tipo de Transporte"
+            [objForm]  = "objFormCarga"
+            [formName] = "'TPTRANSP'"
+            [comboFix] = "'multiTipo'">
+          </app-single-sim-nao-todos>
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-tipo-veiculo
+              [objForm]  = "objFormCarga"
+              [formName] = "'IDG030'"
+              [depName]="'SIMNAOOFERECE'"
+              >
+          </app-single-tipo-veiculo>
+<!-- 
+          [enableCombo]="true" -->
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-sim-nao-todos
+              strLabel="Com Escolta?"
+              comboFix="simNaoStr"
+              [objForm]  = "objFormCarga"
+              [formName] = "'SNESCOLT'">
+          </app-single-sim-nao-todos>
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <label for="DTPRESAI">Data Coleta</label>
+          <app-datepicker-simple
+            [formDateSimple]="objFormCarga"
+            [formControlNameDateSimple]="'DTCOLETA'"
+            [dateRequired]="true">
+          </app-datepicker-simple>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3" *ngIf="this.objFormParametrosAux.controls['SNMOBILE'].value == 'S'">
+          <app-single-sim-nao-todos
+              strLabel="Enviar para mobile?"
+              comboFix="simNaoStr"
+              [objForm]  = "objFormCarga"
+              [formName] = "'SNMOBILE'">
+          </app-single-sim-nao-todos>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row  text-center">
+        <div class="col-sm-12 text-right" style="margin-top: 3px;">
+
+<!--             <app-botoes
+            [ngClass]="{'classeSocial': true}"
+            class="info"
+            text="&nbsp;Validar"
+            icon="fas fa-clipboard-check"
+            (click)="breadcrumbs.goBack();"
+            outline>
+            </app-botoes> -->
+            <div id="clickDiv">&nbsp;</div>
+            <app-botoes
+            [ngClass]="{'classeSocial': true}"
+            class="warning"
+            text="Simular Rota"
+            icon="fas fa-map-marker-alt"
+            (click)="openSimularRota();"
+            outline>
+            </app-botoes>
+            <!-- <app-botoes
+            [ngClass]="{'classeSocial': true}"
+            class="info"
+            text="&nbsp;Finalizar"
+            icon="fas fa-check"
+            (click)="this[nameFuncDetail]();"
+            outline>
+            </app-botoes> -->
+            <app-botoes
+            [ngClass]="{'classeSocial': true}"
+            class="success"
+            text="&nbsp;&nbsp;Salvar"
+            icon="fas fa-save"
+            (click)="checkDocument();"
+            outline>
+            </app-botoes>
+            <app-botoes
+            [ngClass]="{'classeSocial': true}"
+            class="danger"
+            text="&nbsp;&nbsp;Voltar"
+            icon="fas fa-arrow-left"
+            (click)="breadcrumbs.goBack();"
+            outline>
+            </app-botoes>
+        </div>
+      </div>
+
+
+    </ng-template>
+  </ngb-panel>
+  <!-- <ngb-panel  title="Escolta" id="2" *ngIf="this.objFormCarga.controls['SIMNAOOFERECE'].value == 'I'">
+    <ng-template ngbPanelContent>
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+          <app-single-sim-nao-todos
+              strLabel="Com Escolta?"
+              comboFix="simNaoStr"
+              [objForm]  = "objFormCarga"
+              [formName] = "'SNESCOLT'">
+          </app-single-sim-nao-todos>
+        </div>
+        <div class="form-group col-sm-8 col-md-8 col-lg-8">
+          <app-single-fornecedor
+            [objForm]  = "objFormCarga"
+            [formName] = "'IDG034'"
+            >
+          </app-single-fornecedor>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel> -->
+  <ngb-panel  title="Veículos e Motoristas" id="3" *ngIf="this.objFormCarga.controls['SIMNAOOFERECE'].value == 'I'">
+    <ng-template ngbPanelContent>
+      <div class="row">
+        <div class="form-group col-sm-6 col-md-6 col-lg-6">
+          <app-single-transportadora
+              [objForm]  = "objFormCarga"
+              [formName] = "'IDG024_CARGA'"
+              (ativaSelect) = "clearMotVei()"
+              >
+          </app-single-transportadora>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6 col-md-6 col-lg-6">
+          <div class="row">
+            <div class="col-md-11">
+              <app-single-veiculo-carga
+                  (ativaSelect) = "setTipoVeiculo($event)"
+                  [objForm]  = "objFormCarga"
+                  [formName] = "'IDG032V1'"
+                  [disabled] = "objFormCarga.controls['IDG024_CARGA'].value == null"
+                  [depName]="'IDG024_CARGA,IDG030'">
+              </app-single-veiculo-carga>
+            </div>
+            <div class="col-md-1 bloco-icon">
+              <i (click)="openModalVeiculo()" class="fas fa-pen-square editar" style="margin-top: 30px;"></i>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-sm-6 col-md-6 col-lg-6">
+          <div class="row">
+            <div class="col-md-11">
+              <app-single-motorista-carga
+                  [objForm]  = "objFormCarga"
+                  [formName] = "'IDG031M1'"
+                  [disabled] = "objFormCarga.controls['IDG024_CARGA'].value == null"
+                  [depName]="'IDG024_CARGA'">
+              </app-single-motorista-carga>
+            </div>
+            <div class="col-md-1 bloco-icon">
+              <i (click)="openModalMototrista()" class="fas fa-pen-square editar" style="margin-top: 30px;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group col-sm-6 col-md-6 col-lg-6">
+          <div class="row">
+            <div class="col-md-11">
+
+              <app-single-veiculo-carga
+                  [viewLabel] = "false"
+                  [objForm]  = "objFormCarga"
+                  [formName] = "'IDG032V2'"
+                  [disabled] = "objFormCarga.controls['IDG024_CARGA'].value == null"
+                  [depName]="'IDG024_CARGA,IDG030'">
+              </app-single-veiculo-carga>
+            </div>
+            <div class="col-md-1 bloco-icon">
+              <i (click)="openModalVeiculo()" class="fas fa-pen-square editar"></i>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-sm-6 col-md-6 col-lg-6">
+          <div class="row">
+            <div class="col-md-11">
+              <app-single-motorista-carga
+                  [viewLabel] = "false"
+                  [objForm]  = "objFormCarga"
+                  [formName] = "'IDG031M2'"
+                  [disabled] = "objFormCarga.controls['IDG024_CARGA'].value == null"
+                  [depName]="'IDG024_CARGA'">
+              </app-single-motorista-carga>
+            </div>
+            <div class="col-md-1 bloco-icon">
+              <i (click)="openModalMototrista()" class="fas fa-pen-square editar"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6 col-md-6 col-lg-6">
+          <div class="row">
+            <div class="col-md-11">
+              <app-single-veiculo-carga
+                  [viewLabel] = "false"
+                  [objForm]  = "objFormCarga"
+                  [formName] = "'IDG032V3'"
+                  [disabled] = "objFormCarga.controls['IDG024_CARGA'].value == null"
+                  [depName]="'IDG024_CARGA,IDG030'">
+              </app-single-veiculo-carga>
+            </div>
+            <div class="col-md-1 bloco-icon">
+              <i (click)="openModalVeiculo()" class="fas fa-pen-square editar"></i>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-sm-6 col-md-6 col-lg-6">
+          <div class="row">
+            <div class="col-md-11">
+              <app-single-motorista-carga
+                  [viewLabel] = "false"
+                  [objForm]  = "objFormCarga"
+                  [formName] = "'IDG031M3'"
+                  [disabled] = "objFormCarga.controls['IDG024_CARGA'].value == null"
+                  [depName]="'IDG024_CARGA'">
+              </app-single-motorista-carga>
+            </div>
+            <div class="col-md-1 bloco-icon">
+              <i (click)="openModalMototrista()" class="fas fa-pen-square editar"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ngb-accordion #acc="ngbAccordion" activeIds="1" *ngIf="controlView == 7">
+
+  <ngb-panel  title="Confirmação de Carga" id="1" >
+    <ng-template ngbPanelContent>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card card-body my-bg"  style="background: #f2f3f2">
+              <div class="row">
+                <div class="col-lg-10">
+                  <div class="d-flex">
+                    <div class="mr-auto">
+                      <h3 class="mt-0 mb-0 text-uppercase"><small class="fw-300">Dados</small></h3>
+                    </div>
+                  </div>
+                </div>
+
+                  <!-- SEM OCORRÊNCIAS -->
+                  <div class="col-lg-2" style="text-align: right; padding-right: 15px;">
+                    <ng-template #noOcorrencia >
+                      <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                        <div class="col-sm-12 text-center">
+                          <i class="far fa-check-circle " style="color: #fff;"></i>
+                        </div>
+                        <div class="col-sm-12">
+                          NENHUMA OCORRÊNCIA REGISTRADA
+                        </div>
+                      </div>
+                    </ng-template>
+                  <i *ngIf="objValidaCarga.idg005 != 0 && objValidaCarga.idg031 != 0 && objValidaCarga.idg031 != 0 && objValidaCarga.idg032 != 0 && objValidaCarga.pcocupac != 0 && objValidaCarga.psbruto != 0 && objValidaCarga.vrmercad != 0 "
+                    class=" far fa-check-circle iconStyle" style="color: #0fca06; margin-right: 5px;" [ngbTooltip]="noOcorrencia" placement="bottom" container="body"></i>
+                  <!-- END SEM OCORRÊNCIAS -->
+
+                  <!-- COM OCORRÊNCIAS -->
+                  <ng-template #yesOcorrencia >
+                    <div class="row" style="margin-bottom: 15px;">
+                      <div class="col-sm-12 text-center"  style="background: #fff; padding-top: 10px;padding-bottom: 10px; color: #000;">
+                        OCORRÊNCIAS
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.idg005 === 0"  >
+                        <i class="far fa-times-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>OCORRÊNCIA RESTRIÇÃO DO CLIENTE</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.idg031 === 0"  >
+                        <i class="far fa-times-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>OCORRÊNCIA DATAS MOTORISTA</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.idg032 === 0"  >
+                        <i class="far fa-times-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>OCORRÊNCIA DATAS VEÍCULO</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.pcocupac === 0">
+                        <i class="far fa-times-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>OCORRÊNCIA POR OCUPAÇÃO MÍNIMA</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.psbruto === 0" >
+                        <i class="far fa-times-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>OCORRÊNCIA PESO TOTAL DA CARGA</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.vrmercad === 0">
+                        <i class="far fa-times-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>OCORRÊNCIA APÓLICE</div>
+                    </div>
+                  </ng-template>
+                  <i *ngIf="objValidaCarga.idg005 == 0 || objValidaCarga.idg031 == 0 || objValidaCarga.idg031 == 0 || objValidaCarga.idg032 == 0 || objValidaCarga.pcocupac == 0 || objValidaCarga.psbruto == 0 || objValidaCarga.vrmercad == 0 "
+                    class="far fa-times-circle iconStyle" style="color: #c90635 ; margin-right: 5px;" [ngbTooltip]="yesOcorrencia" placement="bottom" container="body"></i>
+                  <!-- END COM OCORRÊNCIAS -->
+
+                  <!-- NEUTRAO -1 -->
+                  <ng-template #neutroOcorrencia >
+                    <div class="row" style="margin-bottom: 15px;">
+                      <div class="col-sm-12 text-center"  style="background: #fff; padding-top: 10px;padding-bottom: 10px; color: #000;">
+                        INFO
+                      </div>
+                    </div>
+                    <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.idg005 === -1"  >
+                        <i class="fas fa-info-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>NÃO FOI POSSÍVEL VERIFICAR CLIENTE</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.idg031 === -1"  >
+                        <i class="fas fa-info-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>NÃO FOI POSSÍVEL VERIFICAR DATAS MOTORISTA</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.idg032 === -1"  >
+                        <i class="fas fa-info-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>NÃO FOI POSSÍVEL VERIFICAR DATAS VEÍCULO</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.pcocupac === -1">
+                        <i class="fas fa-info-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>NÃO FOI POSSÍVEL VERIFICAR OCUPAÇÃO</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.psbruto === -1" >
+                        <i class="fas fa-info-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>NÃO FOI POSSÍVEL VERIFICAR PESO TOTAL DA CARGA</div>
+                      <div class="col-sm-12 text-center" *ngIf="objValidaCarga.vrmercad === -1">
+                        <i class="fas fa-info-circle" style="color: #fff; margin-top: 5px;"></i>
+                        <br>NÃO FOI POSSÍVEL VERIFICAR APÓLICE</div>
+                    </div>
+                  </ng-template>
+                  <i *ngIf="objValidaCarga.idg005 == -1 || objValidaCarga.idg031 == -1 || objValidaCarga.idg031 == -1 || objValidaCarga.idg032 == -1 || objValidaCarga.pcocupac == -1 || objValidaCarga.psbruto == -1 || objValidaCarga.vrmercad == -1 "
+                    class="fas fa-info-circle iconStyle" style="color: #afafaf; margin-right: 5px;" [ngbTooltip]="neutroOcorrencia" placement="bottom" container="body"></i>
+                  <!-- END NEUTRAO -1 -->
+
+                  <!-- INFO CÁLCULO -->
+                  <ng-template #tipContent >
+                    <div class="row" style="margin-top: 15px; font-size: 10px">
+                      <div class="col-md-12 text-center">
+                        PARÂMETROS
+                      </div>
+                      <hr>
+                      <div class="col-md-12">
+                        EM CADA PARADA PARA CALCULO DE DISTANCIA: {{objFormParametrosAux.controls['HRPARADA'].value}}m
+                      </div>
+                      <div class="col-md-12">
+                        POR TONELADA EM CADA PARADA PARA CÁLCULO DE DISTÂNCIA: {{objFormParametrosAux.controls['HRTOLDIS'].value}}m
+                      </div>
+                      <div class="col-md-12">
+                        VELOCIDADE VEÍCULOS CARREGADOS: {{objFormParametrosAux.controls['KMCARREG'].value}}Km/H
+                      </div>
+                      <div class="col-md-12">
+                        VELOCIDADE VEÍCULOS DESCARREGADOS: {{objFormParametrosAux.controls['KMDESCAR'].value}}Km/H
+                      </div>
+                      <div class="col-md-12">
+                        HORÁRIO MÁXIMO PERMITIDO PARA ENTREGA: {{objFormParametrosAux.controls['HRMAXENT'].value}}H
+                      </div>
+                      <div class="col-md-12">
+                        ENTREGAS PERMITIDA SOMENTE APÓS AS: {{objFormParametrosAux.controls['HRMINENT'].value}}H
+                      </div>
+                    </div>
+                  </ng-template>
+                  <i class="far fa-question-circle iconStyle" [ngbTooltip]="tipContent" placement="bottom" container="body"></i>
+                  <!-- END INFO CÁLCULO -->
+
+                </div>
+              </div>
+              <hr>
+              <div >
+                <div class="row" style="margin-top: 5px">
+                  <div class="col-sm-3" >
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Descrição</strong></a>
+                        <div>{{ objSaveCarga.form.DSCARGA }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" >
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Data Prevista Saída</strong></a>
+                        <div>{{ objSaveCarga.form.DTPRESAI.formatted }} - {{ objSaveCarga.form.DTPRESAIH.hour }}:{{((objSaveCarga.form.DTPRESAIH.minute < 10)? '0':'')}}{{objSaveCarga.form.DTPRESAIH.minute}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" >
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Distância</strong></a>
+                        <div>{{utils.formataDistancia(objSaveCarga.form.QTDISPER)}}<!--/ {{utils.formataDistancia(objSaveCarga.form.QTDISBAS)}}--></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" >
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Peso</strong></a>
+                        <div>{{ utils.formataPeso(objSaveCarga.form.PSCARGA)}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" style="margin-top: 25px">
+                  <div class="col-sm-3" >
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Ocupação</strong></a>
+                        <div>{{objSaveCarga.form.VRPOROCU}}%</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Valor</strong></a>
+                        <div>{{ utils.formataDinheiro(objSaveCarga.form.VRCARGA)}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Tipo</strong></a>
+                        <div>{{ objSaveCarga.form.TPCARGA.text}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>FTL/LTL</strong></a>
+                        <div>{{ objSaveCarga.form.SNCARPAR.text}}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row" style="margin-top: 25px">
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Com Escolta</strong></a>
+                        <div>{{(objSaveCarga.form.SNESCOLT)?objSaveCarga.form.SNESCOLT.text: ' - '}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Fornecedor Escolta</strong></a>
+                        <div>{{(objSaveCarga.form.IDG034)?objSaveCarga.form.IDG034.text: ' - '}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Armazém de Coleta</strong></a>
+                        <div>{{(objSaveCarga.form.IDG028)?objSaveCarga.form.IDG028.text: ' - '}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Data de Coleta</strong></a>
+                        <div>{{utils.dataDG(objSaveCarga.form.DTCOLATU)}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" style="margin-top: 25px">
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Tipo de Veículo</strong></a>
+                        <div>{{(objSaveCarga.form.IDG030)?objSaveCarga.form.IDG030.text: ' - '}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Tipo de Transporte</strong></a>
+                        <div>{{utils.tipoTransporte(objSaveCarga.form.TPTRANSP.id)}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Modelo</strong></a>
+                        <div>{{utils.tipoModeloCarga(objSaveCarga.form.TPMODCAR)}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" style="margin-top: 25px">
+
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Motorista(s)</strong></a>
+                        <div>
+                          {{(objSaveCarga.form.IDG031M1)?objSaveCarga.form.IDG031M1.text: ' - '}}<br>
+                          {{(objSaveCarga.form.IDG031M2)?objSaveCarga.form.IDG031M2.text: ' - '}}<br>
+                          {{(objSaveCarga.form.IDG031M3)?objSaveCarga.form.IDG031M3.text: ' - '}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center marg">
+                      <div class="mr-auto">
+                        <a href="javascript:;" class="ff-headers text-color cursorDefault"><strong>Veículo(s)</strong></a>
+                        <div>
+                          {{(objSaveCarga.form.IDG032V1)?objSaveCarga.form.IDG032V1.text: ' - '}}<br>
+                          {{(objSaveCarga.form.IDG032V2)?objSaveCarga.form.IDG032V2.text: ' - '}}<br>
+                          {{(objSaveCarga.form.IDG032V3)?objSaveCarga.form.IDG032V3.text: ' - '}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card card-body my-bg" style="background: #f2f3f2">
+              <div class="d-flex">
+                <div class="mr-auto">
+                  <h3 class="mt-0 mb-0 text-uppercase"><small class="fw-300">Paradas</small></h3>
+                </div>
+              </div>
+              <div style="margin-top: 15px">
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered table-striped mb-0" style="text-align: center; white-space: nowrap;">
+                      <thead>
+                          <tr>
+                              <th>#</th>
+                              <th>Peso</th>
+                              <th>Valor</th>
+                              <th>Cid. Remetente</th>
+                              <th>Cid. Destinatário</th>
+                              <th>Empresa destino</th>
+                              <th>Apólice</th>
+                              <th>Restrições</th>
+                              <th>Dt. Inicial</th>
+                              <th>Dt. Final</th>
+                              <th>Distância</th>
+                              <th>Duração</th>
+                              <th *ngIf="isDelivery">Deliveries</th>
+                              <th *ngIf="isDelivery">Qtd. Delivery</th>
+                              <th *ngIf="isCTRC">CTRC's</th>
+                              <th *ngIf="isCTRC">Qtd. CTRC</th>
+                          </tr>
+                      </thead>
+                      <tbody >
+                      <tr *ngFor="let info of objSaveCarga.grid; let i = index;">
+                          <td>{{i+1}}</td>
+                          <td style="text-align: right;">{{info.PSBRUTO ? (info.PSBRUTO | number:'1.2-2'):('0') }} Kg</td>
+                          <td style="text-align: right;">{{info.VRMERCAD | currency:'BRL'}}</td>
+                          <td style="text-align: left;">{{info.NMCIDARE}} - {{info.CDESTARE}}</td>
+                          <td style="text-align: left;">{{info.NMCIDADE}} - {{info.CDESTADE}}</td>
+                          <th style="text-align: left;">{{info.NMEMPDES}}</th>
+                          <th style="text-align: right;">{{(info.VRMAXCAR != null ? utils.formataDinheiro(info.VRMAXCAR) : '-')}}</th>
+                          <th style="text-align: left;">{{info.LSDSTIPVEI}}</th>
+                          <th style="text-align: left;">{{utils.dataTimeDG(info.DTINIETA)}}</th>
+                          <th style="text-align: left;">{{utils.dataTimeDG(info.DTFINETA)}}</th>
+                          <th style="text-align: right;">{{utils.formataDistancia(info.DISTANCE/1000)}}</th>
+                          <th style="text-align: right;">{{info.QTTEMPKM | date:' HH:mm'}}</th>
+                          <th style="text-align: right;" *ngIf="isDelivery">{{(info.LSNFE != null ? info.LSNFE : '-')}}</th>
+                          <td style="text-align: right;" *ngIf="isDelivery">{{(info.LSNFE != null ? info.LSNFE.split(',').length : info.LSNFE)}}</td>
+                          <th style="text-align: right;" *ngIf="isCTRC">{{(info.LSCTRC != null ? info.LSCTRC : '-')}}</th>
+                          <td style="text-align: right;" *ngIf="isCTRC">{{(info.LSCTE != null ? info.LSCTE.split(',').length : info.LSCTE)}}</td>
+                      </tr>
+                      </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card card-body my-bg" style="background: #f2f3f2">
+              <div class="d-flex">
+                <div class="mr-auto">
+                  <h3 class="mt-0 mb-0 text-uppercase"><small class="fw-300">Performance do tempo de entrega</small></h3>
+                </div>
+              </div>
+              <div class="row" style="margin-top: 15px">
+                <div class="col-lg-12">
+                  <ngb-progressbar type="{{objProgress.type}}" [value]="objProgress.value" height="40px" [striped]="true">{{objProgress.value.toFixed(2)}}%</ngb-progressbar>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+              <div class="card card-body my-bg" style="background: #f2f3f2">
+                <div class="d-flex">
+                  <div class="mr-auto">
+                    <h3 class="mt-0 mb-0 text-uppercase"><small class="fw-300">Índice de concentração de carga - ICC</small></h3>
+                  </div>
+                </div>
+                <div class="row" style="margin-top: 15px">
+                  <div class="col-lg-12">
+                    <ngb-progressbar type="{{objProgressICC.type}}" [value]="objProgressICC.value" height="40px" [striped]="true">{{objProgressICC.value}}%</ngb-progressbar>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="row">
+          <div class="col-sm-12" style="text-align: right;">
+            <button type="button" class="btn btn-danger" (click)="breadcrumbs.goBack();">Voltar</button>
+            <button type="button" class="btn btn-success"(click)="saveCarga()">Salvar</button>
+          </div>
+
+        </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- MODAL SIMULAR ROTA -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalSimularRota let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Simular Rota</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div id="map" style="height: 450px; width: 100%;"></div>
+    <!-- <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.css' rel='stylesheet' />
+    <div id='map' style="width: 100%; height: 450px;"></div>
+    <div id="teste" class="marker"></div> -->
+<!--     <app-motorista [nrTela]="55"></app-motorista> -->
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Voltar</button>
+    <!-- <button *ngIf="arTransportadoras.length != 0" type="button" class="btn btn-success" (click)="updateTransportadora()">{{ 'global.form.botoes.sa' | translate }}</button> -->
+  </div>
+</ng-template>
+
+
+<!-- MODAL ATRIBUIR TRANSPORTADORA - EMPRESA DESTINO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalAtribuirTransportadora let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Atribuir Transportadora</h6>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="form-group col-sm-12 col-md-12 col-lg-12">
+          <app-single-transportadora-bravo
+            [objForm]  = "objFormCarga"
+            [formName] = "'ALTIDG024'">
+          </app-single-transportadora-bravo>
+
+       <!--  <app-single-transportadora
+            [objForm]  = "objFormCarga"
+            [formName] = "'ALTIDG024'">
+        </app-single-transportadora> -->
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="validRemoveTransp" type="button" class="btn btn-warning" (click)="removerTransportadora()">Remover</button>
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Voltar</button>
+    <button type="button" class="btn btn-success" (click)="updateTransportadora()">Salvar</button>
+  </div>
+</ng-template>
+
+ <!-- MODAL COMFIRMA DELETE CTRC -->
+<ng-template #modalConfirmaDeleteCtrc>
+	<app-modal [thisParent]="this" title="Confirmação Deletar" dsconteu="Deseja realmente excluir esse(s) registros(s)?">
+	    <button type="button" class="btn btn-danger" (click)="modal.closeModal()">Não</button>
+	    <button type="button" class="btn btn-success" (click)="deleteArGridCarga()">Sim</button>
+	</app-modal>
+</ng-template>
+
+
+<!-- MODAL VEICULO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalVeiculo let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Veículo</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-veiculo [nrTela]="168"></app-veiculo> <!--CRUD VEICULO -->
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>
+
+<!-- MODAL MOTORISTA -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalMotorista let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Motorista</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" >
+     <app-motorista [nrTela]="168"></app-motorista> <!--CRUD MOTORISTA -->
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>
+
+<!-- MODAL OCORRÊNCIAS -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalOcorrencia let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">ALERTA</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="col-sm-12">
+          Foram detectadas as seguintes restrições para esta carga:<br><br>
+      </div>
+
+      <div class="col-sm-12" *ngIf="objValidaCarga.idg005 == 0">
+        <i class="fas fa-times" style="color: #c30c1c; margin-top: 5px;"></i>
+        Restrição do cliente encontrado
+      </div>
+
+      <div class="col-sm-12" *ngIf="objValidaCarga.pcocupac == 0">
+        <i class="fas fa-times" style="color: #c30c1c; margin-top: 5px;"></i>
+        Percentual mínimo de peso do veículo não atingido
+      </div>
+
+      <div class="col-sm-12" *ngIf="objValidaCarga.psbruto == 0">
+        <i class="fas fa-times" style="color: #c30c1c; margin-top: 5px;"></i>
+        O limite de peso do veículo foi ultrapassado
+      </div>
+
+      <div class="col-sm-12" *ngIf="objValidaCarga.vrmercad == 0">     
+        <i class="fas fa-times" style="color: #c30c1c; margin-top: 5px;"></i>
+        O valor máximo da apólice foi ultrapassado
+      </div>
+
+      <div class="col-sm-12" *ngIf="objValidaCarga.aledtent == 0">
+        <i class="fas fa-times" style="color: #c30c1c; margin-top: 5px;"></i>
+        Prazo de entrega superior a 4 dias
+      </div>
+      <br>
+      <div class="modal-footer text-center" style="display: block;">
+        <button type="button" class="btn btn-success" (click)="c('Close click')">ESTOU CIENTE</button>
+      </div>
+  </div>
+</ng-template>
+
+
+<!-- MODAL DOWNLOAD DOCUMENTOS MOTORISTA/VEICULO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template centered='true' #modalDocument let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h6 class="modal-title text-uppercase">Documentos pendentes para download</h6>
+        <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <div>
+
+          <div class="row">
+              <div class="form-group col-sm-12 col-md-12 col-lg-12">   
+                  <label>Há documentos pendentes de download para estes motoristas/veículos. Os arquivos devem ser baixador e encaminhados junto há carga.</label>                            
+              </div>
+          </div>
+
+          <app-cards  [isCollapsed]="collappsed" [dropdown]="true">
+              <app-datagrid  [id]="'idDataGridFiles'" [url]="urlGrid" [tela]="354" [telaGlobal]="[]" [telaAcoes]="[
+              {'id' : 1, 'metodo' : 'downloadDocumento',   'icone': 'fa fa-eye'}]" 
+              [nivel]="0" [thisParent]="this" [excelServer]="true"
+              [initComplete]="'loadDataGridFiles'"
+              >
+                <th data-id="IDA004" data-type-column="actions">Ações</th>
+                <th data-id="IDT014" data-align-right="true"> Cód. Evolog</th>
+                <th data-id="IDA004" data-align-right="true" data-function="numberNullDG">Cód. Documento</th>
+                <th data-id="TPAUTOR" data-align-left="true" data-function="numberNullDG">Tipo Autor</th>
+                <th data-id="DSAUTOR" data-align-left="true" data-function="numberNullDG">Nome</th>      
+                <th data-id="NMANEXO" data-align-left="true" data-function-full="true" data-function="linhaCompletaDocumentoViagem">Nome arquivo</th>
+                <th data-id="DSOBSERV" data-align-left="true" data-function="numberNullDG">Descrição</th>
+                <th data-id="TPEXTENS" data-align-left="true" data-function="numberNullDG">Tipo</th>
+                <th data-id="DTCADAST" data-align-left="true" data-function="formataHora">Data criação</th>
+                <th data-id="ISDOWN" data-align-left="true">Baixado</th>
+                <th data-id="IDUSUDOW" data-align-left="true" data-function="numberNullDG">Baixado por</th>
+                <th data-id="DTDOWNLO" data-align-left="true" data-function="formataHora">Data Download</th>
+              </app-datagrid>
+          </app-cards>
+        </div>
+
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+    </div>
+</ng-template>
+
+
+<div class="configuration hidden-lg-down" [ngClass]="{'active': showSettings}" *ngIf="controlView < 6 && controlView > 0">
+  <div class="configuration-cog" (click)="showSettings = !showSettings">
+    <!-- <i class="icon icon-basic-mixer2"></i> -->
+    <i class="fas fa-info-circle"></i>
+  </div>
+  <div class="card">
+<!--     <div class="card-header">
+      Informações
+    </div> -->
+    <div class="card-body" style="padding: 0 !important;">
+      <div class="row boxButtons text-center">
+          <div class="col-sm-12" style="color: #474747;">
+            <table class="table table-striped" style="margin-bottom: 0px; line-height: 7px; font-size: 13px !important;">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" *ngIf="isCTRC">CTRC</th>
+                  <th scope="col" *ngIf="isDelivery">DELIVERY</th>
+                  <th scope="col">PESO</th>
+                  <th scope="col">VALOR MERCADORIAS</th>
+                </tr>
+              </thead>              
+              <tbody>
+<!--                 <tr>
+                  <th scope="row">GERAL</th>
+                  <td>{{totalizador.qtctrc}}</td>
+                  <td>{{totalizador.qtnfe}}</td>
+                  <td>{{totalizador.psbruto ? (totalizador.psbruto | number:'1.2-2'):('0') }} Kg</td>
+                  <td>{{totalizador.vrmercad | currency:'BRL'}}</td>
+                </tr> -->
+                <tr>
+                  <th scope="row">MARCADOS</th>
+                  <td *ngIf="isCTRC">{{totalSeleci.qtctrc}}</td>
+                  <td *ngIf="isDelivery">{{totalSeleci.qtnfe}}</td>
+                  <td>{{totalSeleci.psbruto ? (totalSeleci.psbruto | number:'1.2-2'):('0') }} Kg</td>
+                  <td>{{totalSeleci.vrmercad | currency:'BRL'}}</td>
+                </tr>
+              </tbody>
+              </table>
+              <div class="col-sm-12 text-right" style="margin-top: 10px;">
+                  <app-botoes
+                  *ngIf="controlView < 4"
+                  [ngClass]="{'classeSocial': true}"
+                  class="info"
+                  text="Detalhar"
+                  icon="fas fa-search"
+                  (click)="controlViewTable = false; this[nameFuncDetail](); "
+                  outline>
+                </app-botoes>
+                  <app-botoes
+                  [ngClass]="{'classeSocial': true}"
+                  class="success"
+                  text="&nbsp;&nbsp;Carga"
+                  icon="fas fa-archive"
+                  (click)="openCarga();"
+                  outline>
+                  </app-botoes>
+              </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>

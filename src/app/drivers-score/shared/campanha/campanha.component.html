@@ -1,0 +1,200 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteCampanha()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+<br>
+<app-breadcrumbs
+  #breadcrumbs
+  home="Campanha"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-campanha
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG090'">
+          </app-single-campanha>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'campanha'"
+        [url]="urlCampanhaGrid"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteCampanha',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addCampanha', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewCampanha',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateCampanha',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDG090" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="campanha-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+
+        <th data-id="IDG090" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="DSCAMPAN" data-align-left="true">Descrição</th>
+        <th data-id="DSTRANSP" data-align-left="true">Participantes</th>
+        <th data-id="PTINICIO" data-align-left="true">Pontuação Inicial</th>
+        <th data-id="PTMENSAL" data-align-left="true">Pontuação mensal</th>
+        <th data-id="DSPREMIA" data-align-left="true" >Prêmiação</th>
+        <th data-id="DTINICIO"  data-function="dataDG" data-align-left="true">Dt. Início</th> 
+        <th data-id="DTFIM"  data-function="dataDG" data-align-left="true">Dt. Fim</th> 
+        <th data-id="DTCADAST"  data-function="dataDG" data-align-left="true">{{ 'global.form.dtcadast.pd' | translate }}</th>   
+
+    </app-datagrid>
+  </app-cards>
+</div>
+
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormConfiguracao" (ngSubmit)="save()" >
+            <input type="text" id="IDG090" formControlName="IDG090" hidden>
+            <div class="row">
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="DSCAMPAN"
+                  name="DSCAMPAN"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'DSCAMPAN'"
+                  [label]="'Descrição'"
+                >
+                </app-input>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="DSPREMIA"
+                  name="DSPREMIA"
+                  [isRequired] ='true'
+                  placeholder="Prêmiação"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'DSPREMIA'"
+                  [label]="'Prêmiação'"
+                >
+                </app-input>
+              </div>
+
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="PTINICIO"
+                  name="PTINICIO"
+                  [isRequired] ='true'
+                  placeholder="Pontuação inicial"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'PTINICIO'"
+                  [label]="'Pontuação inicial'"
+                >
+                </app-input>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-input
+                  id="PTMENSAL"
+                  name="PTMENSAL"
+                  [isRequired] ='true'
+                  placeholder="Pontuação mensal"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'PTMENSAL'"
+                  [label]="'Pontuação mensal'"
+                >
+                </app-input>
+              </div>
+
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <label for="DTPRESAI">Data início</label>
+                <app-datepicker-simple
+                [formDateSimple]="objFormConfiguracao"
+                [formControlNameDateSimple]="'DTINICIO'"
+                [dateRequired]="true">
+              </app-datepicker-simple>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <label for="DTPRESAI">Data fim</label>
+                <app-datepicker-simple
+                [formDateSimple]="objFormConfiguracao"
+                [formControlNameDateSimple]="'DTFIM'"
+                [dateRequired]="true">
+              </app-datepicker-simple>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-multi-transportadora 
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG024'">
+                </app-multi-transportadora>
+              </div>
+
+            </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-8"></div>
+              <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                <!-- Salvar -->
+                <app-botoes 
+                *ngIf="checkViewCampanha != 1"
+                class="success" 
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="saveCampanha();">
+                </app-botoes>
+                
+                <!-- Cancelar -->
+                <app-botoes 
+                class="danger" 
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="goHome(event);">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>

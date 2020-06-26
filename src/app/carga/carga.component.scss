@@ -1,0 +1,87 @@
+@media screen {
+  .modal-adaptive .modal-xl {
+    width: 90% !important;
+    max-width: calc(90%);
+  }
+
+  .modal-adaptive-2 .modal-xl-2 {
+    width: 73.6% !important;
+    max-width: calc(73.6%);
+  }
+}
+
+.bloco-icon{
+    padding-left: 0px !important;
+}
+
+.editar{
+  font-size: 33px;
+  // margin-top: 30px;
+  cursor: pointer;
+  color: #43295b;
+
+}
+
+.optionsView{
+  color: #43295b;
+  height: 45px;
+  padding-top: 12px;
+  cursor: pointer;
+}
+
+.optionsView:hover{
+  border: 1px solid  #43295b;
+  //color: #fff;
+  height: 45px;
+  padding-top: 12px;
+}
+
+.optionsView-activate{
+  background-color: #43295b;
+  color: #fff;
+  height: 45px;
+  padding-top: 12px;
+}
+
+.pointerArrow{
+  cursor: pointer;
+  font-size: 17px;
+  color: #43295b;
+}
+
+.carousel-control-prev-icon{
+  display: none !important;
+}
+
+.carousel-control-next-icon{
+  display: none !important;
+}
+
+
+.carousel-indicators{
+  outline: none;
+  margin-bottom: -10px;
+}
+
+
+#ngb-slide-0{
+  border: 1px solid #666;
+}
+
+#ngb-slide-1{
+  border: 1px solid #666;
+}
+
+.carousel-indicators .active{
+  background-color: #000000 !important;
+  outline: none;
+}
+
+#print-section-manifesto {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8vw !important;
+}
+
+#msg {
+  width: 64.5vw;
+}

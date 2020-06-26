@@ -1,0 +1,166 @@
+<!-- <ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteDePara()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template> -->
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Carga/Paradas"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+              <label>Carga</label>
+              <app-chips-input
+              [typeInput]="'numberText'"
+              [chips]='arIds'
+              [removable]='true'
+              [addOnBlur]='true'
+              [duplicate]='false'
+              [objStyle]="objStyle"
+              [inputSpace]='true'
+              >
+              </app-chips-input>
+            </div>
+
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-transportadora
+            [objForm] = "objFormFilter"
+            [formName] = "'IDG024'"
+            displayName = "Transportadora">
+          </app-single-transportadora>
+
+        </div>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-3">
+          <app-multi-estado
+              [objForm]  = "objFormFilter"
+              [dataFix]  = "true"
+              [formName] = "'G002RE_IDG002'"
+              displayName ="Estado origem" >
+          </app-multi-estado>
+        </div>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-3">
+          <app-multi-estado
+              [objForm]  = "objFormFilter"
+              [dataFix]  = "true"
+              [formName] = "'G002DE_IDG002'"
+              displayName ="Estado destino" >
+          </app-multi-estado>
+        </div>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-3">
+          <app-single-ftl-ltl
+            [objForm]  = "objFormFilter"
+            [formName] = "'SNCARPAR'"
+            >
+          </app-single-ftl-ltl>
+      </div>
+
+      <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-multi-tipo
+              strLabel ="Tipo Operação"
+              [objForm]  = "objFormFilter"
+              [formName] = "'TPTRANSP'">
+          </app-multi-tipo>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-2">
+            <label for="">Data da Carga</label>
+            <app-datepicker-intervalo
+              [formDateIntervalo]="objFormFilter"
+              [formControlNameDateIntervalo]="'DTCARGA'">
+            </app-datepicker-intervalo>
+          </div>
+          <div class="form-group col-sm-3 col-md-3 col-lg-2">
+            <label for="">Data Saída da Carga</label>
+            <app-datepicker-intervalo
+              [formDateIntervalo]="objFormFilter"
+              [formControlNameDateIntervalo]="'DTSAICAR'">
+            </app-datepicker-intervalo>
+          </div>
+
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'CargaParadas'"
+        [url]="urlCargaParadasGrid"
+        [tela]="149"
+        [allList]="true"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [nivel]="0"
+        [thisParent]="this"
+        [excelCustom]="true"
+        >
+        <!-- [notOnLoad]="true" -->
+
+        <!-- [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewDePara',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateDePara',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]" 
+          <th data-id="IDG058" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="dePara-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th> -->
+
+
+        <!-- <th data-id="IDG046" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th> -->
+        <th data-id="IDG046" data-align-left="true">Nº da Carga</th>
+        <th data-id="IDG024" data-function="registroNullDG" data-align-left="true">Transportadora</th>
+        <th data-id="DSTIPVEI" data-function="registroNullDG" data-align-left="true">Tipo de Veiculo</th>
+        <th data-id="SNCARPAR" data-function="ftlltl" data-align-left="true" >Tipo de Carga</th>
+        <th data-id="TPTRANSP" data-align-left="true" data-function="tipoTransporte">Tipo Operação</th>
+        <th data-id="NMCLIERE" data-function="registroNullDG" data-align-left="true">Cliente Recebedor</th>
+        <th data-id="NMARMAZE" data-function="numberNullDG" data-align-left="true">CD Origem</th>   
+        <th data-id="NMCIDARE" data-align-left="true" >Cidade Origem </th>
+        <th data-id="CDESTARE" data-align-left="true" >Estado Origem</th>
+        <th data-id="NMCIDADE" data-align-left="true" >Cidade Destino</th>
+        <th data-id="CDESTADE" data-align-left="true" >Estado Destino</th>
+
+        <th data-id="QTDISTOD" data-function="formataUnidadePeso" data-align-right="true" >Km de Distância</th>
+        <th data-id="VRDELIVE" data-function="formataDinheiro" data-align-right="true" >Valor da Mercadoria</th>
+        <th data-id="PSBRUTO"  data-function="formataUnidadePeso" data-align-right="true" >Peso Bruto</th>
+        <th data-id="DTCARGA"   data-function="dataTimeDG" data-align-left="true">Dt. da carga</th>
+        <th data-id="DTSAICAR"  data-function="dataDG" data-align-right="true">Dt. saída</th>
+        
+
+    </app-datagrid>
+  </app-cards>
+</div>

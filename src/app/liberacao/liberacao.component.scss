@@ -1,0 +1,30 @@
+@media screen {
+  .modal-adaptive .modal-xl {
+    width: 90% !important;
+    max-width: calc(90%);
+  }
+}
+
+
+.teste{
+  color: red !important;
+  border-color: red !important;
+}
+
+.cmpRequired{
+  border-color: red !important;
+}
+
+.dangerSpan {
+	font-size: 0.8rem;
+	color: rgb(244, 67, 54);
+	position: relative;
+}
+
+.textRed{
+  color: red;
+}
+
+.cmpRequiredLabel{
+	color: red !important;
+}

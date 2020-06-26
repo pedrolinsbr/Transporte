@@ -1,0 +1,385 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteHistorico()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Parâmetro"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+<!--   <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        <app-single-transportadora
+          displayName="Transportadora"
+          [objForm] = "objFormFilter"
+          [formName] = "'IDG024'">
+        </app-single-transportadora>
+      </div>
+    </form>
+
+  </app-cards-filter> -->
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <!-- METODOS REMOVIDOS -->
+    <!-- {'id' : 4, 'metodo' : 'addHistorico', 'icone':'fa fa-plus'}-->
+    <!-- {'id' : 2, 'metodo' : 'updateHistorico',   'icone': 'fas fa-pencil-alt'}, -->
+    <!-- {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'} -->
+     <app-datagrid
+        [id]="'gridParametros'"
+        [url]="urlParamCargaGrid"
+        [tela]="149"
+        [telaGlobal]="[
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[{'id' : 1, 'metodo' : 'viewHistorico',   'icone': 'fa fa-eye'}, {'id' : 2, 'metodo' : 'updateHistorico',   'icone': 'fas fa-pencil-alt'}]"
+        [nivel]="0"
+        [thisParent]="this">
+
+        <th data-id="IDG069" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="gridParametros-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+        <th data-id="IDG069" data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG069" data-align-right="true">Parâmetro</th>
+        <th data-id="G024_NMTRANSP" data-align-left="true" >Transportadora</th>
+        <th data-id="HRPARADA" data-align-right="true">Tempo por parada</th>
+        <th data-id="HRTOLDIS" data-align-right="true">Tempo por tonelada</th>
+        <th data-id="KMCARREG" data-align-right="true">Vel. carregado</th>
+        <th data-id="KMDESCAR" data-align-right="true">Vel. descarregado</th>
+        <th data-id="HRMAXENT" data-align-right="true">Hr. máximo de entrega</th>
+        <th data-id="HRMINENT" data-align-right="true">Hr. minimo de entrega </th>
+        <th data-id="CDPGRBRA" data-align-right="true">Cód. PGR BRAVO</th>
+        <th data-id="VRAPOESC" data-function="formataDinheiro" data-align-right="true">Vr. apólice BRAVO (escolta)</th>
+        <th data-id="VRAPONOR" data-function="formataDinheiro" data-align-right="true">Vr. apólice BRAVO (normal)</th>
+        <th data-id="VRCARESC" data-function="formataDinheiro" data-align-right="true">Vr. Máximo c/ Escolta</th>
+        <th data-id="VRCARNOR" data-function="formataDinheiro" data-align-right="true">Vr. Máximo s/ Escolta</th>
+        <th data-id="SNMOBILE" data-function="funcSN" data-align-left="true">Utiliza Mobile</th>
+        <!-- <th data-id="STCADAST">Status</th> -->
+    </app-datagrid>
+  </app-cards>
+</div>
+
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormConfiguracao" (ngSubmit)="save()" >
+            <input type="text" id="IDG069" formControlName="IDG069" hidden>
+            <div class="row">
+
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <app-input
+                  id="HRPARADA"
+                  name="HRPARADA"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'HRPARADA'"
+                  [label]="'Minutos Por Parada'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="HRTOLDIS"
+                  name="HRTOLDIS"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'HRTOLDIS'"
+                  [label]="'Minutos por tonelada em cada parada'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="KMCARREG"
+                  name="KMCARREG"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'KMCARREG'"
+                  [label]="'Km/H Veículos Carregados'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="KMDESCAR"
+                  name="KMDESCAR"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'KMDESCAR'"
+                  [label]="'Km/H Veículos Descarregados'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="HRMAXENT"
+                  name="HRMAXENT"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'HRMAXENT'"
+                  [label]="'Hr. Máximo Entrega'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="HRMINENT"
+                  name="HRMINENT"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'HRMINENT'"
+                  [label]="'Hr. Mínimo Entrega'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="CDPGRBRA"
+                  name="CDPGRBRA"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'CDPGRBRA'"
+                  [label]="'Cód. PGR Bravo'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="VRAPOESC"
+                  name="VRAPOESC"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'VRAPOESC'"
+                  [label]="'Vr. Apólice Com Seguro'"
+                >
+                </app-input>
+
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4">
+
+                <app-input
+                  id="VRAPONOR"
+                  name="VRAPONOR"
+                  [isRequired] ='true'
+                  placeholder="Descrição"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'VRAPONOR'"
+                  [label]="'Vr. Apólice Sem Seguro'"
+                >
+                </app-input>
+
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+
+                <app-input
+                  id="VRCARESC"
+                  name="VRCARESC"
+                  [isRequired] ='true'
+                  placeholder="Vr. Máximo com Escolta"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'VRCARESC'"
+                  [label]="'Vr. Máximo com Escolta'"
+                >
+                </app-input>
+
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+
+                <app-input
+                  id="VRCARNOR"
+                  name="VRCARNOR"
+                  [isRequired] ='true'
+                  placeholder="Vr. Máximo sem Escolta"
+                  [formInput] = "objFormConfiguracao"
+                  [formControlNameInput] = "'VRCARNOR'"
+                  [label]="'Vr. Máximo sem Escolta'"
+                >
+                </app-input>
+
+              </div>
+
+
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-single-transportadora
+                  [objForm] = "objFormConfiguracao"
+                  [formName] = "'IDG024'">
+                </app-single-transportadora>
+              </div>
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                <app-single-situacao-cadastro
+                  name="STCADAST"
+                  class="default"
+                  model="{{objFormConfiguracao.controls['STCADAST'].value}}"
+                  [formOF]="objFormConfiguracao"
+                  [formControlNameOF]="'STCADAST'"
+                ></app-single-situacao-cadastro>
+              </div>
+
+              <div class="form-group col-sm-3 col-md-3 col-lg-3">
+<!--                 <app-single-situacao-cadastro
+                  name="STCADAST"
+                  class="default"
+                  model="{{objFormConfiguracao.controls['STCADAST'].value}}"
+                  [formOF]="objFormConfiguracao"
+                  [formControlNameOF]="'STCADAST'"
+                ></app-single-situacao-cadastro> -->
+
+<!--                 <app-single-sim-nao-todos
+                    strLabel="Enviar para mobile?"
+                    comboFix="simNaoStr"
+                    [objForm]  = "objFormConfiguracao"
+                    [formName] = "'SNMOBILE'">
+                </app-single-sim-nao-todos> -->
+
+              </div>
+
+            </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-8"></div>
+              <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                <!-- Salvar -->
+                <app-botoes
+                *ngIf="checkViewHistorico != 1"
+                class="success"
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="saveHistorico();">
+                </app-botoes>
+
+                <!-- Cancelar -->
+                <app-botoes
+                class="danger"
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="goHome(event);">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+
+<!-- ======= -->
+<!-- 2 - NOVO // EDITAR -->
+<!-- <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+  <ngb-panel id="1" title="Parâmetros">
+    <ng-template ngbPanelContent>
+
+      <form class="form-horizontal" [formGroup]="objFormConfiguracao" (ngSubmit)="save()" >
+        <input type="text" id="IDG069" formControlName="IDG069" hidden>
+        <div class="row">
+          <div class="form-group col-sm-3 col-md-3 col-lg-3">
+
+            <app-single-cliente
+              [objForm] = "objFormConfiguracao"
+              [formName] = "'IDG005RE'">
+            </app-single-cliente>
+
+          </div>
+
+          <div class="form-group col-sm-2 col-md-2 col-lg-2">
+            <app-single-cliente
+              [objForm] = "objFormConfiguracao"
+              [formName] = "'IDG005DE'">
+            </app-single-cliente>
+          </div>
+
+
+          <div class="form-group col-sm-2 col-md-2 col-lg-2">
+            <app-single-transportadora
+              [objForm] = "objFormConfiguracao"
+              [formName] = "'IDG024'">
+            </app-single-transportadora>
+          </div>
+
+
+          <div class="form-group col-sm-2 col-md-2 col-lg-2">
+            <app-single-situacao-cadastro
+              name="STCADAST"
+              class="default"
+              model="{{objFormConfiguracao.controls['STCADAST'].value}}"
+              [formOF]="objFormConfiguracao"
+              [formControlNameOF]="'STCADAST'"
+            ></app-single-situacao-cadastro>
+          </div>
+        </div>
+      </form>
+
+        <div class="row">
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+
+            <app-botoes
+            *ngIf="checkViewHistorico != 1"
+            class="success"
+            text="{{ 'hc.form.botoes.sa' | translate }}"
+            (click)="saveHistorico();">
+            </app-botoes>
+
+
+            <app-botoes
+            class="danger"
+            text="{{ 'hc.form.botoes.ca' | translate }}"
+            (click)="goHome(event);">
+            </app-botoes>
+
+          </div>
+        </div>
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+>>>>>>> 2683b3d6a407b41971534ba580b0a3d2d3b401f0
+ -->

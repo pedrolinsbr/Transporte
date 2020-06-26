@@ -1,0 +1,27 @@
+<ngb-tabset [justify]="currentJustify" type="pills" [activeId]="1">
+    <ngb-tab title="Lançamento" [id]="1">
+    <ng-template ngbTabContent>
+      <app-lancamento-campanha-massa></app-lancamento-campanha-massa>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab title="Tipo de apontamento" [id]="2" [disabled]="(user != 169 && user != 820 && user != 1062 && user != 1394 && user != 306 && user != 1400)">
+    <ng-template ngbTabContent>
+      <app-tipo-apontamento></app-tipo-apontamento>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab title="Usuário Apontamento" [id]="3" [disabled]="(user != 169 && user != 820 && user != 1062 && user != 1394 && user != 306 && user != 1400)">
+    <ng-template ngbTabContent>
+      <app-usuario-apontamento></app-usuario-apontamento>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab title="Campanha" [id]="4" [disabled]="(user != 169 && user != 820 && user != 1062 && user != 1394 && user != 306 && user != 1400)">
+    <ng-template ngbTabContent>
+      <app-campanha></app-campanha>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab title="Permissões fechamento" [id]="5" [disabled]="(user != 169 && user != 820 && user != 1062 && user != 1394 && user != 306 && user != 1400)">
+    <ng-template ngbTabContent>
+      <app-permissoes-fechamento></app-permissoes-fechamento>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

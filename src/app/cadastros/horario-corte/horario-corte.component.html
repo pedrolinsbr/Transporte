@@ -1,0 +1,176 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger"  (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteHorarioCorte()">{{ 'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+
+
+<app-breadcrumbs
+  #breadcrumbs
+  home="Horário corte"
+  [arBreadcrumbs]="arBreadcrumbsLocal"
+  (goHome)="goHome($event)"
+  (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div [hidden]="!(exibir == 1)" style="padding-top: 20px;">
+
+  <app-cards-filter
+    titleDrop="{{ 'global.form.filtros.pd' | translate }}"
+    nameSubmitFunction="filtrar"
+    [isCollapsed]="true"
+    [dropdown]="true"
+    [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter" >
+      <div class="row">
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-multi-calendarizacao-carga
+              [objForm]="objFormHorarioCorte"
+              [formName]="'IDG014'">
+            </app-multi-calendarizacao-carga>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-operacao
+            [objForm]="objFormFilter"
+            [formName]="'IDG014'"
+            [displayName]="'Operação'">
+          </app-single-operacao>
+        </div>
+
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+
+          <app-single-sim-nao-todos
+            strLabel ="Tipo de Transporte"
+            [objForm]  = "objFormFilter"
+            [formName] = "'TPTRANSP'"
+            [comboFix] = "'multiTipo'">
+          </app-single-sim-nao-todos>
+
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 text-right"></div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  <app-cards
+    titleDrop="{{ 'global.form.registros.pd' | translate }}"
+    [isCollapsed]="collappsed"
+    [dropdown]="true">
+    <app-datagrid
+        [id]="'horario-corte'"
+        [url]="urlHorarioCorteGrid"
+        [tela]="349"
+        [telaGlobal]="[
+                {'id' : 3, 'metodo' : 'deleteHorarioCorte',  'icone':'fa fa-minus'},
+                {'id' : 4, 'metodo' : 'addHorarioCorte', 'icone':'fa fa-plus'},
+                {'id' : 'excel'},
+                {'id' : 'colvis'} ]"
+        [telaAcoes]="[
+                {'id' : 1, 'metodo' : 'viewHorarioCorte',   'icone': 'fa fa-eye'},
+                {'id' : 2, 'metodo' : 'updateHorarioCorte',   'icone': 'fas fa-pencil-alt'},
+                {'id' : 3, 'metodo' : 'openDelete', 'icone': 'fas fa-trash-alt'}]"
+        [nivel]="0"
+        [thisParent]="this"
+        [notOnLoad]="true">
+
+        <th data-id="IDG105" data-type-column="checkbox">
+          <label class="custom-control custom-checkbox">
+          <input id="horario-corte-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+          <span class="custom-control-indicator"></span>
+          </label>
+        </th>
+        <th data-id="IDG105"      data-type-column="actions">{{ 'global.form.acoes.pd' | translate }}</th>
+        <th data-id="IDG105"      data-align-right="true">Cód. Evo.</th>
+        <th data-id="DSOPERAC"    data-align-left="true"  data-function="registroNullDG">Operação</th>   
+        <th data-id="DTCORTE"     data-align-left="true"  data-function="timeDG">Horário corte</th>
+        <th data-id="TPTRANSP"    data-align-left="true"  data-function="tipoTransporte">Tipo transporte</th>
+    </app-datagrid>
+  </app-cards>
+</div>
+
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" [hidden]="!(exibir == 2)">
+      <ngb-panel id="1" title="Parâmetros">
+        <ng-template ngbPanelContent>
+
+          <form class="form-horizontal" [formGroup]="objFormHorarioCorte" (ngSubmit)="save()" >
+            
+            <input type="text" id="IDG105" formControlName="IDG105" hidden>
+            
+            <div class="row">
+
+                <div class="form-group col-sm-3 col-md-3 col-lg-3">
+                  <app-single-sim-nao-todos
+                    strLabel ="Tipo de Transporte"
+                    [objForm]  = "objFormHorarioCorte"
+                    [formName] = "'TPTRANSP'"
+                    [comboFix] = "'multiTipo'">
+                  </app-single-sim-nao-todos>
+                </div>
+
+                <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                  <app-single-operacao
+                    [objForm]="objFormHorarioCorte"
+                    [formName]="'IDG014'"
+                    [displayName]="'Operação'">
+                  </app-single-operacao>
+                </div>
+
+                <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                  <label for="DTPRESAI">Horário de corte</label>
+                  <div class="row">
+                    <!-- <div class="col-sm-8">
+                      <app-datepicker-simple
+                        [formDateSimple]="objFormHorarioCorte"
+                        [formControlNameDateSimple]="'DTCORTE'"
+                        [dateRequired]="true">
+                      </app-datepicker-simple>
+                    </div> -->
+                    <div class="col-sm-4">
+                      <app-timepicker
+                        [formTime]  = "objFormHorarioCorte"
+                        [formControlNameTime] = "'DTCORTE'">
+                      </app-timepicker>
+                    </div>
+                  </div>
+        
+                </div>
+
+              </div>
+          </form>
+
+            <div class="row">
+              <div class="col-sm-8"></div>
+              <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+
+                <!-- Salvar -->
+                <app-botoes
+                *ngIf="checkViewHorarioCorte != 1"
+                class="success"
+                text="{{ 'hc.form.botoes.sa' | translate }}"
+                (click)="saveHorarioCorte();">
+                </app-botoes>
+
+                <!-- Cancelar -->
+                <app-botoes
+                class="danger"
+                text="{{ 'hc.form.botoes.ca' | translate }}"
+                (click)="goHome(event);">
+                </app-botoes>
+
+              </div>
+            </div>
+
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+

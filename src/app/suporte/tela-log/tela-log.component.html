@@ -1,0 +1,247 @@
+<ng-template #modalDelete>
+  <app-modal [thisParent]="this" title="{{ 'global.form.dialogExcluir.titulo' | translate }}" dsconteu="{{ 'global.form.dialogExcluir.pd' | translate }}">
+    <button type="button" class="btn btn-danger" (click)="close()">{{ 'global.form.dialogExcluir.cancelar' | translate
+      }}</button>
+    <button type="button" class="btn btn-success" (click)="confirmaDeleteCarga()">{{
+      'global.form.dialogExcluir.excluir' | translate }}</button>
+  </app-modal>
+</ng-template>
+<app-breadcrumbs #breadcrumbs home="Logs" [arBreadcrumbs]="arBreadcrumbsLocal" (goHome)="goHome($event)" (clearNext)="clearNext($event)"
+  [context]="this">
+</app-breadcrumbs>
+
+<div  style="padding-top: 15px;">
+
+  <app-cards-filter titleDrop="{{ 'global.form.filtros.pd' | translate }}" nameSubmitFunction="filtrar"
+    nameClearFunction="limpar" [isCollapsed]="true" [dropdown]="true" [context]="this">
+
+    <form class="form-horizontal" [formGroup]="objFormFilter">
+      <div class="row">
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-single-tabela 
+            [objForm]="objFormFilter" 
+            [formName]="'IDS007'"
+            [dataFix]="true">
+          </app-single-tabela>
+        </div>
+        <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <app-input id="DSCHAVE" name="DSCHAVE" [formInput]="objFormFilter"
+            [formControlNameInput]="'DSCHAVE'" [label]="'Chave'">
+          </app-input>
+        </div>
+
+<!--         <div class="form-group col-sm-3 col-md-3 col-lg-3">
+            <app-input id="DSACAO" name="DSACAO" [isRequired]='false' [formInput]="objFormFilter"
+              [formControlNameInput]="'DSACAO'" [label]="'Ação'">
+            </app-input>
+        </div> -->
+        
+<!--         <div class="form-group col-sm-3 col-md-3 col-lg-3">
+          <label for="">Data Registro (Inicial/Final)</label>
+          <app-datepicker-intervalo [formDateIntervalo]="objFormFilter" [formControlNameDateIntervalo]="'DTREGIST'">
+          </app-datepicker-intervalo>
+        </div> -->
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <app-input id="DSDETALH" name="DSDETALH" [formInput]="objFormFilter"
+              [formControlNameInput]="'DSDETALH'" [label]="'Detalhe log'">
+            </app-input>
+        </div> 
+
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-4 text-right"></div>
+      </div>
+
+      <div class="" style="padding-top: 15px;">
+        <div class="row" style="padding-bottom: 20px;">
+          <div class="col-sm-12" style="background: #ebebeb; height: 45px;">
+          <div class="row text-center" >
+            <div class="col-sm-6 optionsView" [ngClass]="{'optionsView-activate': controlView == 2}" (click)="changeOptionView('2'); buscaTimeline()">
+            <h5 class="mt-0 mb-0 text-uppercase">
+              <i class="fas fa-align-justify" style="font-size: 15px;"> </i>
+              <small class="fw-300">Visão por Timeline</small>
+            </h5>
+            </div>
+            <div class="col-sm-6 optionsView" [ngClass]="{'optionsView-activate': controlView == 1}" (click)="changeOptionView('1'); filtrar()">
+              <h5 class="mt-0 mb-0 text-uppercase">
+                <i class="fas fa-table" style="font-size: 15px;"> </i>
+                <small class="fw-300" st>Visão por Tabela</small>
+              </h5>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </app-cards-filter>
+
+  
+
+  <app-cards titleDrop="{{ 'global.form.registros.pd' | translate }}" [isCollapsed]="collappsed" [dropdown]="true"  *ngIf = " controlView != 2 && mostrarGrid;">
+    <app-datagrid [id]="'log'" 
+                  [url]="urlLogGrid" 
+                  [tela]="373" 
+                  [telaGlobal]="[
+                  {'id' : 'excel'},
+                  {'id' : 'colvis'} ]"
+                  *ngIf = " controlView == 1"
+                  [telaAcoes]="[]" 
+                  [nivel]="0" 
+                  [thisParent]="this" 
+                  [notPagination]="true">
+      <th data-id="DSUSUARI" data-align-left="true" data-function="linhaCompletaTimeline" data-function-full="true">Usuário</th>
+      <th data-id="DTREGIST" data-align-left="true">Data Registro</th>
+      <th data-id="DSCHAVE" data-exec="viewChave" data-align-right="true" data-object="true" >Chave</th>
+      <th data-id="DSTABELA" data-align-left="true" data-object="true">Tabela</th>
+      <th data-id="NMTABELA" data-align-left="true">Nome tabela</th>
+      <th data-id="DSACAO" data-function="formataAcao" data-align-left="true">Ação</th>
+      <th data-id="DSAPLICA" data-function="numberNullDG" data-align-left="true">Aplicação</th>
+      <th data-id="DSUSUASO" data-align-left="true">Usuário</th>
+      <th data-id="DSTERMIN" data-function="numberNullDG" data-align-left="true">Terminal</th>
+    </app-datagrid>
+  </app-cards>
+</div>
+
+<!-- MODAL VISUALIZAÇÃO -->
+<ng-template ngbModalContainer></ng-template>
+<ng-template #modalLog let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h6 class="modal-title text-uppercase">Detalhes do Log</h6>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+      <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              Detalhes
+            </div>
+<!--             <div [hidden]="!showGrid">
+              <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                      <thead>
+                        <th>Tabela</th>
+                        <th>Anterior</th>
+                        <th>Atual</th>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let tabela of detalhesUpdate; let i = index">
+                          <th>{{ detalhesUpdate[0] }}</th>
+                          <th>{{ detalhesUpdate[1] }}</th>
+                          <th>{{ detalhesUpdate[2] }}</th>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+            </div> -->
+
+            <div [hidden]="showGrid">
+              <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm" style="font-size: 15px !important;">
+                      <thead>
+                        <th>Informações</th>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of dsConteu; let i = index">
+                          <th>{{ item }}</th>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+  </div>
+</ng-template>
+
+
+<app-cards  [isCollapsed]="collappsed" [dropdown]="true" *ngIf="controlView == 2">
+  <div class="fundo">
+        <ul class="timeline" [ngClass]="{'stacked': stacked}">
+            <li class="timeline-card timeline-button">
+              <button class="btn btn-secondary" [ngClass]="{'active': !stacked}" (click)="stacked = !stacked">Tabela</button>
+            </li>
+            <li class="timeline-card" *ngFor = "let viewTimeline of arrObj">
+              <div class="timeline-icon bg-grey"></div>
+              <section class="timeline-content">
+                <div class="card">
+                  <div class="card-body">
+                  <p class="mb-0"><ng-container *ngFor="let texto of viewTimeline.DSDETALH">
+                        {{texto}}<br>
+                    </ng-container>
+                  </p>
+                  </div>
+                </div>
+                <div class="timeline-date"><strong>{{viewTimeline.DSUSUARI}} - {{viewTimeline.DSCHAVE}} - {{utilServices.formataAcao(viewTimeline.DSACAO)}} - {{viewTimeline.DTREGIST}} - {{viewTimeline.DSAPLICA}} - {{viewTimeline.DSUSUASO}}</strong>
+                </div>
+              </section>
+            </li>
+            
+            <!-- <li class="timeline-card">
+              <div class="timeline-icon bg-purple"></div>
+              <section class="timeline-content">
+                <div class="card">
+                  <div class="card-body">
+                    <p class="mb-0">Aenean lacinia bibendum nulla sed consectetur. Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+                  </div>
+                </div>
+                <div class="timeline-date">Yesterday</div>
+              </section>
+            </li>
+            <li class="timeline-card timeline-button">
+              <button class="btn btn-danger">2016</button>
+            </li>
+            <li class="timeline-card timeline-button"></li>
+            <li class="timeline-card">
+              <div class="timeline-icon bg-green"></div>
+              <section class="timeline-content">
+                <div class="card">
+                  <div class="card-body">
+                    <p class="mb-0"> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                  </div>
+                </div>
+                <div class="timeline-date">6 Days Ago</div>
+              </section>
+            </li>
+            <li class="timeline-card">
+              <div class="timeline-icon bg-lime"></div>
+              <section class="timeline-content">
+                <div class="card">
+                  <div class="card-body">
+                    <p class="mb-0">3 more people joined your campaign.</p>
+                  </div>
+                </div>
+                <div class="timeline-date">2 Months Ago</div>
+              </section>
+            </li>
+            <li class="timeline-card">
+              <div class="timeline-icon bg-brown"></div>
+              <section class="timeline-content">
+                <div class="card">
+                  <div class="card-body">
+                    <p class="mb-0">Six new friend requests</p>
+                  </div>
+                </div>
+                <div class="timeline-date">23 September 2013</div>
+              </section>
+            </li>
+            <li class="timeline-card timeline-button">
+              <button class="btn btn-secondary">2015</button>
+            </li> -->
+          </ul>
+        </div>
+
+
+</app-cards>

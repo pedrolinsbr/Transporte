@@ -1,0 +1,38 @@
+{
+    "data": [
+        {
+            "ID"            :     "1",
+            "STATUS"        :     "P",
+            "IDCARGA"       :     "00001",
+            "TIPO_VEICULO"  :     "caminhão",
+            "ARMAZEM"       :     "CUIABÁ",
+            "DT_ACEITE"     :     "25/01/2018",
+            "LIMITE_AGENDA" :     "25/01/2018",
+            "DT_ENTREGA"    :     "25/01/2018"
+        },
+        {
+            "ID"            :     "2",
+            "STATUS"        :     "A",
+            "IDCARGA"       :     "00002",
+            "TIPO_VEICULO"  :     "Carreta",
+            "ARMAZEM"       :     "UBERABA",
+            "DT_ACEITE"     :     "26/01/2018",
+            "LIMITE_AGENDA" :     "26/01/2018",
+            "DT_ENTREGA"    :     "26/01/2018"
+        },
+        {
+            "ID"            :     "3",
+            "STATUS"        :     "P",
+            "IDCARGA"       :     "00003",
+            "TIPO_VEICULO"  :     "Truck",
+            "ARMAZEM"       :     "PAULÍNIA",
+            "DT_ACEITE"     :     "27/01/2018",
+            "LIMITE_AGENDA" :     "27/01/2018",
+            "DT_ENTREGA"    :     "27/01/2018"
+        }
+ 
+    ],
+    "recordsFiltered": 3,
+    "recordsTotal": 3,
+    "draw": "null"
+}

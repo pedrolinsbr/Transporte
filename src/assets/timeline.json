@@ -1,0 +1,15 @@
+{
+    "data": [
+{ "LINHA": "1", "STATUS": "1", "SITUACAO": "Agendamento", "PLANEJADO": "Não se aplica", "REALIZADO": "02/03/2018 às 19:00:00" },
+{ "LINHA": "2", "STATUS": "1", "SITUACAO": "Checkin", "PLANEJADO": "16/07/2018 às 15:35:11", "REALIZADO": "02/03/2018 às 19:00:00" },
+{ "LINHA": "3", "STATUS": "2", "SITUACAO": "Entrou", "PLANEJADO": "16/07/2018 às 15:35:11", "REALIZADO": "02/03/2018 às 19:00:00" },
+{ "LINHA": "4", "STATUS": "2", "SITUACAO": "Início de Carregamento", "PLANEJADO": "16/07/2018 às 15:35:11", "REALIZADO": "02/03/2018 às 19:00:00" },
+{ "LINHA": "5", "STATUS": "2", "SITUACAO": "Final de Carregamento", "PLANEJADO": "16/07/2018 às 15:35:11", "REALIZADO": "02/03/2018 às 19:00:00" },
+{ "LINHA": "6", "STATUS": "2", "SITUACAO": "Checkout", "PLANEJADO": "16/07/2018 às 15:35:11", "REALIZADO": "02/03/2018 às 19:00:00" },
+{ "LINHA": "7", "STATUS": "2", "SITUACAO": "Saída", "PLANEJADO": "16/07/2018 às 15:35:11", "REALIZADO": "02/03/2018 às 19:00:00" }
+
+],
+"recordsTotal": 7,
+"recordsFiltered": 7,
+"draw": "null"
+}

@@ -1,0 +1,755 @@
+<app-breadcrumbs
+    #breadcrumbs
+    home="Filtros"
+    [arBreadcrumbs]="arBreadcrumbsLocal"
+    (goHome)="goHome($event)"
+    (clearNext)="clearNext($event)"
+    [context]="this"
+    size="sm"
+>
+</app-breadcrumbs>
+
+<div style="padding-top: 15px;">
+    
+    <!-- INÍCIO INDICADORES -->
+    <div class="row" *ngIf="controlViewTable == 1">
+        <indicadores-filter
+            #indicador
+            class="col-md-12"
+            [objForm]="objFormFilter"
+            [indicadores]="indicadores"
+            (filtrar)="filtrar($event)">
+        </indicadores-filter>
+
+    </div>
+    <!-- FIM INDICADORES -->
+
+    <!-- INÍCIO FILTROS -->
+    <app-cards-filter
+    *ngIf="controlViewTable == 1"
+    titleDrop="Filtros"
+    nameSubmitFunction="filtrar"
+    nameClearFunction="limpar"
+    [dropdown]="true"
+    [isCollapsed]="collapsedFilter"
+    [context]="this">
+        <div class="row">
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <app-single-transportadora-bravo
+                    [objForm]  = "objFormFilter"
+                    [formName] = "'IDG024'"
+                    displayName = "Transportadora">
+                </app-single-transportadora-bravo>
+            </div>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <label>Carga Evolog</label>
+                <app-chips-input
+                [typeInput]="'numberText'"
+                [chips]='arIdsIDG046'
+                [removable]='true'
+                [addOnBlur]='true'
+                [duplicate]='false'
+                [objStyle]="objStyle"
+                [inputSpace]='true'
+                >
+                </app-chips-input>
+            </div>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <label >Carga Logos</label>
+                <app-chips-input
+                [typeInput]="'numberText'"
+                [chips]='arIdCarLog'
+                [removable]='true'
+                [addOnBlur]='true'
+                [duplicate]='false'
+                [objStyle]="objStyle"
+                [inputSpace]='true'
+                >
+                </app-chips-input>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                    <label>Número do MDF-e</label>
+                    <app-chips-input
+                    [typeInput]="'numberText'"
+                    [chips]='arIdsNRMDFE'
+                    [removable]='true'
+                    [addOnBlur]='true'
+                    [duplicate]='false'
+                    [objStyle]="objStyle"
+                    [inputSpace]='true'
+                    >
+                    </app-chips-input>
+            </div>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <label>Chave MDF-e</label>
+                <app-chips-input
+                [typeInput]="'numberText'"
+                [chips]='arIdsNRCHAMDF'
+                [removable]='true'
+                [addOnBlur]='true'
+                [duplicate]='false'
+                [objStyle]="objStyle"
+                [inputSpace]='true'
+                >
+                </app-chips-input>
+            </div>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <app-combobox-multi
+                    label="Veículos"
+                    [url]="url+'filtro/buscarDescVeiculos'"
+                    [formMultiSelect] = "objFormFilter"
+                    [formControlNameMultiSelect] = "'IDG032'">
+                </app-combobox-multi>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <label>Data da Carga</label>
+                <app-datepicker-intervalo
+                [formDateIntervalo]="objFormFilter"
+                [formControlNameDateIntervalo]="'DTCARGA'">
+                </app-datepicker-intervalo>
+            </div>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <label>Data do MDF-e</label>
+                <app-datepicker-intervalo
+                [formDateIntervalo]="objFormFilter"
+                [formControlNameDateIntervalo]="'DTMANIFE'">
+                </app-datepicker-intervalo>
+            </div>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                <app-combobox-multi
+                      label="Motoristas"
+                      [url]="apiUrl+'filtro/motoristas-full'"
+                      [formMultiSelect] = "objFormFilter"
+                      [formControlNameMultiSelect] = "'IDG031M1'">
+                  </app-combobox-multi>
+            </div>
+
+        </div>
+    </app-cards-filter>
+    <!-- FIM FILTROS -->
+
+    <!-- INÍCIO GRID CARGAS COM ERRO -->
+    <app-cards
+      titleDrop="{{titleCard}}"
+      *ngIf="controlViewTable == 1  && controlColumns == true && controlView == 'E'"
+      [dropdown]="true">
+      <app-datagrid
+          [id]="'mdfe'"
+          [url]="urlMdfeGrid"
+          [tela]="383"
+          [allList]="'true'"
+          [telaGlobal]="[{'id' : 'colvis'},{'id' : 'excel'}]"
+          [telaAcoes]="[
+              {'id' : 1,  'metodo' : 'visualizar',         'icone': 'fa fa-eye'},
+              {'id' : 2,  'metodo' : 'editarLocCol',       'icone': 'fas fa-pencil-alt'},
+              {'id' : 83, 'metodo' : 'abrirModalEncerrar', 'icone': 'fas fa-th-list'},
+              {'id' : 84, 'metodo' : 'abrirModalCancelar', 'icone': 'fas fa-times-circle'},
+              {'id' : 80, 'metodo' : 'gerarXml',           'icone': 'fa fa-download'},
+              {'id' : 81, 'metodo' : 'validarPdf',         'icone': 'fas fa-file-pdf'},
+              {'id' : 94, 'metodo' : 'visualizarPdf',      'icone': 'fas fa-file-pdf'}]"
+          [nivel]="0"
+          [thisParent]="this"
+          [initComplete]="'filtrar'"
+          [notOnLoad]="true"
+          [excelServer]="true"> 
+        <th data-id="IDG046"   data-type-column="actions" data-object="true">Ações</th>
+        <th data-id="NRMDF"    data-exec-id="NRMDF" data-function="numberNullDG" data-align-right="true">Nr. MDF-e</th>
+        <th data-id="STMDF"    data-exec-id="STMDF" data-function="stMdfe" data-align-left="true">St.</th>
+        <th data-id="CDESTADO" data-exec-id="CDESTADO" data-function="registroNullDG" data-align-left="true">Estado</th>
+        <th data-id="IDG046"   data-exec-id="IDG046" data-exec="viewCarga"  data-align-right="true">Carga</th>
+        <th data-id="IDCARLOG" data-function="numberNullDG" data-align-right="true">N° LOGOS</th>
+        <th data-id="DSCARGA"  data-align-left="true">Descrição carga</th>
+        <th data-id="DSERRO"   data-exec-id="DSERRO" data-function="registroNullDG" data-align-left="true">Msg. de Erro</th>
+        <th data-id="DTCARGA"  data-function="dataTimeDG" data-align-left="true">Dt. da carga</th>
+        <th data-id="NRCHAMDF" data-function="numberNullDG" data-align-right="true">Chave do MDF-e</th>
+        <th data-id="DTCADAST"   data-function="dataTimeDG" data-align-left="true">Dt. do Cadastro</th>
+        <th data-id="NMUSUARIC" data-function="registroNullDG" data-align-left="true">Usuário do Cadastro</th>
+        <th data-id="TPLOCOLE" data-exec-id="TPLOCOLE" data-function="stLocColeta" data-align-left="true">Local Coleta MDF-e</th>
+        <th data-id="NMTRANSP" data-exec-id="NMTRANSP" data-function="registroNullDG" data-align-left="true">Transportadora</th>
+        <th data-id="NMMOTORI1" data-function="registroNullDG" data-align-left="true">Motorista</th>
+        <th data-id="DSVEICULV1" data-function="registroNullDG" data-align-left="true">Veículo</th>
+        <th data-id="IDF001"   data-exec-id="IDF001" data-function="numberNullDG" data-align-right="true">Cód MDF-e</th>
+      </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID CARGAS COM ERRO -->
+    
+    <!-- INÍCIO GRID CARGAS COM STATUS <> E && STATUS != T && STATUS != C && STATUS != R-->
+    <app-cards
+      titleDrop="{{titleCard}}"
+      *ngIf="controlViewTable == 1  && controlColumns == true  && controlView != 'E' && controlView != 'T' && controlView != 'R' && controlView != 'C'"
+      [dropdown]="true">
+      <app-datagrid
+          [id]="'mdfe'"
+          [url]="urlMdfeGrid"
+          [tela]="383"
+          [allList]="'true'"
+          [telaGlobal]="[{'id' : 'colvis'},{'id' : 'excel'}]"
+          [telaAcoes]="[
+              {'id' : 85, 'metodo' : 'informarLocCol', 'icone': 'fas fa-angle-double-right'},
+              {'id' : 1,  'metodo' : 'visualizar',         'icone': 'fa fa-eye'},
+              {'id' : 2,  'metodo' : 'editarLocCol',       'icone': 'fas fa-pencil-alt'},
+              {'id' : 83, 'metodo' : 'abrirModalEncerrar', 'icone': 'fas fa-th-list'},
+              {'id' : 84, 'metodo' : 'abrirModalCancelar', 'icone': 'fas fa-times-circle'},
+              {'id' : 80, 'metodo' : 'gerarXml',           'icone': 'fa fa-download'},
+              {'id' : 81, 'metodo' : 'validarPdf',           'icone': 'fas fa-file-pdf'},
+              {'id' : 94, 'metodo' : 'visualizarPdf',      'icone': 'fas fa-file-pdf'}]"
+          [nivel]="0"
+          [thisParent]="this"
+          [initComplete]="'filtrar'"
+          [notOnLoad]="true"
+          [excelServer]="true"> 
+  
+        <th data-id="IDG046"     data-type-column="actions" data-object="true">Ações</th>
+        <th data-id="NRMDF"      data-function="numberNullDG" data-align-right="true">Nr. MDF-e</th>
+        <th data-id="STMDF"      data-function="stMdfe" data-align-left="true">St.</th>
+        <th data-id="CDESTADO"   data-function="registroNullDG" data-align-left="true">Estado</th>
+        <th data-id="IDG046"     data-align-right="true" data-exec-id="IDG046" data-exec="viewCarga" >Carga</th>
+        <th data-id="IDCARLOG"   data-function="numberNullDG" data-align-right="true">N° LOGOS</th>
+        <th data-id="DSCARGA"    data-align-left="true">Descrição carga</th>
+        <th data-id="DSERRO"     data-function="registroNullDG" data-align-left="true">Msg. retorno</th>
+        <th data-id="DTCARGA"    data-function="dataTimeDG" data-align-left="true">Dt. da carga</th>
+        <th data-id="DTMANIFE"   data-function="dataTimeDG" data-align-left="true">Dt. do MDF-e</th>
+        <th data-id="NRCHAMDF"   data-function="numberNullDG" data-align-right="true">Chave do MDF-e</th>
+        <th data-id="DTCADAST"   data-function="dataTimeDG" data-align-left="true">Dt. do Cadastro</th>
+        <th data-id="NMUSUARIC"  data-function="registroNullDG" data-align-left="true">Usuário do Cadastro</th>
+        <th data-id="TPLOCOLE"   data-function="stLocColeta" data-align-left="true">Local Coleta MDF-e</th>
+        <th data-id="NMTRANSP"   data-function="registroNullDG" data-align-left="true">Transportadora</th>
+        <th data-id="NMMOTORI1"  data-function="registroNullDG" data-align-left="true">Motorista</th>
+        <th data-id="DSVEICULV1" data-function="registroNullDG" data-align-left="true">Veículo</th>
+        <th data-id="NMUSUARIE"  data-function="registroNullDG" data-align-left="true">Usuário Sol. Cancelamento/ Encerramento</th>
+        <th data-id="DSCANCEL"   data-function="registroNullDG" data-align-left="true">Justif. Cancelamento</th>
+        <th data-id="IDF001"     data-function="numberNullDG" data-align-right="true">Cód MDF-e</th>
+      </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID CARGAS COM STATUS <> E && STATUS != T && STATUS != C && STATUS != R -->
+
+    <!-- INÍCIO GRID CARGAS COM STATUS == R-->
+    <app-cards
+        titleDrop="{{titleCard}}"
+        *ngIf="controlViewTable == 1  && controlColumns == true  && controlView == 'R'"
+        [dropdown]="true">
+        <app-datagrid
+            [id]="'mdfe'"
+            [url]="urlMdfeGrid"
+            [tela]="383"
+            [allList]="'true'"
+            [notOnLoad]="true"
+            [telaGlobal]="[{'id' : 'colvis'},{'id' : 'excel'}]"
+            [initComplete]="'filtrar'"
+            [telaAcoes]="[
+                {'id' : 85, 'metodo' : 'informarLocCol',     'icone': 'fas fa-angle-double-right'},
+                {'id' : 1,  'metodo' : 'visualizar',         'icone': 'fa fa-eye'},
+                {'id' : 2,  'metodo' : 'editarLocCol',       'icone': 'fas fa-pencil-alt'},
+                {'id' : 83, 'metodo' : 'abrirModalEncerrar', 'icone': 'fas fa-th-list'},
+                {'id' : 84, 'metodo' : 'abrirModalCancelar', 'icone': 'fas fa-times-circle'},
+                {'id' : 80, 'metodo' : 'gerarXml',           'icone': 'fa fa-download'},
+                {'id' : 81, 'metodo' : 'validarPdf',         'icone': 'fas fa-file-pdf'},
+                {'id' : 94, 'metodo' : 'visualizarPdf',      'icone': 'fas fa-file-pdf'}]"
+            [nivel]="0"
+            [thisParent]="this"
+            [excelServer]="true"> 
+    
+          <th data-id="IDG046"     data-type-column="actions" data-object="true">Ações</th>
+          <th data-id="NRMDF"      data-function="numberNullDG" data-align-right="true">Nr. MDF-e</th>
+          <th data-id="STMDF"      data-function="stMdfe" data-align-left="true">St.</th>
+          <th data-id="CDESTADO"   data-function="registroNullDG" data-align-left="true">Estado</th>
+          <th data-id="IDG046"     data-align-right="true" data-exec-id="IDG046" data-exec="viewCarga" >Carga</th>
+          <th data-id="IDCARLOG"   data-function="numberNullDG" data-align-right="true">N° LOGOS</th>
+          <th data-id="DSCARGA"    data-align-left="true">Descrição carga</th>
+          <th data-id="DTCARGA"    data-function="dataTimeDG" data-align-left="true">Dt. da carga</th>
+          <th data-id="DTMANIFE"   data-function="dataTimeDG" data-align-left="true">Dt. do MDF-e</th>
+          <th data-id="NRCHAMDF"   data-function="numberNullDG" data-align-right="true">Chave do MDF-e</th>
+          <th data-id="DTCADAST"   data-function="dataTimeDG" data-align-left="true">Dt. do Cadastro</th>
+          <th data-id="NMUSUARIC"  data-function="registroNullDG" data-align-left="true">Usuário do Cadastro</th>
+          <th data-id="TPLOCOLE"   data-function="stLocColeta" data-align-left="true">Local Coleta MDF-e</th>
+          <th data-id="NMTRANSP"   data-function="registroNullDG" data-align-left="true">Transportadora</th>
+          <th data-id="NMMOTORI1"  data-function="registroNullDG" data-align-left="true">Motorista</th>
+          <th data-id="DSVEICULV1" data-function="registroNullDG" data-align-left="true">Veículo</th>
+          <th data-id="DTMANCAN"   data-function="dataTimeDG" data-align-left="true">Dt. do Encerramento</th>
+          <th data-id="NMUSUARIE"  data-function="registroNullDG" data-align-left="true">Usuário Sol. Encerramento</th>
+          <th data-id="IDF001"     data-function="numberNullDG" data-align-right="true">Cód MDF-e</th>
+        </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID CARGAS COM STATUS == R-->
+
+    <!-- INÍCIO GRID CARGAS COM STATUS == T-->
+    <app-cards
+        titleDrop="{{titleCard}}"
+        *ngIf="controlViewTable == 1  && controlColumns == true  && controlView == 'T'"
+        [dropdown]="true">
+        <app-datagrid
+            [id]="'mdfe'"
+            [url]="urlMdfeGrid"
+            [tela]="383"
+            [allList]="'true'"
+            [telaGlobal]="[{'id' : 'colvis'},{'id' : 'excel'}]"
+            [telaAcoes]="[
+                {'id' : 85, 'metodo' : 'informarLocCol',     'icone': 'fas fa-angle-double-right'},
+                {'id' : 1,  'metodo' : 'visualizar',         'icone': 'fa fa-eye'},
+                {'id' : 2,  'metodo' : 'editarLocCol',       'icone': 'fas fa-pencil-alt'},
+                {'id' : 83, 'metodo' : 'abrirModalEncerrar', 'icone': 'fas fa-th-list'},
+                {'id' : 84, 'metodo' : 'abrirModalCancelar', 'icone': 'fas fa-times-circle'},
+                {'id' : 80, 'metodo' : 'gerarXml',           'icone': 'fa fa-download'},
+                {'id' : 81, 'metodo' : 'validarPdf',         'icone': 'fas fa-file-pdf'},
+                {'id' : 94, 'metodo' : 'visualizarPdf',      'icone': 'fas fa-file-pdf'}]"
+            [nivel]="0"
+            [thisParent]="this"
+            [initComplete]="'filtrar'"
+            [notOnLoad]="true"
+            [excelServer]="true"> 
+    
+          <th data-id="IDG046"     data-type-column="actions" data-object="true">Ações</th>
+          <th data-id="NRMDF"      data-function="numberNullDG" data-align-right="true">Nr. MDF-e</th>
+          <th data-id="STMDF"      data-function="stMdfe" data-align-left="true">St.</th>
+          <th data-id="CDESTADO"   data-function="registroNullDG" data-align-left="true">Estado</th>
+          <th data-id="IDG046"     data-align-right="true" data-exec-id="IDG046" data-exec="viewCarga" >Carga</th>
+          <th data-id="IDCARLOG"   data-function="numberNullDG" data-align-right="true">N° LOGOS</th>
+          <th data-id="DSCARGA"    data-align-left="true">Descrição carga</th>
+          <th data-id="DSERRO"     data-function="registroNullDG" data-align-left="true">Msg. retorno</th>
+          <th data-id="DTCARGA"    data-function="dataTimeDG" data-align-left="true">Dt. da carga</th>
+          <th data-id="DTMANIFE"   data-function="dataTimeDG" data-align-left="true">Dt. do MDF-e</th>
+          <th data-id="NRCHAMDF"   data-function="numberNullDG" data-align-right="true">Chave do MDF-e</th>
+          <th data-id="DTCADAST"   data-function="dataTimeDG" data-align-left="true">Dt. do Cadastro</th>
+          <th data-id="NMUSUARIC"  data-function="registroNullDG" data-align-left="true">Usuário do Cadastro</th>
+          <th data-id="TPLOCOLE"   data-function="stLocColeta" data-align-left="true">Local Coleta MDF-e</th>
+          <th data-id="NMTRANSP"   data-function="registroNullDG" data-align-left="true">Transportadora</th>
+          <th data-id="NMMOTORI1"  data-function="registroNullDG" data-align-left="true">Motorista</th>
+          <th data-id="DSVEICULV1" data-function="registroNullDG" data-align-left="true">Veículo</th>
+          <th data-id="DTMANCAN"   data-function="dataTimeDG" data-align-left="true">Dt. do Cancelamento/ Encerramento</th>
+          <th data-id="NMUSUARIE"  data-function="registroNullDG" data-align-left="true">Usuário Sol. Cancelamento/ Encerramento</th>
+          <th data-id="DSCANCEL"   data-function="registroNullDG" data-align-left="true">Justif. Cancelamento</th>
+          <th data-id="IDF001"     data-function="numberNullDG" data-align-right="true">Cód MDF-e</th>
+        </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID CARGAS COM STATUS == T -->
+
+    <!-- INÍCIO GRID CARGAS COM STATUS == C-->
+    <app-cards
+        titleDrop="{{titleCard}}"
+        *ngIf="controlViewTable == 1  && controlColumns == true  && controlView == 'C'"
+        [dropdown]="true">
+        <app-datagrid
+            [id]="'mdfe'"
+            [url]="urlMdfeGrid"
+            [tela]="383"
+            [allList]="'true'"
+            [notOnLoad]="true"
+            [telaGlobal]="[{'id' : 'colvis'},{'id' : 'excel'}]"
+            [telaAcoes]="[
+                {'id' : 85, 'metodo' : 'informarLocCol',     'icone': 'fas fa-angle-double-right'},
+                {'id' : 1,  'metodo' : 'visualizar',         'icone': 'fa fa-eye'},
+                {'id' : 2,  'metodo' : 'editarLocCol',       'icone': 'fas fa-pencil-alt'},
+                {'id' : 83, 'metodo' : 'abrirModalEncerrar', 'icone': 'fas fa-th-list'},
+                {'id' : 84, 'metodo' : 'abrirModalCancelar', 'icone': 'fas fa-times-circle'},
+                {'id' : 80, 'metodo' : 'gerarXml',           'icone': 'fa fa-download'},
+                {'id' : 81, 'metodo' : 'validarPdf',         'icone': 'fas fa-file-pdf'},
+                {'id' : 94, 'metodo' : 'visualizarPdf',      'icone': 'fas fa-file-pdf'}]"
+            [nivel]="0"
+            [thisParent]="this"
+            [initComplete]="'filtrar'"
+            [notOnLoad]="true"
+            [excelServer]="true"> 
+    
+          <th data-id="IDG046"     data-type-column="actions" data-object="true">Ações</th>
+          <th data-id="NRMDF"      data-function="numberNullDG" data-align-right="true">Nr. MDF-e</th>
+          <th data-id="STMDF"      data-function="stMdfe" data-align-left="true">St.</th>
+          <th data-id="CDESTADO"   data-function="registroNullDG" data-align-left="true">Estado</th>
+          <th data-id="IDG046"     data-align-right="true" data-exec-id="IDG046" data-exec="viewCarga" >Carga</th>
+          <th data-id="IDCARLOG"   data-function="numberNullDG" data-align-right="true">N° LOGOS</th>
+          <th data-id="DSCARGA"    data-align-left="true">Descrição carga</th>
+          <th data-id="DTCARGA"    data-function="dataTimeDG" data-align-left="true">Dt. da carga</th>
+          <th data-id="DTMANIFE"   data-function="dataTimeDG" data-align-left="true">Dt. do MDF-e</th>
+          <th data-id="NRCHAMDF"   data-function="numberNullDG" data-align-right="true">Chave do MDF-e</th>
+          <th data-id="DTCADAST"   data-function="dataTimeDG" data-align-left="true">Dt. do Cadastro</th>
+          <th data-id="NMUSUARIC"  data-function="registroNullDG" data-align-left="true">Usuário do Cadastro</th>
+          <th data-id="TPLOCOLE"   data-function="stLocColeta" data-align-left="true">Local Coleta MDF-e</th>
+          <th data-id="NMTRANSP"   data-function="registroNullDG" data-align-left="true">Transportadora</th>
+          <th data-id="NMMOTORI1"  data-function="registroNullDG" data-align-left="true">Motorista</th>
+          <th data-id="DSVEICULV1" data-function="registroNullDG" data-align-left="true">Veículo</th>
+          <th data-id="DTMANCAN"   data-function="dataTimeDG" data-align-left="true">Dt. do Cancelamento</th>
+          <th data-id="NMUSUARIE"  data-function="registroNullDG" data-align-left="true">Usuário Sol. Cancelamento</th>
+          <th data-id="DSCANCEL"   data-function="registroNullDG" data-align-left="true">Justif. Cancelamento</th>
+          <th data-id="IDF001"     data-function="numberNullDG" data-align-right="true">Cód MDF-e</th>
+        </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID CARGAS COM STATUS == C -->
+
+    <!-- INÍCIO GRID CARGAS NÃO PROCESSADAS -->
+    <app-cards
+      titleDrop="{{titleCard}}"
+      *ngIf="controlViewTable == 1 && controlColumns == false && controlView == 'O' && controlCarregamento == 0"
+      [dropdown]="true">
+      <app-datagrid
+          [id]="'mdfe'"
+          [url]="urlMdfeGrid"
+          [tela]="383"
+          [allList]="'true'"
+          [telaGlobal]="[{'id' : 'colvis'},{'id' : 'excel'}]"
+          [telaAcoes]="[{'id' : 85, 'metodo' : 'informarLocCol', 'icone': 'fas fa-angle-double-right'}]"
+          [nivel]="0"
+          [thisParent]="this"
+          [initComplete]="'filtrar'"
+          [notOnLoad]="true"
+          [excelServer]="true"> 
+  
+        <!-- Data: 26/06/2019
+             Motivo: Esse código está comentado, pois iremos implementar o agrupamento de cargas futuramente
+            <th data-id="IDG046" data-type-column="checkbox"> 
+                <label class="custom-control custom-checkbox"></label>
+                <label class="custom-control custom-checkbox" style="display: none;">
+                <input id="cargas-select-all" name="select_all" type="checkbox" class="custom-control-input" value="1" />
+                <span class="custom-control-indicator"></span>
+                </label>
+            </th> 
+            <th data-id="IDG046" data-type-column="actions" data-object="true">a</th> 
+        -->
+        <th data-id="IDG046"     data-type-column="actions" data-object="true">Ações</th>
+        <th data-id="IDG046"     data-exec-id="IDG046" data-exec="viewCarga"  data-align-right="true">Carga</th>
+        <th data-id="IDCARLOG"   data-function="numberNullDG" data-align-right="true">N° LOGOS</th>
+        <th data-id="STMDF"      data-function="stMdfe" data-align-left="true">St.</th>
+        <th data-id="DSCARGA"    data-align-left="true">Descrição carga</th>
+        <th data-id="DTCARGA"    data-function="dataTimeDG"     data-align-left="true">Dt. da carga</th>
+        <th data-id="NMTRANSP"   data-function="registroNullDG" data-align-left="true">Transportadora</th>
+        <th data-id="NMMOTORI1"  data-function="registroNullDG" data-align-left="true">Motorista</th>
+        <th data-id="DSVEICULV1" data-function="registroNullDG" data-align-left="true">Veículo</th>
+        <th data-id="IDG032V1"   data-visible='false'></th>
+        <th data-id="IDG024"     data-visible='false'></th>
+      </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID CARGAS NÃO PROCESSADAS -->
+
+    <!-- INÍCIO GRID CARGAS AGUARDANDO DOCUMENTOS -->
+    <app-cards
+      titleDrop="{{titleCard}}"
+      *ngIf="controlViewTable == 1 && controlColumns == false && controlView == 'G'"
+      [dropdown]="true">
+      <app-datagrid
+          [id]="'mdfe'"
+          [url]="urlMdfeGrid"
+          [tela]="383"
+          [allList]="'true'"
+          [telaGlobal]="[{'id' : 'colvis'},{'id' : 'excel'}]"
+          [telaAcoes]="[]"
+          [nivel]="0"
+          [thisParent]="this"
+          [initComplete]="'filtrar'"
+          [notOnLoad]="true"
+          [excelServer]="true"> 
+        <th data-id="IDG046"     data-align-right="true" data-exec-id="IDG046" data-exec="viewCarga" >Carga</th>
+        <th data-id="IDCARLOG"   data-function="numberNullDG" data-align-right="true">N° LOGOS</th>
+        <th data-id="STMDF"      data-function="stMdfe" data-align-left="true">St.</th>
+        <th data-id="DSCARGA"    data-align-left="true">Descrição carga</th>
+        <th data-id="DTCARGA"    data-function="dataTimeDG" data-align-left="true">Dt. da carga</th>
+        <th data-id="NMTRANSP"   data-function="registroNullDG" data-align-left="true">Transportadora</th>
+        <th data-id="NMMOTORI1"  data-function="registroNullDG" data-align-left="true">Motorista</th>
+        <th data-id="DSVEICULV1" data-function="registroNullDG" data-align-left="true">Veículo</th>
+      </app-datagrid>
+    </app-cards>
+    <!-- FIM GRID CARGAS AGUARDANDO DOCUMENTOS -->
+
+    <!-- MODAL LOCAL DE COLETA -->
+    <ng-template ngbModalContainer></ng-template>
+    <ng-template #modalLocalColeta let-c="close" let-d="dismiss">
+        <div class="modal-body">
+            <app-single-sim-nao-todos
+                strLabel ="Local de coleta"
+                [objForm]  = "objFormColeta"
+                [formName] = "'TPLOCOLE'"
+                [comboFix] = "'localColeta'">
+            </app-single-sim-nao-todos>
+        </div>
+        <div class="modal-footer">
+            <button type="button"  class="btn btn-success" (click)="validarCarga()">Prosseguir</button>
+            <button type="button"  class="btn btn-danger" (click)="c('Close click')">Cancelar</button>
+        </div>
+    </ng-template>
+    <!-- FIM LOCAL DE COLETA -->
+
+    <!-- MODAL TROCA DE STATUS -->
+    <ng-template ngbModalContainer></ng-template>
+    <ng-template #modalTrocaStatus let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h6 class="modal-title text-uppercase">Confirmação - {{this.titleModal}}</h6>
+        </div>
+        <div class="modal-body">
+            <app-input
+                *ngIf="this.obj['STMDF'] == 'L'"
+                [disabled] ="false"
+                [placeholder]="'Justificativa do cancelamento...'"
+                [formInput] = "objFormCancel"
+                [formControlNameInput] = "'DSCANCEL'"
+                maxlength = 255
+                [label]="'Justificativa do cancelamento'">
+            </app-input>
+            Você gostaria realmente de realizar está solicitação?
+        </div>
+        <div class="modal-footer">
+            <button type="button"  class="btn btn-success" (click)="salvarTrocaStatus()">Sim</button>
+            <button type="button"  class="btn btn-danger" (click)="c('Close click')">Não</button>
+        </div>
+    </ng-template>
+    <!-- FIM TROCA DE STATUS-->
+
+    <!-- INÍCIO DA LISTAGEM DOS PERCURSOS -->
+    <ngb-accordion #acc="ngbAccordion" activeIds="1" *ngIf="controlViewTable == 2">
+
+            <ngb-panel  title="{{titlePanel}}" id="1" >
+              <ng-template ngbPanelContent>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-body my-bg">
+                
+                            <table class="table table-sm table-bordered table-striped mb-0" style="margin-bottom:35px!important;text-align: center; width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Obs.</th>
+                                        <th>UF Início</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Percurso</th>
+                                        <th>UF Final</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let info of arGridPercurso; let i = index;" >
+                                <tr>
+                                    <td style="width: 5%;vertical-align:middle;">00{{i+1}}</td>
+                                    <td style="width: 5%;vertical-align:middle;">
+                                        <app-botoes
+                                        class="info"
+                                        icon="fas fa-eye"
+                                        text=""
+                                        (click)="alterViewObs(i,1);">
+                                        </app-botoes>
+                                        <div style="padding:5%; "></div>
+                                        <app-botoes
+                                        class="info"
+                                        icon="fas fa-eye-slash"
+                                        text=""
+                                        (click)="alterViewObs(i,2);">
+                                        </app-botoes>
+                                    </td>
+                                    <td style="width: 5%">
+                                        <app-single-estado
+                                            displayName = ""
+                                            [objForm]   = "this['objFormGerarMdf'+i]"
+                                            [formName]  = "'UFINICIO'"
+                                            [disabled]  = "true">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF1'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF2'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF3'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF4'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF5'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF6'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF7'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <app-single-estado
+                                            displayName   = ""
+                                            [objForm]     = "this['objFormGerarMdf'+i]"
+                                            [formName]    = "'UF8'"
+                                            [placeholder] = "'UF'"
+                                            [disabled]    = "disabled"
+                                            [snUf]        = "snUf">
+                                        </app-single-estado>
+                                    </td>
+                                    <td style="width: 5%">
+                                        <app-single-estado
+                                            displayName = ""
+                                            [objForm]   = "this['objFormGerarMdf'+i]"
+                                            [formName]  = "'UFFINAL'"
+                                            [disabled]  = "true">
+                                        </app-single-estado>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div *ngFor="let info of arGridPercurso; let i = index;">
+                                <div [hidden]="!this['objFormGerarMdf'+i].controls['VER'].value">
+                                    <app-input
+                                    [disabled] ="disabled"
+                                    [placeholder]="'Observações...'"
+                                    [formInput] = "this['objFormGerarMdf'+i]"
+                                    [formControlNameInput] = "'OBS'"
+                                    [label]="'Observação (00'+(i+1)+')'"
+                                    [model]="this['objFormGerarMdf'+i].controls['OBS'].value"
+                                    >
+                                    </app-input>
+                                </div>
+                                <div [hidden]="!i == 0" class="detalhes">
+                                    <b>Motorista(s): </b><br/>
+                                    {{this['objFormGerarMdf'+i].controls['NMMOTORIM1'].value}}
+                                    {{this['objFormGerarMdf'+i].controls['NMMOTORIM2'].value}}
+                                    {{this['objFormGerarMdf'+i].controls['NMMOTORIM3'].value}}
+                                    <br/> <br/>
+                                    <b>Veículo(s): </b><br/>
+                                    {{this['objFormGerarMdf'+i].controls['DSVEICULV1'].value}}
+                                    {{this['objFormGerarMdf'+i].controls['DSVEICULV2'].value}}
+                                    {{this['objFormGerarMdf'+i].controls['DSVEICULV3'].value}}
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    
+                </div>
+
+                <div class="row">
+                        <div class="col-sm-8"></div>
+                        <div class="col-sm-4 col-md-4 col-lg-4 text-right">
+                
+                            <!-- Salvar -->
+                            <app-botoes
+                            *ngIf="!disabled"
+                            class="success"
+                            text="Salvar"
+                            (click)="salvarMdfe();">
+                            </app-botoes>
+                
+                            <!-- Cancelar -->
+                            <app-botoes
+                            class="danger"
+                            text="Voltar"
+                            (click)="goHome(event);">
+                            </app-botoes>
+
+                        </div>
+                    </div>
+
+             </ng-template>
+            </ngb-panel>
+
+    </ngb-accordion>
+    <!-- FIM DA LISTAGEM DOS PERCURSOS -->
+
+    <!--INÍCIO MODAL VISUALIZAÇÃO DA CARGA -->
+    <ng-template ngbModalContainer></ng-template>
+    <ng-template #modalCarga let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h6 class="modal-title text-uppercase">Informações</h6>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" >
+        <info-new-carga-completa
+        [IDG046]="idCargaView"
+        [showCarga]="true"
+        [showParadas]="true"
+        [showCTE]="true"
+        [showNFE]="true"
+        [showNFE_AUX]="true"
+        [showAtendimentos]="true"
+        >
+        </info-new-carga-completa>
+    </div>
+    
+    <div class="modal-footer">
+
+            <div class="col-md-12 text-right">
+                <app-botoes
+                *ngIf="!mostrarMapa"
+                class="info"
+                icon="fas fa-map-marker-alt"
+                text="Simular Rota"
+                (click)="openSimularRota();"
+                outline>
+                </app-botoes>
+            </div>
+
+        <button type="button" class="btn btn-danger" (click)="c('Close click')">Fechar</button>
+    </div>
+    </ng-template>
+    <!--INÍCIO MODAL VISUALIZAÇÃO DA CARGA -->
+    
+</div>
